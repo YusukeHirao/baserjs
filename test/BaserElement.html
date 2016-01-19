@@ -84,16 +84,16 @@ test('baser.BaserElement.prototype.addClassのテスト', function() {
 	var testElem = new baser.BaserElement(test);
 
 	testElem.addClass('sample-block');
-	ok(testElem.$el.hasClass('-bc-sample-block'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
+	ok($(testElem.el).hasClass('-bc-sample-block'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
 
 	testElem.addClass('sample-block', 'sample-box');
-	ok(testElem.$el.hasClass('-bc-sample-block__sample-box'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
+	ok($(testElem.el).hasClass('-bc-sample-block__sample-box'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
 
 	testElem.addClass('sample-block', 'sample-box', 'sample-modifier');
-	ok(testElem.$el.hasClass('-bc-sample-block__sample-box--sample-modifier'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
+	ok($(testElem.el).hasClass('-bc-sample-block__sample-box--sample-modifier'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
 
 	testElem.addClass('sample-block', '', 'sample-modifier');
-	ok(testElem.$el.hasClass('-bc-sample-block--sample-modifier'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
+	ok($(testElem.el).hasClass('-bc-sample-block--sample-modifier'), 'baser.BaserElement.prototype.addClass で問題なくクラスは付加されました');
 
 
 });

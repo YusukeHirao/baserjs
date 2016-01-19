@@ -296,7 +296,7 @@ class AlignedBoxes extends EventDispatcher {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.10.0
+	 * @version 0.11.0
 	 * @since 0.8.1
 	 *
 	 */
@@ -308,7 +308,7 @@ class AlignedBoxes extends EventDispatcher {
 			const $box: JQuery = $(elem);
 
 			// 要素の高さを強制に無効にする
-			BaserElement.removeCSSPropertyFromDOMElement('height', elem);
+			BaserElement.removeCSSProp(elem, 'height');
 
 			// column が 0 だと最初の要素の意味
 			const column: number = i % this._currentColumn;

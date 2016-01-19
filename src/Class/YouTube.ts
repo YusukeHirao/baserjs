@@ -172,7 +172,7 @@ class YouTube extends BaserElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.0.7
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -184,14 +184,10 @@ class YouTube extends BaserElement {
 		if (this._elementized) {
 			return;
 		}
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
 		if (this._init(options)) {
 			YouTube.movies.push(this);
-			this.$el.addClass(YouTube.className);
-			this.$el.data(YouTube.className, this);
+			$(this.el).addClass(YouTube.className);
+			$(this.el).data(YouTube.className, this);
 		}
 	}
 
@@ -377,7 +373,7 @@ class YouTube extends BaserElement {
 	 * data-posterの値が `/^@contents?$/i` にマッチする場合、要素の中身をそのまま使う
 	 * それ以外の場合は パスと見なして画像を参照する
 	 *
-	 * @version 0.10.1
+	 * @version 0.11.0
 	 * @since 0.9.1
 	 * @param movieId 動画のID
 	 *
@@ -392,19 +388,19 @@ class YouTube extends BaserElement {
 			$posterContainer.height(this.movieOption.height);
 		}
 		if (/^@contents?$/i.test(this.movieOption.poster)) {
-			this.$el.wrapInner($posterContainer);
+			$(this.el).wrapInner($posterContainer);
 			this._createPlayerFrame();
 			this._loadYouTubeAPI();
 			// 要素を一番最後に移動
-			this.$el.find('.-bc-youtube-pseudo-poster-element').appendTo(this.$el);
+			$(this.el).find('.-bc-youtube-pseudo-poster-element').appendTo(this.el);
 		} else {
 			if (this.movieOption.poster === '') {
 				this.movieOption.poster = YouTube.getPosterImage(movieId, this.movieOption.posterHighQuality);
 			}
-			this.$el.empty();
+			$(this.el).empty();
 			this._createPlayerFrame();
 			this._loadYouTubeAPI();
-			$posterContainer.appendTo(this.$el);
+			$posterContainer.appendTo(this.el);
 			$posterContainer.css({
 				position: 'absolute',
 				top: 0,
@@ -438,7 +434,7 @@ class YouTube extends BaserElement {
 	/**
 	 * プレイヤーフレームを生成する
 	 *
-	 * @version 0.10.0
+	 * @version 0.11.0
 	 * @since 0.9.1
 	 */
 	private _createPlayerFrame (): void {
@@ -453,8 +449,8 @@ class YouTube extends BaserElement {
 			width: '100%',
 			height: '100%',
 		});
-		this.$el.empty();
-		$frame.appendTo(this.$el);
+		$(this.el).empty();
+		$frame.appendTo(this.el);
 
 		if (this.movieOption.width) {
 			$frame.width(this.movieOption.width);
@@ -559,9 +555,7 @@ class YouTube extends BaserElement {
 	 *
 	 * use: jQuery
 	 *
-	 * TODO: embeddedyoutubeplayイベント廃止予定(v1.0.0)
-	 *
-	 * @version 0.10.0
+	 * @version 0.11.0
 	 * @since 0.8.0
 	 *
 	 */
@@ -593,7 +587,6 @@ class YouTube extends BaserElement {
 			this.player.playVideo();
 		}
 
-		this.$el.trigger('embeddedyoutubeplay', [this.player]); // TODO: 廃止予定(v1.0.0)
 		this.trigger('embeded', [this.player]);
 	}
 

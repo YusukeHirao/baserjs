@@ -15,7 +15,7 @@ const DOUBLE_UNDERSCORE: string = '__';
  * DOM要素操作に関するjQueryのメソッドは極力ここに集約したい
  * 脱jQueryの際にこのクラスを改修するだけで済むようにする
  *
- * @version 0.9.0
+ * @version 0.11.0
  * @since 0.0.1
  *
  */
@@ -65,16 +65,6 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	public static classNameDefaultSeparatorForModifier: ClassNameSeparatorForBEM = ClassNameSeparatorForBEM.DOUBLE_HYPHEN;
-
-	/**
-	 * 【廃止予定】管理するDOM要素のjQueryオブジェクト
-	 *
-	 * @deprecated
-	 * @version 0.0.1
-	 * @since 0.0.1
-	 *
-	 */
-	public $el: JQuery;
 
 	/**
 	 * 管理するDOM要素
@@ -342,7 +332,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	/**
 	 * CSSプロパティをDOM要素から取り除く
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.2.2
 	 * @param elem 対象のDOM要素
 	 * @param propName 取り除くCSSプロパティ
@@ -350,48 +340,9 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public static removeCSSProp (elem: HTMLElement, propName: string): void {
 		const style: CSSStyleDeclaration = elem.style;
-		// IE8以下はCSSStyleDeclarationのインターフェイスが標準でないのでメソッド定義チェックでエラーになる
 		if (style) {
-			const styleIE8lt: any = <any> style;
-			if (style.removeProperty) {
-				style.removeProperty(propName);
-			} else if (styleIE8lt.removeAttribute) {
-				styleIE8lt.removeAttribute(propName);
-			}
+			style.removeProperty(propName);
 		}
-	}
-
-	/**
-	 * 【廃止予定】CSSプロパティをDOM要素から取り除く
-	 *
-	 * use: jQuery
-	 *
-	 * @deprecated
-	 * @version 0.9.0
-	 * @since 0.2.2
-	 * @param propName 取り除くCSSプロパティ
-	 * @param elem 対象のDOM要素
-	 *
-	 */
-	public static removeCSSPropertyFromDOMElement (propertyName: string, elem: HTMLElement): void {
-		BaserElement.removeCSSProp(elem, propertyName);
-	}
-
-	/**
-	 * 【廃止予定】CSSプロパティを取り除く
-	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
-	 * @since 0.2.2
-	 * @param propName 取り除くCSSプロパティ
-	 * @param $elem 対象のDOM要素
-	 *
-	 */
-	public static removeCSSProperty (propertyName: string, $elem: JQuery): void {
-		$elem.each( (i: number, elem: HTMLElement) => {
-			BaserElement.removeCSSProp(elem, propertyName);
-		});
 	}
 
 	/**
@@ -400,9 +351,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	 * use: jQuery
 	 *
 	 * TODO: クラス名のつき方の規則をきちんと決める
-	 * TODO: コンストラクタの引数をネイティブのDOM要素にする
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.0.1
 	 * @param $el 管理するDOM要素
 	 *
@@ -410,16 +360,15 @@ class BaserElement extends EventDispatcher implements IElement {
 	constructor (el: HTMLElement) {
 		super();
 		this.el = el;
-		this.$el = $(el);
 		// 既にbaserJSのエレメント化している場合
-		if (this.$el.data('bc-element')) {
+		if (this.data('bc-element')) {
 			if ('console' in window) {
 				console.warn('This element is elementized of baserJS.');
 			}
 			this._elementized = true;
 			return;
 		}
-		this.$el.data('bc-element', this);
+		this.data('bc-element', this);
 		// ID・nameの抽出 & 生成
 		const id: string = el.id || UtilString.UID();
 		const name: string = el.getAttribute('name');
@@ -478,13 +427,63 @@ class BaserElement extends EventDispatcher implements IElement {
 					case 'class':
 					break;
 					default: {
-						attrs[optName] = this.$el.attr(optName);
+						attrs[optName] = this.attr(optName);
 					}
 				}
-				dataAttrs[optName] = this.$el.data(optName);
+				dataAttrs[optName] = this.data(optName);
 			}
 		}
 		return $.extend({}, defaultOptions, options, dataAttrs, attrs);
+	}
+
+	/**
+	 * 属性の取得と設定
+	 */
+	public attr (key: string, value: any): void;
+	public attr (key: string): any;
+	public attr (key: string, value?: any): any {
+		return $(this.el).attr(key, value);
+	}
+
+	/**
+	 * 要素にフラグを紐付ける
+	 */
+	public data (key: string, value: any): void;
+	public data (key: string): any;
+	public data (key: string, value?: any): any {
+		return $(this.el).data(key, value);
+	}
+
+	/**
+	 *
+	 */
+	public closest (selector: string): HTMLElement {
+		return $(this.el).closest(selector)[0];
+	}
+
+	/**
+	 * 要素にフラグを紐付ける
+	 */
+	public val (): string;
+	public val (value: string): void;
+	public val (value?: string): any {
+		return $(this.el).val(value);
+	}
+
+	/**
+	 * 属性の取得と設定
+	 */
+	public prop (key: string, value: any): void;
+	public prop (key: string): any;
+	public prop (key: string, value?: any): any {
+		return $(this.el).prop(key, value);
+	}
+
+	/**
+	 *
+	 */
+	public wrap (wrapper: DocumentFragment) {
+		$(this.el).wrap(wrapper as HTMLElement);
 	}
 
 }

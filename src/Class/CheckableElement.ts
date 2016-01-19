@@ -87,7 +87,7 @@ class CheckableElement extends FormElement implements ICheckableElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.0.1
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -102,11 +102,6 @@ class CheckableElement extends FormElement implements ICheckableElement {
 			return;
 		}
 
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
-
 		this._checkedClass = this._config.checkedClass;
 
 		this.checked = this.el.checked;
@@ -114,7 +109,8 @@ class CheckableElement extends FormElement implements ICheckableElement {
 
 		this._update();
 
-		this.$el.on('change.bcCheckableElement', (): void => {
+		// TODO: jQueryオブジェクトに紐付ける必要の確認
+		$(this.el).on('change.bcCheckableElement', (): void => {
 			this._onchenge();
 		});
 
@@ -130,7 +126,7 @@ class CheckableElement extends FormElement implements ICheckableElement {
 	 *
 	 */
 	public update () {
-		if (this.$el.prop('checked') !== this.checked) {
+		if (this.el.checked !== this.checked) {
 			this._update();
 		}
 	}
@@ -161,28 +157,35 @@ class CheckableElement extends FormElement implements ICheckableElement {
 		const checked: boolean = <boolean> this.el.checked;
 
 		// WAI-ARIA属性
-		this.$el.attr('aria-checked', `${checked}`);
+		this.attr('aria-checked', `${checked}`);
 
 		if (checked) {
 
-			this.$el.addClass(this._checkedClass);
+			// TODO: Not use jQuery method
+			$(this.el).addClass(this._checkedClass);
+			// TODO: Not use jQuery method
 			this.$label.addClass(this._checkedClass);
+			// TODO: Not use jQuery method
 			this.$wrapper.addClass(this._checkedClass);
 
 			BaserElement.addClass(
-				this.el, FormElement.classNameFormElementCommon,
+				this.el,
+				FormElement.classNameFormElementCommon,
 				'',
 				CheckableElement.classNameStateChecked);
 			BaserElement.addClassTo(
-				this.$label, FormElement.classNameFormElementCommon,
+				this.$label,
+				FormElement.classNameFormElementCommon,
 				FormElement.classNameLabel,
 				CheckableElement.classNameStateChecked);
 			BaserElement.addClassTo(
-				this.$wrapper, FormElement.classNameWrapper,
+				this.$wrapper,
+				FormElement.classNameWrapper,
 				'',
 				CheckableElement.classNameStateChecked);
 			BaserElement.removeClass(
-				this.el, FormElement.classNameFormElementCommon,
+				this.el,
+				FormElement.classNameFormElementCommon,
 				'',
 				CheckableElement.classNameStateUnchecked);
 			BaserElement.removeClassFrom(
@@ -198,8 +201,12 @@ class CheckableElement extends FormElement implements ICheckableElement {
 
 		} else {
 
-			this.$el.removeClass(this._checkedClass);
+			// TODO: Not use jQuery method
+			$(this.el).removeClass(this._checkedClass);
+
+			// TODO: Not use jQuery method
 			this.$label.removeClass(this._checkedClass);
+			// TODO: Not use jQuery method
 			this.$wrapper.removeClass(this._checkedClass);
 
 			BaserElement.addClass(

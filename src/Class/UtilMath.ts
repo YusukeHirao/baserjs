@@ -18,10 +18,10 @@ class UtilMath {
 	 *
 	 */
 	public static random (base: number = 1, dist: number = 0): number {
-		const random: number = Math.random();
+		const rand: number = Math.random();
 		const from: number = Math.min(base, dist);
 		const to: number = Math.max(base, dist);
-		return random * (to - from) + from;
+		return rand * (to - from) + from;
 	}
 
 	/**

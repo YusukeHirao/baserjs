@@ -6,7 +6,7 @@ import TextFieldOption = require('../Interface/TextFieldOption');
 /**
  * テキストフィールドの拡張クラス
  *
- * @version 0.9.0
+ * @version 0.11.0
  * @since 0.4.0
  *
  */
@@ -38,15 +38,6 @@ class TextField extends FormElement implements ITextField {
 	 *
 	 */
 	public static classNameStateUninput: string = 'uninput';
-
-	/**
-	 * プレースホルダー属性に対応しているかどうか
-	 *
-	 * @version 0.4.0
-	 * @since 0.4.0
-	 *
-	 */
-	public static supportPlaceholder: boolean = $('<input />').prop('placeholder') !== undefined;
 
 	/**
 	 * 管理するDOM要素
@@ -97,7 +88,7 @@ class TextField extends FormElement implements ITextField {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.4.0
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -112,12 +103,7 @@ class TextField extends FormElement implements ITextField {
 			return;
 		}
 
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
-
-		this.placeholder = this.$el.attr('placeholder') || '';
+		this.placeholder = this.attr('placeholder') || '';
 		this.hasPlaceholder = !!this.placeholder;
 
 		this._update();
@@ -172,27 +158,6 @@ class TextField extends FormElement implements ITextField {
 			}
 		});
 
-		// プレースホルダーをサポートしていない時のイベント処理
-		if (!TextField.supportPlaceholder) {
-			// フォーカスを当てた時・クリックをしたときにプレースホルダーと値が同じだった場合
-			// カーソル（キャレット）を先頭に持っていく
-			this.$el.on('focus.bcTextField click.bcTextField', (): void => {
-				if (this._equalPlaceholder()) {
-					this._msCaretMoveToTop();
-				}
-			});
-			// キーボードを押した瞬間に、プレースホルダーと値が同じだった場合
-			// プレースホルダーの値を消して、空にする
-			// TODO: 文字以外のキーを押すと一瞬値が消える（クリティカルでないため保留）
-			$(document).on('keydown.bcTextField-' + this.id, (e: JQueryKeyEventObject): void => {
-				if (this.hasFocus) {
-					if (this._equalPlaceholder()) {
-						this.$el.val('');
-					}
-				}
-			});
-		}
-
 	}
 
 	/**
@@ -200,33 +165,21 @@ class TextField extends FormElement implements ITextField {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.4.0
 	 *
 	 */
 	private _update (): void {
 
-		const currentValue: string = this.$el.val() || '';
+		const currentValue: string = this.val() || '';
 		const isEmpty: boolean = !currentValue;
 
-		if (TextField.supportPlaceholder) {
-			if (isEmpty) {
-				this._setStateUninputted();
-			} else {
-				this._setStateInputted();
-			}
+		if (isEmpty) {
+			this._setStateUninputted();
 		} else {
-			if (this._equalPlaceholder()) {
-				this._setStateUninputted();
-			} else {
-				if (isEmpty) {
-					this._setStateUninputted();
-					this._setPlaceholderValue();
-				} else {
-					this._setStateInputted();
-				}
-			}
+			this._setStateInputted();
 		}
+
 
 	}
 
@@ -284,51 +237,6 @@ class TextField extends FormElement implements ITextField {
 			FormElement.classNameWrapper,
 			'',
 			TextField.classNameStateUninput);
-	}
-
-	/**
-	 * プレースホルダーと値が同じかどうか
-	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
-	 * @since 0.4.0
-	 *
-	 */
-	private _equalPlaceholder (): boolean {
-		const currentValue: string = this.$el.val() || '';
-		return this.placeholder === currentValue;
-	}
-
-	/**
-	 * プレースホルダーの値を設定する
-	 *
-	 * use: jQuery
-	 *
-	 * @version 0.4.0
-	 * @since 0.4.0
-	 *
-	 */
-	private _setPlaceholderValue (): void {
-		this.$el.val(this.placeholder);
-		this._msCaretMoveToTop();
-	}
-
-	/**
-	 * 【IE用】カーソル（キャレット）を先頭に持っていく
-	 *
-	 * @version 0.9.0
-	 * @since 0.4.0
-	 *
-	 */
-	private _msCaretMoveToTop (): void {
-		// TODO: MS用の型を調査して定義
-		const input: any = this.el;
-		const range: any = input.createTextRange();
-		range.collapse();
-		range.moveStart('character', 0);
-		range.moveEnd('character', 0);
-		range.select();
 	}
 
 }

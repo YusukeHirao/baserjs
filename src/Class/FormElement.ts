@@ -191,7 +191,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.0.1
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -203,11 +203,6 @@ class FormElement extends BaserElement implements IFormElement {
 
 		// 既にエレメント化されていた場合は何もしない
 		if (this._elementized) {
-			return;
-		}
-
-		// IE6・7は反映させない
-		if (!el.querySelector) {
 			return;
 		}
 
@@ -232,8 +227,8 @@ class FormElement extends BaserElement implements IFormElement {
 		this._bindEvents();
 
 		// 初期状態を設定
-		this.defaultValue = this.$el.val();
-		this.setDisabled(<boolean> this.$el.prop('disabled'));
+		this.defaultValue = this.val();
+		this.setDisabled(<boolean> this.prop('disabled'));
 		this._onblur();
 
 		// フォーム要素に登録
@@ -246,7 +241,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.4.0
 	 * @param value 設定する値
 	 * @param isSilent イベントを伝達しない
@@ -254,9 +249,9 @@ class FormElement extends BaserElement implements IFormElement {
 	 */
 	public setValue (value: string | number | boolean, isSilent: boolean = false): void {
 		const valueString: string = `${value}`;
-		const currentValue: string = this.$el.val();
+		const currentValue: string = this.val();
 		if (!this.disabled && currentValue !== valueString) {
-			this.$el.val(valueString);
+			this.val(valueString);
 			this._fireChangeEvent(isSilent);
 		}
 	}
@@ -326,7 +321,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.4.0
 	 *
 	 */
@@ -337,15 +332,16 @@ class FormElement extends BaserElement implements IFormElement {
 		BaserElement.addClassTo($wrapper, FormElement.classNameFormElementCommon);
 		BaserElement.addClassTo($wrapper, FormElement.classNameWrapper);
 
+		// TODO: Not use jQuery method
 		if (this.isWrappedByLabel) {
 			this.$label.wrapAll($wrapper);
 			this.$wrapper = this.$label.parent('span');
 		} else if (this.hasLabelByForAttr) {
-			this.$el.wrapAll($wrapper);
-			this.$wrapper = this.$el.parent('span');
+			$(this.el).wrapAll($wrapper);
+			this.$wrapper = $(this.el).parent('span');
 		} else {
-			this.$el.add(this.$label).wrapAll($wrapper);
-			this.$wrapper = this.$el.parent('span');
+			$(this.el).add(this.$label).wrapAll($wrapper);
+			this.$wrapper = $(this.el).parent('span');
 		}
 	}
 
@@ -365,20 +361,21 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.4.0
 	 *
 	 */
 	protected _bindEvents (): void {
-		this.$el.on('focus.bcFormElement', (): void => {
+		// TODO: Not use jQuery method
+		$(this.el).on('focus.bcFormElement', (): void => {
 			if (!this.disabled) {
 				this._onfocus();
 			}
 		});
-		this.$el.on('blur.bcFormElement', (): void => {
+		$(this.el).on('blur.bcFormElement', (): void => {
 			this._onblur();
 		});
-		this.$el.on('change.bcFormElement', (e: JQueryEventObject, arg: any): void => {
+		$(this.el).on('change.bcFormElement', (e: JQueryEventObject, arg: any): void => {
 			if (arg && arg.isSilent) {
 				this._onSilentChange();
 			} else {
@@ -489,22 +486,20 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.4.0
 	 * @param isSilent イベントを伝達しない
 	 *
 	 */
 	protected _fireChangeEvent (isSilent: boolean = false): void {
 		if (isSilent) {
-			this.$el.trigger('change.bcFormElement', [{ isSilent: <boolean> true }]);
-		} else if ('createEvent' in document) {
+			// TODO: Not use jQuery method
+
+			$(this.el).trigger('change.bcFormElement', [{ isSilent: <boolean> true }]);
+		} else {
 			const e: Event = document.createEvent('Event');
 			e.initEvent('change', true, true);
 			this.el.dispatchEvent(e);
-		} else {
-			// IE8
-			const legacyElement: any = this.el;
-			legacyElement.fireEvent('onchange');
 		}
 	}
 
@@ -533,7 +528,7 @@ class FormElement extends BaserElement implements IFormElement {
 			let isBefore: boolean = true;
 
 			$labelContents.each( (i: number, node: Node): void => {
-				if (node === this.$el[0]) {
+				if (node === this.el) {
 					isBefore = false;
 					return;
 				}
@@ -552,7 +547,7 @@ class FormElement extends BaserElement implements IFormElement {
 				return $.trim(text);
 			});
 
-			this.labelBeforeText = $before.text() || this.$el.attr('title') || '';
+			this.labelBeforeText = $before.text() || $(this.el).attr('title') || '';
 			this.labelAfterText = $after.text() || '';
 
 			if (this.labelBeforeText) {
@@ -583,7 +578,7 @@ class FormElement extends BaserElement implements IFormElement {
 		this.hasLabelByForAttr = false;
 
 		// 祖先のlabel要素を検索
-		let $label: JQuery = this.$el.closest('label');
+		let $label: JQuery = $(this.closest('label'));
 
 		// label要素の存在
 		let hasLabel: boolean = !!$label.length;
@@ -602,7 +597,7 @@ class FormElement extends BaserElement implements IFormElement {
 		if (this._config.autoLabeling && !hasLabel) {
 			// label(もしくは別の)要素の生成
 			$label = $(`<${this._config.labelTag.toLowerCase()} />`);
-			$label.insertAfter(this.$el);
+			$label.insertAfter(this.el);
 			if (this._config.labelClass) {
 				$label.addClass(this._config.labelClass);
 			}

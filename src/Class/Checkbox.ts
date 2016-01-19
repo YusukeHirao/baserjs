@@ -42,11 +42,6 @@ class Checkbox extends CheckableElement implements ICheckbox {
 			return;
 		}
 
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
-
 		this.addClass(Checkbox.classNameCheckbox);
 		BaserElement.addClassTo(this.$label, Checkbox.classNameCheckbox, FormElement.classNameLabel);
 		BaserElement.addClassTo(this.$wrapper, Checkbox.classNameCheckbox + '-' + FormElement.classNameWrapper);

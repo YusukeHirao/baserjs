@@ -1,7 +1,8 @@
 gulp = require 'gulp'
-webpack = require 'gulp-webpack'
+webpack = require 'webpack-stream'
 ts = require 'gulp-typescript'
 tsc = require 'typescript'
+babel = require 'gulp-babel'
 typedoc = require 'gulp-typedoc'
 uglify = require 'gulp-uglify'
 rename = require 'gulp-rename'
@@ -26,9 +27,9 @@ project = ts.createProject './tsconfig.json',
 	typescript: tsc
 
 gulp.task 'ts', ->
-	result = project.src()
+	project.src()
 		.pipe ts project
-	result.js
+		.pipe babel presets: ['es2015']
 		.pipe gulp.dest './out/'
 
 gulp.task 'pack', ->

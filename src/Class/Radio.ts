@@ -43,11 +43,6 @@ class Radio extends CheckableElement implements IRadio {
 			return;
 		}
 
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
-
 		this.addClass(Radio.classNameRadio);
 		BaserElement.addClassTo(this.$label, Radio.classNameRadio, FormElement.classNameLabel);
 		BaserElement.addClassTo(this.$wrapper, Radio.classNameRadio + '-' + FormElement.classNameWrapper);

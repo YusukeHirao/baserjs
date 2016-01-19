@@ -130,20 +130,15 @@ class GoogleMaps extends BaserElement {
 			return;
 		}
 
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
-
 		if ('google' in window && google.maps) {
-			this.$el.addClass(GoogleMaps.className);
+			$(this.el).addClass(GoogleMaps.className);
 
 			this.mapOption = $.extend({}, options);
 			this._init();
 
 			// TODO: 必要な処理か検討
 			GoogleMaps.maps.push(this);
-			this.$el.data(GoogleMaps.className, this);
+			this.data(GoogleMaps.className, this);
 		} else {
 			if ('console' in window) {
 				console.warn('ReferenceError: "//maps.google.com/maps/api/js" を先に読み込む必要があります。');
@@ -223,16 +218,16 @@ class GoogleMaps extends BaserElement {
 
 		// data-*属性からの継承
 		this.mapOption = <GoogleMapsOption> $.extend(this.mapOption, {
-			zoom: this.$el.data('zoom'),
-			fitBounds: this.$el.data('fit-bounds'),
+			zoom: this.data('zoom'),
+			fitBounds: this.data('fit-bounds'),
 		});
 
 		this.markerBounds = new google.maps.LatLngBounds();
 
-		const mapCenterLat: number = <number>this.$el.data('lat') || GoogleMaps.defaultLat;
-		const mapCenterLng: number = <number>this.$el.data('lng') || GoogleMaps.defaultLng;
+		const mapCenterLat: number = parseInt(this.data('lat'), 10) || GoogleMaps.defaultLat;
+		const mapCenterLng: number = parseInt(this.data('lng'), 10) || GoogleMaps.defaultLng;
 
-		const mapCenterAddress: string = this.$el.data('address') || '';
+		const mapCenterAddress: string = this.data('address') || '';
 
 		if (mapCenterAddress) {
 			// 住所から緯度・経度を検索する（非同期）
@@ -250,7 +245,7 @@ class GoogleMaps extends BaserElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.2.0
 	 * @param mapCenterLat 緯度
 	 * @param mapCenterLng 経度
@@ -258,9 +253,9 @@ class GoogleMaps extends BaserElement {
 	 */
 	private _render (mapCenterLat: number, mapCenterLng: number): void {
 
-		this.$coordinates = this.$coordinates || this.$el.find('[data-lat][data-lng], [data-address]').detach();
+		this.$coordinates = this.$coordinates || $(this.el).find('[data-lat][data-lng], [data-address]').detach();
 		if (this.$coordinates.length <= 0) {
-			this.$coordinates = this.$el;
+			this.$coordinates = $(this.el);
 		}
 
 		const coordinates: Coordinate[] = [];
@@ -441,7 +436,7 @@ class Coordinate {
 			icon: this.icon,
 			map: this._map.gmap,
 		});
-		if (this._map.$coordinates !== this._map.$el) {
+		if (this._map.$coordinates[0] !== this._map.el) {
 			google.maps.event.addListener(this.marker, 'click', (): void => {
 				this.openInfoWindow();
 			});

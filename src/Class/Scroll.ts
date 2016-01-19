@@ -38,7 +38,6 @@ class Scroll {
 		let offset: number = this.options.offset || 0;
 
 		if (this.options.wheelCancel) {
-			// TODO: IE8 wheelイベント対応検討
 			$(document).on('wheel', (): void => {
 				if (this.isScroll) {
 					this._finish();

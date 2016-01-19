@@ -886,4 +886,20 @@ class JQueryAdapter {
 
 }
 
-export = JQueryAdapter;
+$.prototype.bcBackground = JQueryAdapter.prototype.bcBackground;
+$.prototype.bcBoxAlignHeight = JQueryAdapter.prototype.bcBoxAlignHeight;
+$.prototype.bcBoxLink = JQueryAdapter.prototype.bcBoxLink;
+$.prototype.bcCheckbox = JQueryAdapter.prototype.bcCheckbox;
+$.prototype.bcRadio = JQueryAdapter.prototype.bcRadio;
+$.prototype.bcSelect = JQueryAdapter.prototype.bcSelect;
+$.prototype.bcImageLoaded = JQueryAdapter.prototype.bcImageLoaded;
+$.prototype.bcKeepAspectRatio = JQueryAdapter.prototype.bcKeepAspectRatio;
+$.prototype.bcScrollTo = JQueryAdapter.prototype.bcScrollTo;
+$.prototype.bcSplitList = JQueryAdapter.prototype.bcSplitList;
+$.prototype.bcWink = JQueryAdapter.prototype.bcWink;
+$.prototype.bcMaps = JQueryAdapter.prototype.bcMaps;
+$.prototype.bcYoutube = JQueryAdapter.prototype.bcYoutube;
+$.prototype.bcRollover = JQueryAdapter.prototype.bcRollover;
+$.prototype.bcShy = JQueryAdapter.prototype.bcShy;
+
+$['bcScrollTo'] = JQueryAdapter.bcScrollTo;

@@ -242,7 +242,7 @@ class Select extends FormElement implements ISelect {
 	protected _createPsuedoElements (): void {
 		this.$pseudo = $('<a />');
 		this.$pseudo.attr('href', '#'); // href属性がないとフォーカスを当てることができない
-		this.$pseudo.insertAfter(this.$el);
+		this.$pseudo.insertAfter(this.el);
 		BaserElement.addClassTo(this.$pseudo, FormElement.classNameFormElementCommon);
 		BaserElement.addClassTo(this.$pseudo, Select.classNamePseudoSelect);
 
@@ -256,7 +256,7 @@ class Select extends FormElement implements ISelect {
 			this.$options.appendTo(this.$pseudo);
 			BaserElement.addClassTo(this.$options, FormElement.classNameFormElementCommon);
 			BaserElement.addClassTo(this.$options, Select.classNamePseudoSelect, Select.classNameSelectOptionList);
-			this.$el.find('option').each( (i: number, opt: HTMLElement): void => {
+			$(this.el).find('option').each( (i: number, opt: HTMLElement): void => {
 				const $opt: JQuery = $(opt);
 				const value: string = $opt.val();
 				const text: string = $opt.text();
@@ -303,7 +303,7 @@ class Select extends FormElement implements ISelect {
 		super._bindEvents();
 
 		// changeイベントが起こった場合に実行するルーチン
-		this.$el.on('change.bcSelect', (): void => {
+		$(this.el).on('change.bcSelect', (): void => {
 			this._update();
 		});
 
@@ -366,7 +366,7 @@ class Select extends FormElement implements ISelect {
 	 */
 	public setValue (value: string | number | boolean): void {
 		const valueString: string = `${value}`;
-		const $targetOption: JQuery = this.$el.find(`option[value="${valueString}"]`);
+		const $targetOption: JQuery = $(this.el).find(`option[value="${valueString}"]`);
 		if ($targetOption.length && !$targetOption.prop('selected')) {
 			$targetOption.prop('selected', true);
 			this._fireChangeEvent();
@@ -385,7 +385,7 @@ class Select extends FormElement implements ISelect {
 	 *
 	 */
 	public setIndex (index: number, isSilent: boolean = false): void {
-		const $targetOption: JQuery = this.$el.find('option').eq(index);
+		const $targetOption: JQuery = $(this.el).find('option').eq(index);
 		if ($targetOption.length && !$targetOption.prop('selected') && !$targetOption.prop('disabled')) {
 			$targetOption.prop('selected', true);
 			this._fireChangeEvent(isSilent);
@@ -404,7 +404,7 @@ class Select extends FormElement implements ISelect {
 	 */
 	public getIndex (): number {
 		let currentIndex: number = 0;
-		this.$el.find('option').each( (i: number, el: HTMLElement): void => {
+		$(this.el).find('option').each( (i: number, el: HTMLElement): void => {
 			const $opt: JQuery = $(el);
 			if ($opt.prop('selected')) {
 				currentIndex = $opt.index();
@@ -423,7 +423,7 @@ class Select extends FormElement implements ISelect {
 	 */
 	public next (isSilent: boolean): void {
 		const currentIndex: number = this.getIndex();
-		const max: number = this.$el.find('option').length;
+		const max: number = $(this.el).find('option').length;
 		const nextIndex: number = currentIndex + 1;
 		this.setIndex(Math.min(nextIndex, max), isSilent);
 	}
@@ -523,7 +523,7 @@ class Select extends FormElement implements ISelect {
 			$psuedoOptList = this.$options.find('li');
 		}
 
-		this.$el.find('option').each( (i: number, opt: HTMLElement): void => {
+		$(this.el).find('option').each( (i: number, opt: HTMLElement): void => {
 			const $opt: JQuery = $(opt);
 			const isSelected: boolean = <boolean> $opt.prop('selected');
 			if (isSelected) {
@@ -564,7 +564,7 @@ class Select extends FormElement implements ISelect {
 		if (this.$options) {
 			let $selectedPsuedoOpt: JQuery;
 			const $psuedoOptList: JQuery = this.$options.find('li');
-			this.$el.find('option').each( (i: number, opt: HTMLElement): void => {
+			$(this.el).find('option').each( (i: number, opt: HTMLElement): void => {
 				const $opt: JQuery = $(opt);
 				const isSelected: boolean = <boolean> $opt.prop('selected');
 				if (isSelected) {
@@ -592,12 +592,12 @@ class Select extends FormElement implements ISelect {
 	 */
 	private _psuedoFocusEvent (): void {
 
-		this.$el.off('focus.bcFormElement');
-		this.$el.off('blur.bcFormElement');
+		$(this.el).off('focus.bcFormElement');
+		$(this.el).off('blur.bcFormElement');
 
 		// セレクトボックス本体にフォーカスがあたったら、
 		// 擬似要素のほうへフォーカスを即座に移動させる
-		this.$el.on('focus.bcSelect', (e: JQueryEventObject): void => {
+		$(this.el).on('focus.bcSelect', (e: JQueryEventObject): void => {
 			if (!this.disabled) {
 				this.$pseudo.focus();
 			}
