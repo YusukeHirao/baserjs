@@ -41,6 +41,11 @@ class CheckableElement extends FormElement implements ICheckableElement {
 	public static classNameStateUnchecked: string = 'unchecked';
 
 	/**
+	 * クラス名
+	 */
+	protected static _name: Symbol = Symbol('CheckableElement');
+
+	/**
 	 * 管理するDOM要素
 	 *
 	 * @override
@@ -97,11 +102,6 @@ class CheckableElement extends FormElement implements ICheckableElement {
 
 		super(el, $.extend({}, CheckableElement.defaultOption, options));
 
-		// 既にエレメント化されていた場合は何もしない
-		if (this._elementized) {
-			return;
-		}
-
 		this._checkedClass = this._config.checkedClass;
 
 		this.checked = this.el.checked;
@@ -129,6 +129,26 @@ class CheckableElement extends FormElement implements ICheckableElement {
 		if (this.el.checked !== this.checked) {
 			this._update();
 		}
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(CheckableElement);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(CheckableElement);
 	}
 
 	/**

@@ -89,6 +89,11 @@ class FormElement extends BaserElement implements IFormElement {
 	public static elements: FormElement[] = [];
 
 	/**
+	 * クラス名
+	 */
+	protected static _name: Symbol = Symbol('FormElement');
+
+	/**
 	 * 管理するDOM要素
 	 *
 	 * @override
@@ -201,11 +206,6 @@ class FormElement extends BaserElement implements IFormElement {
 
 		super(el);
 
-		// 既にエレメント化されていた場合は何もしない
-		if (this._elementized) {
-			return;
-		}
-
 		this._config = $.extend({}, FormElement.defaultOption, options);
 
 		// クラス名を設定す
@@ -302,6 +302,26 @@ class FormElement extends BaserElement implements IFormElement {
 				'',
 				FormElement.classNameStateDisabled);
 		}
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(FormElement);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(FormElement);
 	}
 
 	/**

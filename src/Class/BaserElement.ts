@@ -9,6 +9,10 @@ const DOUBLE_HYPHEN: string = '--';
 const UNDERSCORE: string = '_';
 const DOUBLE_UNDERSCORE: string = '__';
 
+const elementizedMap: WeakMap<HTMLElement, Set<Symbol>> = new WeakMap();
+
+type Primitive = string | number | boolean;
+
 /**
  * DOM要素の抽象クラス
  *
@@ -67,6 +71,11 @@ class BaserElement extends EventDispatcher implements IElement {
 	public static classNameDefaultSeparatorForModifier: ClassNameSeparatorForBEM = ClassNameSeparatorForBEM.DOUBLE_HYPHEN;
 
 	/**
+	 * クラス名
+	 */
+	protected static _name: Symbol = Symbol('BaserElement');
+
+	/**
 	 * 管理するDOM要素
 	 *
 	 * @version 0.9.0
@@ -94,10 +103,6 @@ class BaserElement extends EventDispatcher implements IElement {
 	public name: string = '';
 
 	/**
-	 * baserJSのエレメント化してたかどうか
-	 *
-	 * @version 0.8.0
-	 * @since 0.8.0
 	 *
 	 */
 	protected _elementized: boolean = false;
@@ -361,14 +366,14 @@ class BaserElement extends EventDispatcher implements IElement {
 		super();
 		this.el = el;
 		// 既にbaserJSのエレメント化している場合
-		if (this.data('bc-element')) {
+		if (this._isElementized()) {
 			if ('console' in window) {
 				console.warn('This element is elementized of baserJS.');
 			}
 			this._elementized = true;
 			return;
 		}
-		this.data('bc-element', this);
+		this._elementize();
 		// ID・nameの抽出 & 生成
 		const id: string = el.id || UtilString.UID();
 		const name: string = el.getAttribute('name');
@@ -416,8 +421,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	public mergeOptions (defaultOptions: any, options: any): any {
-		const attrs: { [option: string ]: any } = {};
-		const dataAttrs: { [option: string ]: any } = {};
+		const attrs: { [option: string ]: Primitive } = {};
+		const dataAttrs: { [option: string ]: Primitive } = {};
 
 		for (const optName in defaultOptions) {
 			if (defaultOptions.hasOwnProperty(optName)) {
@@ -441,8 +446,12 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public attr (key: string, value: any): void;
 	public attr (key: string): any;
-	public attr (key: string, value?: any): any {
-		return $(this.el).attr(key, value);
+	public attr (key: string, value?: any): string {
+		if (value === undefined) {
+			return $(this.el).attr(key);
+		} else {
+			$(this.el).attr(key, value);
+		}
 	}
 
 	/**
@@ -450,8 +459,12 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public data (key: string, value: any): void;
 	public data (key: string): any;
-	public data (key: string, value?: any): any {
-		return $(this.el).data(key, value);
+	public data (key: string, value?: any): Primitive {
+		if (value === undefined) {
+			return $(this.el).data(key);
+		} else {
+			$(this.el).data(key, value);
+		}
 	}
 
 	/**
@@ -475,8 +488,12 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public prop (key: string, value: any): void;
 	public prop (key: string): any;
-	public prop (key: string, value?: any): any {
-		return $(this.el).prop(key, value);
+	public prop (key: string, value?: any): Primitive {
+		if (value === undefined) {
+			return $(this.el).prop(key);
+		} else {
+			$(this.el).prop(key, value);
+		}
 	}
 
 	/**
@@ -484,6 +501,59 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public wrap (wrapper: DocumentFragment) {
 		$(this.el).wrap(wrapper as HTMLElement);
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(BaserElement);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(BaserElement);
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected __isElementized (constructor: any /* Class */): boolean {
+		if (elementizedMap.has(this.el)) {
+			const constructorList: Set<Symbol> = elementizedMap.get(this.el);
+			return constructorList.has(constructor._name as Symbol);
+		}
+		return false;
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected __elementize (constructor: any /* Class */): void {
+		let constructorList: Set<Symbol>;
+		if (elementizedMap.has(this.el)) {
+			constructorList = elementizedMap.get(this.el);
+		} else {
+			constructorList = new Set();
+		}
+		constructorList.add(constructor._name as Symbol);
+		elementizedMap.set(this.el, constructorList);
+		console.log(constructor._name);
+
 	}
 
 }

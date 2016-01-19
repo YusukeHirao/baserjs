@@ -57,6 +57,26 @@ class Radio extends CheckableElement implements IRadio {
 	}
 
 	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(Radio);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(Radio);
+	}
+
+	/**
 	 * チェンジイベントのハンドラ
 	 *
 	 * use: jQuery
@@ -65,7 +85,7 @@ class Radio extends CheckableElement implements IRadio {
 	 * @since 0.0.1
 	 *
 	 */
-	public _onchenge () {
+	protected _onchenge () {
 		super._onchenge();
 		// 同じname属性のラジオボタン要素も同時に変更をする
 		// TODO: APIをRadioGroup.update(name, elem)にする

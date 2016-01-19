@@ -40,6 +40,15 @@ class TextField extends FormElement implements ITextField {
 	public static classNameStateUninput: string = 'uninput';
 
 	/**
+	 * クラス名
+	 *
+	 * @override
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected static _name: Symbol = Symbol('TextField');
+
+	/**
 	 * 管理するDOM要素
 	 *
 	 * @override
@@ -107,6 +116,26 @@ class TextField extends FormElement implements ITextField {
 		this.hasPlaceholder = !!this.placeholder;
 
 		this._update();
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(TextField);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(TextField);
 	}
 
 	/**

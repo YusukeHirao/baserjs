@@ -49,6 +49,11 @@ class GoogleMaps extends BaserElement {
 	public static maps: GoogleMaps[] = [];
 
 	/**
+	 * クラス名
+	 */
+	protected static _name: Symbol = Symbol('GoogleMaps');
+
+	/**
 	 * 緯度
 	 *
 	 * @version 0.2.0
@@ -203,6 +208,26 @@ class GoogleMaps extends BaserElement {
 	public reload (options?: GoogleMapsOption): void {
 		this.mapOption = options ? $.extend({}, options) : this.mapOption;
 		this._init();
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(GoogleMaps);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(GoogleMaps);
 	}
 
 	/**

@@ -115,6 +115,15 @@ class Select extends FormElement implements ISelect {
 	public static classNameStateUnselected: string = 'unselected';
 
 	/**
+	 * クラス名
+	 *
+	 * @override
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected static _name: Symbol = Symbol('Select');
+
+	/**
 	 * 管理するDOM要素
 	 *
 	 * @override
@@ -459,6 +468,26 @@ class Select extends FormElement implements ISelect {
 		} else {
 			this.$pseudo.removeAttr('tabindex');
 		}
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(Select);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(Select);
 	}
 
 	/**

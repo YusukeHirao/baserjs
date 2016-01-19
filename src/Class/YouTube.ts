@@ -53,6 +53,15 @@ class YouTube extends BaserElement {
 	public static movies: YouTube[] = [];
 
 	/**
+	 * クラス名
+	 *
+	 * @override
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected static _name: Symbol = Symbol('YouTube');
+
+	/**
 	 * ムービーのID
 	 *
 	 * @version 0.8.0
@@ -283,7 +292,26 @@ class YouTube extends BaserElement {
 				bindCtrl();
 			});
 		}
+	}
 
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(YouTube);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 0.11.0
+	 * @since 0.11.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(YouTube);
 	}
 
 	/**
