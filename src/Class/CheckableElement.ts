@@ -4,6 +4,11 @@ import ICheckableElement = require('../Interface/ICheckableElement');
 import CheckableElementOption = require('../Interface/CheckableElementOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * ラジオボタンとチェックボックスの抽象クラス
  *
  * @version 0.9.0

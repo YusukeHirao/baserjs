@@ -5,6 +5,11 @@ import BrowserUserAgent = require('../Interface/BrowserUserAgent');
 type LinkElement = HTMLAnchorElement | HTMLAreaElement;
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * ブラウザの情報を管理するクラス
  *
  * TODO: テストを書く（テストフレームワークの選定から）

@@ -2,6 +2,11 @@ import BaserElement = require('./BaserElement');
 import GoogleMapsOption = require('../Interface/GoogleMapsOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * マップ要素
  *
  * @version 0.9.0

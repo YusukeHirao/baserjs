@@ -1,5 +1,10 @@
 import BaserElement = require('./BaserElement');
 
+/**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
 class BaserElementCollection {
 
 	public nodeList: BaserElement[];

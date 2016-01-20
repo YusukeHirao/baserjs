@@ -2,6 +2,11 @@ import DispatchEvent = require('./DispatchEvent');
 import EventDispatcher = require('./EventDispatcher');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * 時間管理クラス
  *
  * @version 0.9.0

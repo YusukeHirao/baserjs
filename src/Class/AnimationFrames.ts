@@ -2,6 +2,11 @@ import DispatchEvent = require('./DispatchEvent');
 import EventDispatcher = require('./EventDispatcher');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * アニメーションフレームを管理するクラス
  *
  * @version 0.9.0

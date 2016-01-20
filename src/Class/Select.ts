@@ -5,6 +5,11 @@ import ISelect = require('../Interface/ISelect');
 import SelectOption = require('../Interface/SelectOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * セレクトボックスの拡張クラス
  *
  * @version 0.9.0

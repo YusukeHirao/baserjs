@@ -3,6 +3,11 @@ import IFormElement = require('../Interface/IFormElement');
 import FormElementOption = require('../Interface/FormElementOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * フォーム要素の抽象クラス
  *
  * @version 0.9.0

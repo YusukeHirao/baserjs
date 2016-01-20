@@ -1,6 +1,11 @@
 import UtilString = require('./UtilString');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * URLの情報を管理するクラス
  *
  * @version 0.9.0

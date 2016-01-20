@@ -4,6 +4,11 @@ import ITextField = require('../Interface/ITextField');
 import TextFieldOption = require('../Interface/TextFieldOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * テキストフィールドの拡張クラス
  *
  * @version 0.11.0

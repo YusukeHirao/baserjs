@@ -5,6 +5,11 @@ import ICheckbox = require('../Interface/ICheckbox');
 import CheckableElementOption = require('../Interface/CheckableElementOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * チェックボックスの拡張クラス
  *
  * @version 0.9.0

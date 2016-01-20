@@ -2,6 +2,11 @@ import Timer = require('./Timer');
 import ScrollOptions = require('../Interface/ScrollOptions');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * スクロールを管理するクラス
  *
  * @version 0.9.0

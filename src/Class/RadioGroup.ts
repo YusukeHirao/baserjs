@@ -1,6 +1,11 @@
 import Radio = require('./Radio');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * ラジオボタンのname属性値で紐付いたブループを管理するクラス
  *
  * @since 0.9.0

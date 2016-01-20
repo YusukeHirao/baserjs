@@ -6,6 +6,11 @@ import IRadio = require('../Interface/IRadio');
 import CheckableElementOption = require('../Interface/CheckableElementOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * ラジオボタンの拡張クラス
  *
  * @version 0.9.0

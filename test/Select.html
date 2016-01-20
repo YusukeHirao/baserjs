@@ -65,14 +65,14 @@ test('added class names', function() {
 
 	var target = new baser.Select($target[0]);
 
-	ok(target.$el.parent('span').hasClass('-bc-form-element'), 'class name of wrapper');
-	ok(target.$el.parent('span').hasClass('-bc-wrapper'), 'class name of wrapper');
-	ok(target.$el.parent('span').hasClass('-bc-wrapper--blur'), 'class name of wrapper on blur');
-	ok(target.$el.hasClass('-bc-element'), 'class name of this element');
-	ok(target.$el.hasClass('-bc-form-element'), 'class name of this element');
-	ok(target.$el.hasClass('-bc-form-element--blur'), 'class name of this element on blur');
+	ok($(target.el).parent('span').hasClass('-bc-form-element'), 'class name of wrapper');
+	ok($(target.el).parent('span').hasClass('-bc-wrapper'), 'class name of wrapper');
+	ok($(target.el).parent('span').hasClass('-bc-wrapper--blur'), 'class name of wrapper on blur');
+	ok($(target.el).hasClass('-bc-element'), 'class name of this element');
+	ok($(target.el).hasClass('-bc-form-element'), 'class name of this element');
+	ok($(target.el).hasClass('-bc-form-element--blur'), 'class name of this element on blur');
 
-	target.$el.on('focus', function () {
+	$(target.el).on('focus', function () {
 		var $this = $(this);
 		ok(!$this.parent('span').hasClass('-bc-wrapper--blur'), 'removed check blur class name of wrapper');
 		ok($this.parent('span').hasClass('-bc-wrapper--focus'), 'class name of wrapper on focus');
@@ -80,11 +80,11 @@ test('added class names', function() {
 		ok($this.hasClass('-bc-form-element--focus'), 'class name of this element on focus');
 	});
 
-	target.$el.trigger('focus');
+	$(target.el).trigger('focus');
 
 	// console.log(target);
 	// console.log(target.$wrapper.attr('class'));
-	// console.log(target.$el.attr('class'));
+	// console.log($(target.el).attr('class'));
 	// console.log(target.$label.attr('class'));
 	// console.log(target.$pseudo.attr('class'));
 	// console.log(target.$selected.attr('class'));
@@ -179,14 +179,14 @@ test('disabled - get', function() {
 	var target = new baser.Select($target[0]);
 
 	ok(target.disabled, 'disabled is true');
-	ok(target.$el.hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
+	ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
 
 	// フォーカスできないはず
-	target.$el.on('focus', function () {
+	$(target.el).on('focus', function () {
 		throw new Error('focused');
 	});
 
-	target.$el.trigger('focus');
+	$(target.el).trigger('focus');
 
 });
 
@@ -198,20 +198,20 @@ test('disabled - change', function() {
 	var target = new baser.Select($target[0]);
 
 	ok(target.disabled, 'disabled is true');
-	ok(target.$el.hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
+	ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
 
 	target.setDisabled(false);
 
 	ok(!target.disabled, 'disabled is false after changed');
 
 	// フォーカスできる
-	target.$el.on('focus', function () {
+	$(target.el).on('focus', function () {
 		var $this = $(this);
 		ok(true, 'focus success'); // このOKにたどりつける
 		ok(!$this.hasClass('-bc-form-element--disabled'), 'class name of undisabled this element');
 	});
 
-	target.$el.trigger('focus');
+	$(target.el).trigger('focus');
 
 });
 
@@ -223,20 +223,20 @@ test('disabled - change', function() {
 	var target = new baser.Select($target[0]);
 
 	ok(target.disabled, 'disabled is true');
-	ok(target.$el.hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
+	ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
 
 	target.setDisabled(false);
 
 	ok(!target.disabled, 'disabled is false after changed');
 
 	// フォーカスできる
-	target.$el.on('focus', function () {
+	$(target.el).on('focus', function () {
 		var $this = $(this);
 		ok(true, 'focus success'); // このOKにたどりつける
 		ok(!$this.hasClass('-bc-form-element--disabled'), 'class name of undisabled this element');
 	});
 
-	target.$el.trigger('focus');
+	$(target.el).trigger('focus');
 
 });
 
@@ -250,15 +250,15 @@ test('setValue (invalid value) / change event', function() {
 	var target = new baser.Select($target[0]);
 
 	target.on('change', function (e) {
-		equal(target.$el.val(), settingValue, 'fired baserJS change');
+		equal($(target.el).val(), settingValue, 'fired baserJS change');
 	});
 
 	target.on('change', function (e) {
-		equal(target.$el.val(), settingValue, 'fired jQuery change');
+		equal($(target.el).val(), settingValue, 'fired jQuery change');
 	});
 
 	target.on('change', function (e) {
-		equal(target.$el.val(), settingValue, 'fired DOM change');
+		equal($(target.el).val(), settingValue, 'fired DOM change');
 	});
 
 	target.setValue(settingValue);
@@ -275,15 +275,15 @@ test('setValue / change event', function() {
 	var target = new baser.Select($target[0]);
 
 	target.on('change', function (e) {
-		equal(target.$el.val(), settingValue, 'fired baserJS change');
+		equal($(target.el).val(), settingValue, 'fired baserJS change');
 	});
 
 	target.on('change', function (e) {
-		equal(target.$el.val(), settingValue, 'fired jQuery change');
+		equal($(target.el).val(), settingValue, 'fired jQuery change');
 	});
 
 	target.on('change', function (e) {
-		equal(target.$el.val(), settingValue, 'fired DOM change');
+		equal($(target.el).val(), settingValue, 'fired DOM change');
 	});
 
 	target.setValue(settingValue);

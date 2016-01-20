@@ -6,6 +6,11 @@ import YouTubeOption = require('../Interface/YouTubeOption');
 import YoutubeMuteControllerOptions = require('../Interface/YoutubeMuteControllerOptions');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * YouTube要素
  *
  * TODO: YouTubeのURLパラメータのinterfaceをつくる

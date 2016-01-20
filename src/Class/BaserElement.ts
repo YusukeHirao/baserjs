@@ -13,6 +13,19 @@ const elementizedMap: WeakMap<HTMLElement, Set<Symbol>> = new WeakMap();
 
 type Primitive = string | number | boolean;
 
+interface IBaserElementCreateElementOption {
+	tagName: string;
+	text?: string;
+}
+
+interface IBaserElementCreateElementAttributes {
+	[ attrName: string ]: string | number | boolean;
+}
+
+interface IBaserElementCreateElementStyle {
+	[ styleProperty: string ]: string | number;
+}
+
 /**
  * DOM要素の抽象クラス
  *
@@ -106,6 +119,18 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	protected _elementized: boolean = false;
+
+	/**
+	 *
+	 */
+	public static createElement (options: IBaserElementCreateElementOption, attr?: IBaserElementCreateElementAttributes, style?: IBaserElementCreateElementStyle): HTMLElement {
+		const el: HTMLElement = document.createElement(options.tagName);
+		if (options.text) {
+			const text: Text = document.createTextNode(options.text);
+			el.appendChild(text);
+		}
+		return el;
+	}
 
 	/**
 	 * BEMベースでクラス名文字列を生成する

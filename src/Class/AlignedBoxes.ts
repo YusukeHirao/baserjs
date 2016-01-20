@@ -7,6 +7,11 @@ import AlignedBoxCallback = require('../Interface/AlignedBoxCallback');
 import BreakPointsOption = require('../Interface/BreakPointsOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * 高さ揃えをするボックスを管理するクラス
  *
  * @version 0.9.0
@@ -181,21 +186,26 @@ class AlignedBoxes extends EventDispatcher {
 	/**
 	 * 基準の文字要素を生成する
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 0.11.0
 	 * @since 0.7.0
 	 *
 	 */
 	public static createChar (): void {
-		const $dummyChar: JQuery = $('<del>M</del>').css({
-			display: 'block',
-			visibility: 'hidden',
-			position: 'absolute',
-			padding: 0,
-			top: 0,
-			zIndex: -1,
-		});
+		const dummyCharElement: HTMLElement = BaserElement.createElement(
+			{
+				tagName: 'div',
+				text: 'M'
+			},
+			null,
+			{
+				display: 'block',
+				visibility: 'hidden',
+				position: 'absolute',
+				padding: 0,
+				top: 0,
+				zIndex: -1,
+			}
+		);
 		$dummyChar.appendTo('body');
 		AlignedBoxes.dummyCharElement = $dummyChar[0];
 		AlignedBoxes.currentFontSize = AlignedBoxes.dummyCharElement.offsetHeight;

@@ -3,6 +3,11 @@ import EventHandler = require('./EventHandler');
 import IEventDispatcher = require('../Interface/IEventDispatcher');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * イベントを検知してハンドラを発火させることができるクラス
  *
  * @version 0.9.0

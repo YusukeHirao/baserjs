@@ -3,6 +3,11 @@ import Browser = require('./Browser');
 import BreakPointsOption = require('../Interface/BreakPointsOption');
 
 /**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+declare var $: {};
+
+/**
  * ブレークポイントの変化に応じた処理をする管理することができるクラス
  *
  * @version 0.9.0
