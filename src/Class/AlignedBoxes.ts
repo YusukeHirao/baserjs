@@ -162,7 +162,7 @@ class AlignedBoxes extends EventDispatcher {
 		let columnInfo: BreakPointsOption<number>;
 		if (typeof column === 'number') {
 			columnInfo = {
-				Infinity: column
+				Infinity: column,
 			};
 		} else {
 			columnInfo = column;
@@ -186,12 +186,12 @@ class AlignedBoxes extends EventDispatcher {
 	/**
 	 * 基準の文字要素を生成する
 	 *
-	 * @version 0.11.0
+	 * @version 0.12.0
 	 * @since 0.7.0
 	 *
 	 */
 	public static createChar (): void {
-		const dummyCharElement: HTMLElement = BaserElement.createElement(
+		AlignedBoxes.dummyCharElement = BaserElement.createElement(
 			{
 				tagName: 'div',
 				text: 'M'
@@ -206,8 +206,7 @@ class AlignedBoxes extends EventDispatcher {
 				zIndex: -1,
 			}
 		);
-		$dummyChar.appendTo('body');
-		AlignedBoxes.dummyCharElement = $dummyChar[0];
+		document.body.appendChild(AlignedBoxes.dummyCharElement)
 		AlignedBoxes.currentFontSize = AlignedBoxes.dummyCharElement.offsetHeight;
 	}
 
@@ -272,7 +271,7 @@ class AlignedBoxes extends EventDispatcher {
 	 */
 	public static boot (): void {
 		if (!AlignedBoxes.isBooted) {
-			$(window).on('load', AlignedBoxes.reAlign);
+			window.addEventListener('load', AlignedBoxes.reAlign, false);
 			Browser.browser.on('resizeend', AlignedBoxes.reAlign);
 			AlignedBoxes.isBooted = true;
 			AlignedBoxes.createChar();
@@ -292,7 +291,6 @@ class AlignedBoxes extends EventDispatcher {
 	 */
 	public destroy (): void {
 		this.$el.each( (i: number, elem: HTMLElement): void => {
-			const $this: JQuery = $(elem);
 			const uid: string = $this.data(AlignedBoxes.DATA_KEY_ID);
 			$this.removeData(AlignedBoxes.DATA_KEY_ID);
 			if (uid in AlignedBoxes.groups) {

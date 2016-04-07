@@ -7,6 +7,9 @@ import 'core-js/fn/set';
 import 'core-js/fn/map';
 
 import baser = require('./baser');
-window['baser'] = baser;
+
+/* tslint:disable: */
+window.baser = baser;
+/* tslint:enable: */
 
 import './Class/JQueryAdapter';

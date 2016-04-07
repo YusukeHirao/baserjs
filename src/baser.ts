@@ -1,13 +1,14 @@
 import _ClassNameSeparatorForBEM = require('./Enum/ClassNameSeparatorForBEM');
 import _ElementClassNameCase = require('./Enum/ElementClassNameCase');
 
-/* tslint:disable: variable-name */
+/* tslint:disable: variable-name typedef */
 export var ClassNameSeparatorForBEM = _ClassNameSeparatorForBEM;
 export var ElementClassNameCase = _ElementClassNameCase;
-/* tslint:enable: variable-name */
+/* tslint:enable: variable-name typedef */
 
 import _AlignedBoxes = require('./Class/AlignedBoxes');
 import _AnimationFrames = require('./Class/AnimationFrames');
+import _BackgroundContainer = require('./Class/BackgroundContainer');
 import _BaserElement = require('./Class/BaserElement');
 import _BreakPoints = require('./Class/BreakPoints');
 import _Browser = require('./Class/Browser');
@@ -31,9 +32,10 @@ import _UtilMath = require('./Class/UtilMath');
 import _UtilString = require('./Class/UtilString');
 import _YouTube = require('./Class/YouTube');
 
-/* tslint:disable: variable-name */
+/* tslint:disable: variable-name typedef */
 export var AlignedBoxes = _AlignedBoxes;
 export var AnimationFrames = _AnimationFrames;
+export var BackgroundContainer = _BackgroundContainer;
 export var BaserElement = _BaserElement;
 export var BreakPoints = _BreakPoints;
 export var Browser = _Browser;
@@ -56,4 +58,4 @@ export var UtilArray = _UtilArray;
 export var UtilMath = _UtilMath;
 export var UtilString = _UtilString;
 export var YouTube = _YouTube;
-/* tslint:enable: variable-name */
+/* tslint:enable: variable-name typedef */
