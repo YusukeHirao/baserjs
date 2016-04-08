@@ -1,15 +1,15 @@
-import IElement = require('./IElement');
+import IElement from './IElement';
 
 interface IFormElement extends IElement {
-	label: string;
+	labelText: string;
 	hasFocus: boolean;
 	disabled: boolean;
 	defaultValue: string;
 	isWrappedByLabel: boolean;
-	$label: JQuery;
-	$wrapper: JQuery;
+	label: HTMLLabelElement;
+	wrapper: HTMLSpanElement;
 	setValue (value: string | number | boolean): void;
 	setDisabled (isDisabled: boolean): void;
 }
 
-export = IFormElement;
+export default IFormElement;

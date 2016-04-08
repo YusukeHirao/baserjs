@@ -1,8 +1,6 @@
-import EventDispatcher = require('./EventDispatcher');
-import Locational = require('./Locational');
-import BrowserUserAgent = require('../Interface/BrowserUserAgent');
-
-type LinkElement = HTMLAnchorElement | HTMLAreaElement;
+import EventDispatcher from './EventDispatcher';
+import Locational from './Locational';
+import { BrowserUserAgent } from '../Interface/';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -21,38 +19,9 @@ declare var $: {};
 class Browser extends EventDispatcher {
 
 	/**
-	 * ブラウザ
-	 *
-	 * @version 0.0.10
-	 * @since 0.0.10
 	 *
 	 */
-	public static browser: Browser = new Browser();
-
-	/**
-	 * デバイス・OS・ブラウザの情報
-	 *
-	 * @version 0.4.0
-	 * @since 0.0.1
-	 *
-	 */
-	public static spec: {
-		isTouchable: boolean;
-		ua: BrowserUserAgent;
-	} = {
-		isTouchable: 'ontouchstart' in window,
-		ua: Browser.getUA(),
-	};
-
-
-	/**
-	 * 参照するAPIのスキーム
-	 *
-	 * @version 0.9.1
-	 * @since 0.9.1
-	 *
-	 */
-	public static apiScheme: string = /https?:/i.test(location.protocol) ? '' : 'http:';
+	private static _browser: Browser;
 
 	/**
 	 * リサイズイベントからリサイズエンドイベントまでのインターバル
@@ -91,67 +60,91 @@ class Browser extends EventDispatcher {
 	public isScroll: boolean = false;
 
 	/**
+	 *
+	 */
+	private _resizeEndTimer: number;
+
+	/**
+	 *
+	 */
+	private _scrollEndTimer: number;
+
+	/**
 	 * コンストラクタ
 	 *
-	 * use jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 0.12.0
 	 * @since 0.0.2
 	 *
 	 */
 	constructor () {
-
 		super();
-
-		const $window: JQuery = $(window);
-
 		// リサイズイベント
-		let resizeEndTimer: number;
-		$window.on('resize', (e: JQueryEventObject): void => {
-			if (!this.isResize) {
-				this.trigger('resizestart');
-			}
-			this.isResize = true;
-			this.trigger('resize');
-			window.clearTimeout(resizeEndTimer);
-			resizeEndTimer = window.setTimeout(
-				(): void => {
-					this.isResize = false;
-					this.trigger('resize');
-					this.trigger('resizeend');
-				},
-				this.resizeEndInterval
-			);
-		});
-
+		window.addEventListener('resize', this._onResize.bind(this), false);
 		// スクロールイベント
-		let scrollEndTimer: number;
-		$window.on('scroll', (e: JQueryEventObject): void => {
-			if (!this.isScroll) {
-				this.trigger('scrollstart');
-			}
-			this.isScroll = true;
-			this.trigger('scroll');
-			window.clearTimeout(scrollEndTimer);
-			scrollEndTimer = window.setTimeout(
-				(): void => {
-					this.isScroll = false;
-					this.trigger('scroll');
-					this.trigger('scrollend');
-				},
-				this.resizeEndInterval
-			);
-		});
+		window.addEventListener('scroll', this._onScroll.bind(this), false);
+	}
+
+	public static getBrowser (): Browser {
+		return Browser._browser || new Browser();
+	}
+
+	public get width (): number {
+		return window.document.documentElement.clientWidth;
+	}
+
+	public get height (): number {
+		return window.document.documentElement.clientWidth;
+	}
+
+	public set scrollTop (y: number) {
+		window.scrollTo(this.scrollLeft, y);
+	}
+
+	public get scrollTop (): number {
+		return window.pageYOffset;
+	}
+
+	public set scrollLeft (x: number) {
+		window.scrollTo(x, this.scrollTop);
+	}
+
+	public get scrollLeft (): number {
+		return window.pageXOffset;
+	}
+
+	/**
+	 * デバイス・OS・ブラウザの情報
+	 *
+	 * @version 0.12.0
+	 * @since 0.12.0
+	 *
+	 */
+	public get spec (): { isTouchable: boolean; ua: BrowserUserAgent; } {
+		return {
+			isTouchable: 'ontouchstart' in window,
+			ua: this._getUA(),
+		};
+	}
+
+	/**
+	 * 参照するAPIのスキーム
+	 *
+	 * @version 0.12.0
+	 * @since 0.12.0
+	 *
+	 */
+	public get availableScheme (): '//' | 'http://' {
+		return /https?:/i.test(location.protocol) ? '//' : 'http://';
 	}
 
 	/**
 	 * ページ遷移する
 	 *
-	 * @version 0.9.0
-	 * @since 0.1.0
+	 * @version 0.12.0
+	 * @since 0.12.0
 	 *
 	 */
-	public static jumpTo (path: string | Locational, isBlank: boolean = false): void {
+	public jumpTo (path: string | Locational, isBlank: boolean = false): void {
 		let href: string;
 		if (typeof path === 'string') {
 			href = path;
@@ -166,13 +159,73 @@ class Browser extends EventDispatcher {
 	}
 
 	/**
-	 * ユーザーエージェント情報を取得する
+	 * 現在のURLのパラメータをリンク先へ引き継がせる
 	 *
-	 * @version 0.9.0
-	 * @since 0.0.1
+	 * @version 0.12.0
+	 * @since 0.12.0
 	 *
 	 */
-	public static getUA (): BrowserUserAgent {
+	public inheritParams (targetParam: string): void {
+		type LinkElement = HTMLAnchorElement | HTMLAreaElement;
+		const target: NodeListOf<Element> = document.querySelectorAll('a[href], area[href]');
+		const thisLocation: Locational = new Locational(location);
+		if (!(targetParam in thisLocation.params)) {
+			return;
+		}
+		const query: string = targetParam;
+		const value: string | string[] = thisLocation.params[targetParam];
+		for (const elem of target) {
+			const targetElem: LinkElement = <LinkElement> elem;
+			const loc: Locational = new Locational(targetElem);
+			if (thisLocation.host === loc.host) {
+				loc.addParam(query, value);
+				targetElem.href = loc.href;
+			}
+		}
+	}
+
+	private _onResize (): void {
+		if (!this.isResize) {
+			this.trigger('resizestart');
+		}
+		this.isResize = true;
+		this.trigger('resize');
+		window.clearTimeout(this._resizeEndTimer);
+		this._resizeEndTimer = window.setTimeout(
+			(): void => {
+				this.isResize = false;
+				this.trigger('resize');
+				this.trigger('resizeend');
+			},
+			this.resizeEndInterval
+		);
+	}
+
+	private _onScroll (): void {
+		if (!this.isScroll) {
+			this.trigger('scrollstart');
+		}
+		this.isScroll = true;
+		this.trigger('scroll');
+		window.clearTimeout(this._scrollEndTimer);
+		this._scrollEndTimer = window.setTimeout(
+			(): void => {
+				this.isScroll = false;
+				this.trigger('scroll');
+				this.trigger('scrollend');
+			},
+			this.resizeEndInterval
+		);
+	}
+
+	/**
+	 * ユーザーエージェント情報を取得する
+	 *
+	 * @version 0.12.0
+	 * @since 0.12.0
+	 *
+	 */
+	private _getUA (): BrowserUserAgent {
 		const ua: string = navigator.userAgent;
 		const bua: BrowserUserAgent = {
 			iOS: false,
@@ -196,33 +249,6 @@ class Browser extends EventDispatcher {
 		return bua;
 	}
 
-	/**
-	 * 現在のURLのパラメータをリンク先へ引き継がせる
-	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
-	 * @since 0.7.0
-	 *
-	 */
-	public static inheritParams (targetParam: string): void {
-		const $target: JQuery = $('a, area').filter('[href]');
-		const thisLocation: Locational = new Locational(location);
-		if (!(targetParam in thisLocation.params)) {
-			return;
-		}
-		const query: string = targetParam;
-		const value: string | string[] = thisLocation.params[targetParam];
-		$target.each( (i: number, elem: Element): any => {
-			const targetElem: LinkElement = <LinkElement> elem;
-			const loc: Locational = new Locational(targetElem);
-			if (thisLocation.host === loc.host) {
-				loc.addParam(query, value);
-				targetElem.href = loc.href;
-			}
-		});
-	}
-
 }
 
-export = Browser;
+export default Browser;

@@ -1,4 +1,4 @@
-import IEventDispatcher = require('./IEventDispatcher');
+import IEventDispatcher from './IEventDispatcher';
 
 interface IElement extends IEventDispatcher {
 	id: string;
@@ -8,4 +8,4 @@ interface IElement extends IEventDispatcher {
 	getBoolAttr (attrName: string): boolean;
 }
 
-export = IElement;
+export default IElement;

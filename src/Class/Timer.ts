@@ -1,15 +1,10 @@
-import DispatchEvent = require('./DispatchEvent');
-import EventDispatcher = require('./EventDispatcher');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import DispatchEvent from './DispatchEvent';
+import EventDispatcher from './EventDispatcher';
 
 /**
  * 時間管理クラス
  *
- * @version 0.9.0
+ * @version 1.0.0 // TODO: requestAnimationFrameベースにする
  * @since 0.0.1
  *
  */
@@ -210,4 +205,4 @@ class Timer extends EventDispatcher {
 
 }
 
-export = Timer;
+export default Timer;

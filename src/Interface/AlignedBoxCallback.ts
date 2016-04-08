@@ -1,4 +1,4 @@
-import AlignedBoxes = require('../Class/AlignedBoxes');
+import AlignedBoxes from '../Class/AlignedBoxes';
 
 /**
  * ボックスの高さ揃えるときのコールバック
@@ -11,4 +11,4 @@ interface IAlignedBoxCallback {
 	(maxHeight: number, currentHeight: number, boxes: AlignedBoxes): boolean | void;
 }
 
-export = IAlignedBoxCallback;
+export default IAlignedBoxCallback;

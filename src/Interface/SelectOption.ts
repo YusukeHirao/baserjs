@@ -1,4 +1,4 @@
-import FormElementOption = require('./FormElementOption');
+import FormElementOption from './FormElementOption';
 
 /**
  * Selectクラスのオプションハッシュのインターフェイス
@@ -19,4 +19,4 @@ interface SelectOption extends FormElementOption {
 
 }
 
-export = SelectOption;
+export default SelectOption;

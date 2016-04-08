@@ -8,7 +8,7 @@
 interface FormElementOption {
 
 	/**
-	 * 任意で指定するラベル要素
+	 * 任意で指定するラベルの要素名
 	 *
 	 * @since 0.0.1
 	 *
@@ -42,4 +42,4 @@ interface FormElementOption {
 	autoLabeling?: boolean;
 }
 
-export = FormElementOption;
+export default FormElementOption;

@@ -64,4 +64,4 @@ interface GoogleMapsOption {
 
 }
 
-export = GoogleMapsOption;
+export default GoogleMapsOption;

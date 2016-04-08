@@ -1,11 +1,6 @@
-import DispatchEvent = require('./DispatchEvent');
-import EventHandler = require('./EventHandler');
-import IEventDispatcher = require('../Interface/IEventDispatcher');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import DispatchEvent from './DispatchEvent';
+import EventHandler from './EventHandler';
+import IEventDispatcher from '../Interface/IEventDispatcher';
 
 /**
  * イベントを検知してハンドラを発火させることができるクラス
@@ -149,4 +144,4 @@ class EventDispatcher implements IEventDispatcher {
 	}
 }
 
-export = EventDispatcher;
+export default EventDispatcher;

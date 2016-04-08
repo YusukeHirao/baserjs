@@ -1,5 +1,7 @@
-import Timer = require('./Timer');
-import ScrollOptions = require('../Interface/ScrollOptions');
+import DispatchEvent from './DispatchEvent';
+import Browser from './Browser';
+import Timer from './Timer';
+import { ScrollOptions } from '../Interface/';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -30,24 +32,24 @@ class Scroll {
 	/**
 	 * 対象の要素もしくは位置にスクロールを移動させる
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.0.8
-	 * @param selector 対象の要素のセレクタ・HTMLオブジェクト・jQueryオブジェクトもしくはスクロール位置
+	 * @param selector 対象の要素のセレクタ・HTMLオブジェクト・もしくはスクロール位置
 	 * @param options オプション
 	 * @return インスタンス自信
 	 *
 	 */
-	public to (selector: string | HTMLElement | JQuery | number, options?: ScrollOptions): Scroll {
+	public to (selector: string | HTMLElement | number, options?: ScrollOptions): Scroll {
 
 		this.options = options || {};
 		let offset: number = this.options.offset || 0;
 
 		if (this.options.wheelCancel) {
-			$(document).on('wheel', (): void => {
+			document.addEventListener('wheel', (): void => {
 				if (this.isScroll) {
 					this._finish();
-					if ($.isFunction(this.options.onScrollCancel)) {
-						this.options.onScrollCancel.call(this, new $.Event('scrollcancel'));
+					if (this.options.onScrollCancel) {
+						this.options.onScrollCancel.call(this, new DispatchEvent('scrollcancel'));
 					}
 				}
 				return;
@@ -60,11 +62,16 @@ class Scroll {
 			this.targetX = 0;
 			this.targetY = offset;
 		} else if (selector) {
-			const $target: JQuery = $(selector);
-			if (!$target.length) {
+			let target: HTMLElement;
+			if (typeof selector === 'string') {
+				target = document.querySelector(selector) as HTMLElement;
+			} else {
+				target = selector;
+			}
+			if (!target) {
 				return this;
 			}
-			let elem: HTMLElement = $target[0];
+			let elem: HTMLElement = target[0];
 			// スクロール先座標をセットする
 			let x: number = 0;
 			let y: number = 0;
@@ -83,11 +90,11 @@ class Scroll {
 			this.targetX = Math.min(x, maxScrollX) + offset;
 			this.targetY = Math.min(y, maxScrollY) + offset;
 		} else {
-			const $target: JQuery = $(window.location.hash);
-			if ($target.length) {
+			const target: HTMLElement = document.getElementById(location.hash.replace('#', ''));
+			if (target) {
 				Timer.wait(Scroll.delayWhenURLHashTarget, (): void => {
 					window.scrollTo(0, 0);
-					this.to($target, {
+					this.to(target, {
 						offset: offset
 					});
 					return;
@@ -98,8 +105,8 @@ class Scroll {
 		// スクロール停止中ならスクロール開始
 		if (!this.isScroll) {
 			this.isScroll = true;
-			if ($.isFunction(this.options.onScrollStart)) {
-				this.options.onScrollStart.call(this, new $.Event('scrollstart'));
+			if (this.options.onScrollStart) {
+				this.options.onScrollStart.call(this, new DispatchEvent('scrollstart'));
 			}
 			this._progress();
 		}
@@ -109,21 +116,22 @@ class Scroll {
 	/**
 	 * スクロール
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.0.8
 	 *
 	 */
 	private _progress (): void {
-		const currentX: number = this._getX();
-		const currentY: number = this._getY();
+		const browser: Browser = Browser.getBrowser();
+		const currentX: number = browser.scrollLeft;
+		const currentY: number = browser.scrollTop;
 		const vx: number = (this.targetX - currentX) / Scroll.speed;
 		const vy: number = (this.targetY - currentY) / Scroll.speed;
 		if ((Math.abs(vx) < 1 && Math.abs(vy) < 1) || (this.prevX === currentX && this.prevY === currentY)) {
 			// 目標座標付近に到達していたら終了
 			window.scrollTo(this.targetX, this.targetY);
 			this._finish();
-			if ($.isFunction(this.options.onScrollEnd)) {
-				this.options.onScrollEnd.call(this, new $.Event('scrollend'));
+			if (this.options.onScrollEnd) {
+				this.options.onScrollEnd.call(this, new DispatchEvent('scrollend'));
 			}
 		} else {
 			const nextX: number = Math.floor(currentX + vx);
@@ -132,35 +140,11 @@ class Scroll {
 			window.scrollTo(nextX, nextY);
 			this.prevX = currentX;
 			this.prevY = currentY;
-			if ($.isFunction(this.options.onScrollProgress)) {
-				this.options.onScrollProgress.call(this, new $.Event('scrollprogress'));
+			if (this.options.onScrollProgress) {
+				this.options.onScrollProgress.call(this, new DispatchEvent('scrollprogress'));
 			}
 			this.timer.wait(Scroll.interval, this._progress, this);
 		}
-	}
-
-	/**
-	 * x位置の取得
-	 *
-	 * @version 0.9.0
-	 * @since 0.0.8
-	 * @return x位置
-	 *
-	 */
-	private _getX (): number {
-		return (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement.scrollLeft || document.body.scrollLeft);
-	}
-
-	/**
-	 * y位置の取得
-	 *
-	 * @version 0.9.0
-	 * @since 0.0.8
-	 * @return y位置
-	 *
-	 */
-	private _getY (): number {
-		return (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement.scrollTop || document.body.scrollTop);
 	}
 
 	/**
@@ -179,4 +163,4 @@ class Scroll {
 
 }
 
-export = Scroll;
+export default Scroll;

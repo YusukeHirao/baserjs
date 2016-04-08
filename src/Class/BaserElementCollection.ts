@@ -1,9 +1,4 @@
-import BaserElement = require('./BaserElement');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import BaserElement from './BaserElement';
 
 class BaserElementCollection {
 
@@ -29,4 +24,4 @@ class BaserElementCollection {
 
 }
 
-export = BaserElementCollection;
+export default BaserElementCollection;

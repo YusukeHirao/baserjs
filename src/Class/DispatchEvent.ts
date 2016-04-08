@@ -1,9 +1,4 @@
 /**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
-
-/**
  * イベントオブジェクトのクラス
  *
  * @version 0.9.0
@@ -99,4 +94,4 @@ class DispatchEvent {
 
 }
 
-export = DispatchEvent;
+export default DispatchEvent;

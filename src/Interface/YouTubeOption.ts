@@ -154,4 +154,4 @@ interface YouTubeOption {
 
 }
 
-export = YouTubeOption;
+export default YouTubeOption;

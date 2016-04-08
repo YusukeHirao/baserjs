@@ -13,4 +13,4 @@ enum ClassNameSeparatorForBEM {
 	CAMEL_CASE
 }
 
-export = ClassNameSeparatorForBEM;
+export default ClassNameSeparatorForBEM;

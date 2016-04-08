@@ -1,10 +1,4 @@
-import EventDispatcher = require('./EventDispatcher');
-import Timer = require('./Timer');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import EventDispatcher from './EventDispatcher';
 
 /**
  * 非同期逐次処理クラス
@@ -49,7 +43,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _promise: JQueryPromise<any> = null;
+	private _promise: Promise<any> = null;
 
 	/**
 	 * シーケンスのリゾルバ
@@ -58,7 +52,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _resolver: JQueryDeferred<any> = null;
+	private _resolver: Promise<any> = null;
 
 	/**
 	 * 遅延時間
@@ -67,16 +61,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _waitingTime: number = 0;
-
-	/**
-	 * 遅延用タイマー
-	 *
-	 * @version 0.9.0
-	 * @since 0.4.0
-	 *
-	 */
-	private _waitTimer: Timer = new Timer();
+	private _waitingTime: number;
 
 	/**
 	 * 停止状態
@@ -131,25 +116,25 @@ class Sequence extends EventDispatcher {
 		this._setPromiseFrom(result);
 
 		// プロミスの結果から次のタスクを実行
-		this._promise.done( (doneResult: any): void => {
-			this._reset();
-			this._currentTaskIndex += 1;
-			this._iterator += 1;
-			if (!this._isStop && (this._currentTaskIndex < this._tasks.length || isLoop)) {
-				if (this._currentTaskIndex >= this._tasks.length && isLoop) {
-					this._currentTaskIndex = 0;
-				}
-				this.act(doneResult, isLoop);
-			} else {
-				// TODO: 引数の設計とテスト書く
-				this.trigger('stop');
-			}
-		}).fail( (): void => {
-			this._reset();
-			// TODO: 引数の設計とテスト書く
-			this.trigger('exit');
-			this.trigger('stop');
-		});
+		// this._promise.done( (doneResult: any): void => {
+		// 	this._reset();
+		// 	this._currentTaskIndex += 1;
+		// 	this._iterator += 1;
+		// 	if (!this._isStop && (this._currentTaskIndex < this._tasks.length || isLoop)) {
+		// 		if (this._currentTaskIndex >= this._tasks.length && isLoop) {
+		// 			this._currentTaskIndex = 0;
+		// 		}
+		// 		this.act(doneResult, isLoop);
+		// 	} else {
+		// 		// TODO: 引数の設計とテスト書く
+		// 		this.trigger('stop');
+		// 	}
+		// }).fail( (): void => {
+		// 	this._reset();
+		// 	// TODO: 引数の設計とテスト書く
+		// 	this.trigger('exit');
+		// 	this.trigger('stop');
+		// });
 		return this;
 	}
 
@@ -174,7 +159,7 @@ class Sequence extends EventDispatcher {
 	public exit (): Sequence {
 		this._isStop = true;
 		if (this._resolver) {
-			this._resolver.reject();
+			// this._resolver.reject();
 		}
 		return this;
 	}
@@ -211,23 +196,23 @@ class Sequence extends EventDispatcher {
 	 *
 	 */
 	private _setPromiseFrom (value: any): void {
-		if (this._isJQueryPromiseLikeObject(value)) {
-			// 値がプロミスであればそのままそれを設定
-			this._promise = value.promise();
-		} else {
-			// 値がプロミスでない場合は
-			// プロミスを生成してリゾルバへ一時的に設定
-			this._resolver = $.Deferred<any>();
-			this._promise = this._resolver.promise();
-			// タイマーを使い遅延実行後リゾルバからプロミスを解決
-			this._waitTimer.wait(this._waitingTime, (): void => {
-				this._resolver.resolve(value);
-			});
-			// TODO: Timerクラス側が未実装
-			this._waitTimer.on('cencel', () => {
-				this._resolver.reject(value);
-			});
-		}
+		// if (this._isJQueryPromiseLikeObject(value)) {
+		// 	// 値がプロミスであればそのままそれを設定
+		// 	this._promise = value.promise();
+		// } else {
+		// 	// 値がプロミスでない場合は
+		// 	// プロミスを生成してリゾルバへ一時的に設定
+		// 	this._resolver = $.Deferred<any>();
+		// 	this._promise = this._resolver.promise();
+		// 	// タイマーを使い遅延実行後リゾルバからプロミスを解決
+		// 	this._waitTimer.wait(this._waitingTime, (): void => {
+		// 		this._resolver.resolve(value);
+		// 	});
+		// 	// TODO: Timerクラス側が未実装
+		// 	this._waitTimer.on('cencel', () => {
+		// 		this._resolver.reject(value);
+		// 	});
+		// }
 	}
 
 	/**
@@ -238,45 +223,10 @@ class Sequence extends EventDispatcher {
 	 *
 	 */
 	private _reset (): void {
-		this._waitTimer.stop();
+		// this._waitTimer.stop();
 		this._promise = null;
 		this._resolver = null;
 		this._waitingTime = 0;
-	}
-
-	/**
-	 * jQuery Promiseに近いオブジェクト化どうかを判定する
-	 *
-	 * @version 0.9.0
-	 * @since 0.4.0
-	 * @param object 対象のオブジェクト
-	 * @return 判定結果
-	 *
-	 */
-	private _isJQueryPromiseLikeObject (object: any): boolean {
-		// 以下列挙したプロパティのみをメンバにもち、かつ全て関数オブジェクトであること
-		const PROPS: string[] = [
-			'always',
-			'done',
-			'fail',
-			'pipe',
-			'progress',
-			'promise',
-			'state',
-			'then',
-		];
-		if (object instanceof jQuery) {
-			return !!object.promise;
-		} else {
-			object = Object(object);
-			while (PROPS.length) {
-				const propsName: string = PROPS.shift();
-				if (!(propsName in object && $.isFunction(object[propsName]))) {
-					return false;
-				}
-			}
-			return true;
-		}
 	}
 
 }
@@ -338,4 +288,4 @@ class Task {
 
 }
 
-export = Sequence;
+export default Sequence;

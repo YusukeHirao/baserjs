@@ -6,4 +6,4 @@ interface BackgroundContainerOption {
 	outer?: boolean;
 }
 
-export = BackgroundContainerOption;
+export default BackgroundContainerOption;

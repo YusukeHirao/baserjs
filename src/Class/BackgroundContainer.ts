@@ -1,8 +1,7 @@
-import UtilMath = require('./UtilMath');
-import Browser = require('./Browser');
-import BaserElement = require('./BaserElement');
-import IDimension = require('../Interface/IDimension');
-import BackgroundContainerOption = require('../Interface/BackgroundContainerOption');
+import UtilMath from './UtilMath';
+import Browser from './Browser';
+import BaserElement from './BaserElement';
+import { BackgroundContainerOption, Dimension } from '../Interface/';
 
 /**
  * ラジオボタンとチェックボックスの抽象クラス
@@ -47,46 +46,14 @@ class BackgroundContainer extends BaserElement {
 	/**
 	 * 背景となる対象の要素
 	 *
-	 * @since 0.11.0
+	 * @since 1.0.0
 	 */
-	private _$bgElement: JQuery;
-
-	/**
-	 * 背景となる要素の幅
-	 *
-	 * @since 0.11.0
-	 */
-	private _bgWidth: number;
-
-	/**
-	 * 背景となる要素の高さ
-	 *
-	 * @since 0.11.0
-	 */
-	private _bgHeight: number;
-
-	/**
-	 * 背景となる要素の最終的なスタイル
-	 *
-	 * @since 0.11.0
-	 */
-	private _bgStyle: {
-		width: number;
-		height: number;
-		maxWidth: number | string;
-		minWidth: number | string;
-		maxHeight: number | string;
-		minHeight: number | string;
-		top: number;
-		left: number;
-	};
+	private _bgElements: HTMLElement[];
 
 	/**
 	 * コンストラクタ
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.11.0
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -101,74 +68,96 @@ class BackgroundContainer extends BaserElement {
 			return;
 		}
 
-		// IE6・7は反映させない
-		if (!el.querySelector) {
-			return;
-		}
+		this.addClass(BackgroundContainer.className);
 
-		this.$el.addClass(BackgroundContainer.className);
-		this.$el.data(BackgroundContainer.className, this);
 
 		this._config = $.extend({}, BackgroundContainer.defaultOption, options);
 
-		this._$bgElement = this.$el.find(this._config.child);
-
-		this._bgWidth = +(this.$el.data('width') || this._$bgElement.data('width') || this._$bgElement.attr('width') || this._$bgElement.width()) || 400;
-		this._bgHeight = +(this.$el.data('height') || this._$bgElement.data('height') || this._$bgElement.attr('height') || this._$bgElement.height()) || 300;
-
-		const currentCSSPosition: string = this.$el.css('position');
-		if (currentCSSPosition === 'static' || currentCSSPosition === '' || currentCSSPosition == null) {
-			this.$el.css('position', 'relative');
+		for (const elem of this.el.querySelectorAll(this._config.child) as NodeListOf<HTMLElement>) {
+			this._bgElements.push(elem);
 		}
 
-		this._$bgElement.css({
-			position: 'absolute',
-		});
-
-		this._bgStyle = {
-			width: 0,
-			height: 0,
-			top: 0,
-			left: 0,
-			maxWidth: 'none',
-			minWidth: 0,
-			maxHeight: 'none',
-			minHeight: 0,
-		};
+		const currentCSSPosition: string = this.el.style.position;
+		if (currentCSSPosition === 'static' || currentCSSPosition === '' || currentCSSPosition == null) {
+			this.el.style.position = 'relative';
+		}
 
 		// 初期計算
 		this.calc();
 
-		Browser.browser.on('resizeend', this.calc.bind(this));
+		Browser.getBrowser().on('resizeend', this.calc.bind(this));
 
 	}
 
 	/**
 	 * 計算
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.11.0
 	 *
 	 */
 	public calc (): void {
-		const containerWidth: number = this._config.outer ? this.$el.outerWidth() : this.$el.width();
-		const containerHeight: number = this._config.outer ? this.$el.outerHeight() : this.$el.height();
-		const { width, height, top, left }: IDimension = UtilMath.stretchDimension(
-			containerWidth,
-			containerHeight,
-			this._bgWidth,
-			this._bgHeight,
-			this._config.size,
-			this._config.align,
-			this._config.valign
-		);
-		this._bgStyle.width = width;
-		this._bgStyle.height = height;
-		this._bgStyle.top = top;
-		this._bgStyle.left = left;
-		this._$bgElement.css(this._bgStyle);
+		const containerWidth: number = this._config.outer ? this.el.offsetWidth : this.el.clientWidth;
+		const containerHeight: number = this._config.outer ? this.el.offsetHeight : this.el.clientHeight;
+		for (const el of this._bgElements) {
+			const { width, height, top, left }: Dimension = UtilMath.stretchDimension(
+				containerWidth,
+				containerHeight,
+				el.offsetWidth,
+				el.offsetHeight,
+				this._config.size,
+				this._config.align,
+				this._config.valign
+			);
+			const bgStyle: {
+				position: 'absolute';
+				width: number;
+				height: number;
+				maxWidth: number | string;
+				minWidth: number | string;
+				maxHeight: number | string;
+				minHeight: number | string;
+				top: number;
+				left: number;
+			} = {
+				position: 'absolute',
+				width: 0,
+				height: 0,
+				top: 0,
+				left: 0,
+				maxWidth: 'none',
+				minWidth: 0,
+				maxHeight: 'none',
+				minHeight: 0,
+			};
+			bgStyle.width = width;
+			bgStyle.height = height;
+			bgStyle.top = top;
+			bgStyle.left = left;
+			BaserElement.css(el, bgStyle);
+		}
+	}
+
+	/**
+	 * 既にbaserJSのエレメント化しているかどうか確認する
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 */
+	protected _isElementized (): boolean {
+		return this.__isElementized(BackgroundContainer);
+	}
+
+	/**
+	 * baserJSのエレメント化したフラグを登録する
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 */
+	protected _elementize (): void {
+		this.__elementize(BackgroundContainer);
 	}
 
 }
 
-export = BackgroundContainer;
+export default BackgroundContainer;

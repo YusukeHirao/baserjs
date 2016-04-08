@@ -1,23 +1,14 @@
-import UtilMath = require('./UtilMath');
-import Timer = require('./Timer');
-import Browser = require('./Browser');
-import BaserElement = require('./BaserElement');
-import AlignedBoxes = require('./AlignedBoxes');
-import BackgroundContainer = require('./BackgroundContainer');
-import Checkbox = require('./Checkbox');
-import Radio = require('./Radio');
-import Select = require('./Select');
-import Scroll = require('./Scroll');
-import GoogleMaps = require('./GoogleMaps');
-import YouTube = require('./YouTube');
-import BreakPointsOption = require('../Interface/BreakPointsOption');
-import BackgroundContainerOption = require('../Interface/BackgroundContainerOption');
-import AlignedBoxCallback = require('../Interface/AlignedBoxCallback');
-import CheckableElementOption = require('../Interface/CheckableElementOption');
-import SelectOption = require('../Interface/SelectOption');
-import ScrollOptions = require('../Interface/ScrollOptions');
-import GoogleMapsOption = require('../Interface/GoogleMapsOption');
-import YouTubeOption = require('../Interface/YouTubeOption');
+import UtilMath from './UtilMath';
+import Timer from './Timer';
+import Browser from './Browser';
+import BaserElement from './BaserElement';
+import AlignedBoxes from './AlignedBoxes';
+import BackgroundContainer from './BackgroundContainer';
+import Select from './Select';
+import Scroll from './Scroll';
+import GoogleMaps from './GoogleMaps';
+import YouTube from './YouTube';
+import { BreakPointsOption, BackgroundContainerOption, AlignedBoxCallback, SelectOption, ScrollOptions, GoogleMapsOption, YouTubeOption } from '../Interface/';
 
 class JQueryAdapter {
 
@@ -35,7 +26,7 @@ class JQueryAdapter {
 	 *
 	 * 基準も縦横のセンター・上下・左右に指定可能
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.0.9
 	 * @param {Object} options オプション
 	 *
@@ -84,7 +75,7 @@ class JQueryAdapter {
 			const keyword: string = columnOrKeyword;
 			switch (keyword) {
 				case 'destroy': {
-					const boxes: AlignedBoxes = <AlignedBoxes> self.data(AlignedBoxes.DATA_KEY);
+					const boxes: AlignedBoxes = <AlignedBoxes> self.data(/* TODO */);
 					boxes.destroy();
 				}
 				break;
@@ -102,13 +93,13 @@ class JQueryAdapter {
 					self.each(function () {
 						const $split: JQuery = $(this).find(detailTarget);
 						/* tslint:disable */
-						new AlignedBoxes($split, column, callback);
+						new AlignedBoxes($split[0], column, callback);
 						/* tslint:enable */
 					});
 				}
 			} else {
 				/* tslint:disable */
-				new AlignedBoxes(self, column, callback);
+				new AlignedBoxes(self[0], column, callback);
 				/* tslint:enable */
 			}
 		}
@@ -117,7 +108,7 @@ class JQueryAdapter {
 
 	}
 
-	// @version 0.9.0
+	// @version 1.0.0
 	// @since 0.1.0
 	public bcBoxLink (): JQuery {
 		return $(self).on('click', function (e: JQueryEventObject): void {
@@ -126,60 +117,8 @@ class JQueryAdapter {
 			const href: string = $link.prop('href');
 			if ($link.length && href) {
 				const isBlank: boolean = $link.prop('target') === '_blank';
-				Browser.jumpTo(href, isBlank);
+				Browser.getBrowser().jumpTo(href, isBlank);
 				e.preventDefault();
-			}
-		});
-	}
-
-	/**
-	 * WAI-ARIAに対応した装飾可能な汎用要素でラップしたチェックボックスに変更する
-	 *
-	 * @version 0.9.0
-	 * @since 0.0.1
-	 *
-	 * * * *
-	 *
-	 * ## Sample
-	 *
-	 * comming soon...
-	 *
-	 */
-	public bcCheckbox (options: CheckableElementOption): JQuery {
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLInputElement): void => {
-			if (elem.nodeName === 'INPUT') {
-				/* tslint:disable */
-				new Checkbox(elem, options);
-				/* tslint:enable */
-			} else if ('console' in window) {
-				console.warn('TypeError: A Node is not HTMLInputElement');
-			}
-		});
-	}
-
-	/**
-	 * WAI-ARIAに対応した装飾可能な汎用要素でラップしたラジオボタンに変更する
-	 *
-	 * @version 0.9.0
-	 * @since 0.0.1
-	 *
-	 * * * *
-	 *
-	 * ## Sample
-	 *
-	 * comming soon...
-	 *
-	 */
-	public bcRadio (options: CheckableElementOption): JQuery {
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLInputElement): void => {
-			if (elem.nodeName === 'INPUT') {
-				/* tslint:disable */
-				new Radio(elem, options);
-				/* tslint:enable */
-			} else if ('console' in window) {
-				console.warn('TypeError: A Node is not HTMLInputElement');
 			}
 		});
 	}
@@ -205,7 +144,7 @@ class JQueryAdapter {
 				switch (options) {
 					case 'update': {
 						const select: Select = <Select> $elem.data('bc-element');
-						select.update();
+						// select.update();
 					}
 					break;
 					default: {
@@ -373,8 +312,8 @@ class JQueryAdapter {
 				// セレクタとして要素が存在する場合はその要素に移動
 				// 「/」で始まるなどセレクターとして不正な場合、例外を投げることがあるので無視する
 				try {
-					const target: JQuery = $(href);
-					if (target.length) {
+					const target: HTMLElement = document.querySelector(href) as HTMLElement;
+					if (target) {
 						scroll.to(target, options);
 						e.preventDefault();
 						return;
@@ -426,73 +365,20 @@ class JQueryAdapter {
 
 			for (let i: number = 0; i < columnSize; i++) {
 				const sizeByColumn: number = splited[i];
-				const $col: JQuery = $('<ul></ul>');
-				BaserElement.addClassTo($col, CLASS_NAME);
-				BaserElement.addClassTo($col, CLASS_NAME, '', CLASS_NAME_NTH + columnSize);
-				$col.appendTo($container);
+				const col: HTMLElement = document.createElement('ul');
+				BaserElement.addClass(col, CLASS_NAME);
+				BaserElement.addClass(col, CLASS_NAME, '', CLASS_NAME_NTH + columnSize);
+				col.appendChild(elem);
 				for (let j: number = 0; j < sizeByColumn; j++) {
-					const $item: JQuery = $(itemArray.shift());
-					$item.appendTo($col);
-					$item.data(config.dataKey, i);
-					BaserElement.addClassTo($item, CLASS_NAME, CLASS_NAME_ITEM);
-					BaserElement.addClassTo($item, CLASS_NAME, CLASS_NAME_ITEM, CLASS_NAME_NTH + i);
+					const item: HTMLElement = itemArray.shift();
+					col.appendChild(item);
+					// TODO: item.data(config.dataKey, i);
+					BaserElement.addClass(item, CLASS_NAME, CLASS_NAME_ITEM);
+					BaserElement.addClass(item, CLASS_NAME, CLASS_NAME_ITEM, CLASS_NAME_NTH + i);
 				}
 			}
 
 			$list.remove();
-
-		});
-		return self;
-	}
-
-	/**
-	 * マウスオーバー時に一瞬透明になるエフェクトをかける
-	 *
-	 * @version 0.0.14
-	 * @since 0.0.14
-	 *
-	 */
-	public bcWink (options: any): JQuery {
-		const self: JQuery = $(this);
-		const config: any = $.extend(
-			{
-				close: 50,
-				open: 200,
-				opacity: 0.4,
-				target: null,
-				stopOnTouch: true,
-			},
-			options
-		);
-		self.each( (i: number, elem: HTMLElement): void => {
-
-			const $this: JQuery = $(elem);
-
-			let $target: JQuery;
-			if (config.target) {
-				$target = $this.find(config.target);
-			} else {
-				$target = $this;
-			}
-
-			$this.on('mouseenter', (e: JQueryEventObject): boolean => {
-				if (config.stopOnTouch && $this.data('-bc-is-touchstarted')) {
-					$this.data('-bc-is-touchstarted', false);
-					return true;
-				}
-				$target
-					.stop(true, false)
-					.fadeTo(config.close, config.opacity)
-					.fadeTo(config.open, 1);
-				return true;
-			});
-
-			if (config.stopOnTouch) {
-				$this.on('touchstart', (e: JQueryEventObject): boolean => {
-					$this.data('-bc-is-touchstarted', true);
-					return true;
-				});
-			}
 
 		});
 		return self;
@@ -580,175 +466,17 @@ class JQueryAdapter {
 		});
 	}
 
-	/**
-	 * マウスオーバー時に画像を切り替える
-	 *
-	 * 【使用非推奨】できるかぎり CSS の `:hover` と `background-image` を使用するべきです。
-	 *
-	 * @deprecated
-	 * @version 0.0.15
-	 * @since 0.0.15
-	 *
-	 */
-	public bcRollover (options: any): JQuery {
-
-		const self: JQuery = $(this);
-
-		const config: any = $.extend(
-			{
-				pattern: /_off(\.(?:[a-z0-9]{1,6}))$/i,
-				replace: '_on$1',
-				dataPrefix: '-bc-rollover-',
-				ignore: '',
-				filter: null,
-				stopOnTouch: true,
-			},
-			options
-		);
-
-		const dataKeyOff: string = config.dataPrefix + 'off';
-		const dataKeyOn: string = config.dataPrefix + 'on';
-
-		self.each( (i: number, elem: HTMLElement): void => {
-
-			const nodeName: string = elem.nodeName.toLowerCase();
-			const $img: JQuery = $(elem).not(config.ignore);
-
-			if ($img.length && nodeName === 'img' || (nodeName === 'input' && $img.prop('type') === 'image')) {
-
-				let avail: boolean = true;
-				if ($.isFunction(config.filter)) {
-					avail = !!config.filter.call(elem);
-				} else if (config.filter) {
-					avail = !!$img.filter(config.filter).length;
-				}
-
-				if (avail) {
-					const src: string = $img.attr('src');
-					if (src.match(config.pattern)) {
-						const onSrc: string = src.replace(config.pattern, config.replace);
-						$img.data(dataKeyOff, src);
-						$img.data(dataKeyOn, onSrc);
-					}
-				}
-
-			}
-
-		});
-
-		self.on('mouseenter', function (e: JQueryEventObject): boolean {
-			const $this: JQuery = $(this);
-			if (config.stopOnTouch && $this.data('-bc-is-touchstarted')) {
-				$this.data('-bc-is-touchstarted', false);
-				return true;
-			}
-			const onSrc: string = <string> $this.data(dataKeyOn);
-			$this.prop('src', onSrc);
-			return true;
-		});
-		self.on('mouseleave', function (e: JQueryEventObject): boolean {
-			const $this: JQuery = $(this);
-			if (config.stopOnTouch && $this.data('-bc-is-touchstarted')) {
-				$this.data('-bc-is-touchstarted', false);
-				return true;
-			}
-			const offSrc: string = <string> $this.data(dataKeyOff);
-			$this.prop('src', offSrc);
-			return true;
-		});
-
-		if (config.stopOnTouch) {
-			self.on('touchstart', function (e: JQueryEventObject): boolean {
-				const $this: JQuery = $(this);
-				$this.data('-bc-is-touchstarted', true);
-				return true;
-			});
-		}
-
-		return self;
-	}
-
-	/**
-	 * マウスオーバー時に半透明になるエフェクトをかける
-	 *
-	 * 【使用非推奨】できるかぎり CSS の `:hover` と `opacity`、そして `transition` を使用するべきです。
-	 *
-	 * @deprecated
-	 * @version 0.0.15
-	 * @since 0.0.15
-	 *
-	 */
-	public bcShy (options: any): JQuery {
-		const self: JQuery = $(this);
-		const config: any = $.extend(
-			{
-				close: 300,
-				open: 300,
-				opacity: 0.6,
-				target: null,
-				stopOnTouch: true,
-			},
-			options
-		);
-		self.each( (i: number, elem: HTMLElement): void => {
-
-			const $this: JQuery = $(elem);
-
-			let $target: JQuery;
-			if (config.target) {
-				$target = $this.find(config.target);
-			} else {
-				$target = $this;
-			}
-
-			$this.on('mouseenter', (e: JQueryEventObject): boolean => {
-				if (config.stopOnTouch && $this.data('-bc-is-touchstarted')) {
-					$this.data('-bc-is-touchstarted', false);
-					return true;
-				}
-				$target
-					.stop(true, false)
-					.fadeTo(config.close, config.opacity);
-				return true;
-			});
-			$this.on('mouseleave', (e: JQueryEventObject): boolean => {
-				if (config.stopOnTouch && $this.data('-bc-is-touchstarted')) {
-					$this.data('-bc-is-touchstarted', false);
-					return true;
-				}
-				$target
-					.stop(true, false)
-					.fadeTo(config.open, 1);
-				return true;
-			});
-
-			if (config.stopOnTouch) {
-				$this.on('touchstart', (e: JQueryEventObject): boolean => {
-					$this.data('-bc-is-touchstarted', true);
-					return true;
-				});
-			}
-
-		});
-		return self;
-	};
-
 }
 
 $.prototype.bcBackground = JQueryAdapter.prototype.bcBackground;
 $.prototype.bcBoxAlignHeight = JQueryAdapter.prototype.bcBoxAlignHeight;
 $.prototype.bcBoxLink = JQueryAdapter.prototype.bcBoxLink;
-$.prototype.bcCheckbox = JQueryAdapter.prototype.bcCheckbox;
-$.prototype.bcRadio = JQueryAdapter.prototype.bcRadio;
 $.prototype.bcSelect = JQueryAdapter.prototype.bcSelect;
 $.prototype.bcImageLoaded = JQueryAdapter.prototype.bcImageLoaded;
 $.prototype.bcKeepAspectRatio = JQueryAdapter.prototype.bcKeepAspectRatio;
 $.prototype.bcScrollTo = JQueryAdapter.prototype.bcScrollTo;
 $.prototype.bcSplitList = JQueryAdapter.prototype.bcSplitList;
-$.prototype.bcWink = JQueryAdapter.prototype.bcWink;
 $.prototype.bcMaps = JQueryAdapter.prototype.bcMaps;
 $.prototype.bcYoutube = JQueryAdapter.prototype.bcYoutube;
-$.prototype.bcRollover = JQueryAdapter.prototype.bcRollover;
-$.prototype.bcShy = JQueryAdapter.prototype.bcShy;
 
 $['bcScrollTo'] = JQueryAdapter.bcScrollTo;

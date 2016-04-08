@@ -1,4 +1,4 @@
-import IDimension = require('../Interface/IDimension');
+import { Dimension } from '../Interface/';
 
 /**
  * ユーティリティ算術クラス
@@ -91,7 +91,7 @@ class UtilMath {
 	 * @param valign 垂直位置 `"top" | "center" | "bottom"`
 	 * @return 算出された位置とサイズ
 	 */
-	public static stretchDimension (containerWidth: number, containerHeight: number, targetWidth: number, targetHeight: number, sizing: 'contain' | 'cover' = 'contain', align: 'left' | 'center' | 'right' = 'center', valign: 'top' | 'center' | 'bottom' = 'center'): IDimension {
+	public static stretchDimension (containerWidth: number, containerHeight: number, targetWidth: number, targetHeight: number, sizing: 'contain' | 'cover' = 'contain', align: 'left' | 'center' | 'right' = 'center', valign: 'top' | 'center' | 'bottom' = 'center'): Dimension {
 		let scale: number = 1;
 		const objectAspectRatio: number = targetWidth / targetHeight;
 		const containerAspectRatio: number = containerWidth / containerHeight;
@@ -183,4 +183,4 @@ class UtilMath {
 
 }
 
-export = UtilMath;
+export default UtilMath;

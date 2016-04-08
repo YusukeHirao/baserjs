@@ -1,10 +1,9 @@
-import UtilString = require('./UtilString');
-import EventDispatcher = require('./EventDispatcher');
-import Browser = require('./Browser');
-import BreakPoints = require('./BreakPoints');
-import BaserElement = require('./BaserElement');
-import AlignedBoxCallback = require('../Interface/AlignedBoxCallback');
-import BreakPointsOption = require('../Interface/BreakPointsOption');
+import UtilString from './UtilString';
+import EventDispatcher from './EventDispatcher';
+import Browser from './Browser';
+import BreakPoints from './BreakPoints';
+import BaserElement from './BaserElement';
+import { AlignedBoxCallback, BreakPointsOption } from '../Interface/';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -19,24 +18,6 @@ declare var $: {};
  *
  */
 class AlignedBoxes extends EventDispatcher {
-
-	/**
-	 * jQuery dataに自信のインスタンスを登録するキー
-	 *
-	 * @version 0.7.0
-	 * @since 0.7.0
-	 *
-	 */
-	public static DATA_KEY: string = 'bc-box';
-
-	/**
-	 * jQuery dataにUIDを登録するキー
-	 *
-	 * @version 0.7.0
-	 * @since 0.7.0
-	 *
-	 */
-	public static DATA_KEY_ID: string = AlignedBoxes.DATA_KEY + '-id';
 
 	/**
 	 * 監視タイマーID
@@ -92,14 +73,18 @@ class AlignedBoxes extends EventDispatcher {
 	 */
 	public static dummyCharElement: HTMLElement;
 
+	public static instances: WeakSet<AlignedBoxes>;
+
+	public id: string;
+
 	/**
 	 * 対象のDOM要素
 	 *
-	 * @version 0.9.0
-	 * @since 0.9.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 *
 	 */
-	public $el: JQuery;
+	public elList: HTMLElement[];
 
 	/**
 	 * ブレークポイントに寄るカラム数
@@ -131,62 +116,31 @@ class AlignedBoxes extends EventDispatcher {
 	/**
 	 * コンストラクタ
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.7.0
-	 * @param $el 対象のボックス要素
+	 * @param el 対象のボックス要素
 	 * @param column カラム数もしくはブレークポイントに寄るカラム数 `0`の場合すべての要素の高さを揃える
 	 * @param callback ボックスの高さ揃えるときのコールバック
 	 */
-	constructor ($el: JQuery, column: number | BreakPointsOption<number> = 0, callback?: AlignedBoxCallback) {
+	constructor (el: HTMLElement | NodeListOf<HTMLElement>, column: number | BreakPointsOption<number> = 0, callback?: AlignedBoxCallback) {
 		super();
-
-		this.$el = $el;
-
-		AlignedBoxes.boot();
-
-		let uid: string = this.$el.data(AlignedBoxes.DATA_KEY_ID);
-
-		if (uid) {
-			this.destroy();
-		}
-
-		uid = UtilString.UID();
-		this.$el.data(AlignedBoxes.DATA_KEY_ID, uid);
-
-		this.$el.data(AlignedBoxes.DATA_KEY, this);
-
-		AlignedBoxes.groups[uid] = this;
-
-		let columnInfo: BreakPointsOption<number>;
-		if (typeof column === 'number') {
-			columnInfo = {
-				Infinity: column,
-			};
+		if (el instanceof HTMLElement) {
+			this.elList.push(el);
 		} else {
-			columnInfo = column;
+			for (const elem of el) {
+				this.elList.push(elem);
+			}
 		}
-
-		this._columns = new BreakPoints<number>(columnInfo, (column: number, breakPoint: number, windowWidth: number): void => {
-			this._currentColumn = column;
-			this._align();
-		});
-
-		this._callback = callback;
-
-		this._align();
-
-		this.on('realign', (): void => {
-			this._align();
-		});
-
+		AlignedBoxes.boot();
+		this.id = UtilString.UID();
+		AlignedBoxes.groups[this.id] = this;
+		this._init(column, callback);
 	}
 
 	/**
 	 * 基準の文字要素を生成する
 	 *
-	 * @version 0.12.0
+	 * @version 1.0.0
 	 * @since 0.7.0
 	 *
 	 */
@@ -194,7 +148,7 @@ class AlignedBoxes extends EventDispatcher {
 		AlignedBoxes.dummyCharElement = BaserElement.createElement(
 			{
 				tagName: 'div',
-				text: 'M'
+				text: 'M',
 			},
 			null,
 			{
@@ -206,7 +160,7 @@ class AlignedBoxes extends EventDispatcher {
 				zIndex: -1,
 			}
 		);
-		document.body.appendChild(AlignedBoxes.dummyCharElement)
+		document.body.appendChild(AlignedBoxes.dummyCharElement);
 		AlignedBoxes.currentFontSize = AlignedBoxes.dummyCharElement.offsetHeight;
 	}
 
@@ -272,7 +226,7 @@ class AlignedBoxes extends EventDispatcher {
 	public static boot (): void {
 		if (!AlignedBoxes.isBooted) {
 			window.addEventListener('load', AlignedBoxes.reAlign, false);
-			Browser.browser.on('resizeend', AlignedBoxes.reAlign);
+			Browser.getBrowser().on('resizeend', AlignedBoxes.reAlign);
 			AlignedBoxes.isBooted = true;
 			AlignedBoxes.createChar();
 			// TODO: タイマーによる監視をオプションでオフにできるようにする
@@ -283,37 +237,52 @@ class AlignedBoxes extends EventDispatcher {
 	/**
 	 * 高さ揃えを解除する
 	 *
-	 * use: jQuery
-	 *
 	 * @version 0.9.0
 	 * @since 0.7.0
 	 *
 	 */
 	public destroy (): void {
-		this.$el.each( (i: number, elem: HTMLElement): void => {
-			const uid: string = $this.data(AlignedBoxes.DATA_KEY_ID);
-			$this.removeData(AlignedBoxes.DATA_KEY_ID);
-			if (uid in AlignedBoxes.groups) {
-				delete AlignedBoxes.groups[uid];
-			}
+		AlignedBoxes.groups[this.id] = null;
+	}
+
+	private _init (column: number | BreakPointsOption<number> = 0, callback?: AlignedBoxCallback): void {
+		let columnInfo: BreakPointsOption<number>;
+		if (typeof column === 'number') {
+			columnInfo = {
+				Infinity: column,
+			};
+		} else {
+			columnInfo = column;
+		}
+
+		this._columns = new BreakPoints<number>(columnInfo, (column: number, breakPoint: number, windowWidth: number): void => {
+			this._currentColumn = column;
+			this._align();
+		});
+
+		this._callback = this._callback || callback;
+
+		this._align();
+
+		this.on('realign', (): void => {
+			this._align();
 		});
 	}
 
 	/**
 	 * ボックスの高さ揃える
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.8.1
 	 *
 	 */
 	private _align (): void {
-		let $boxArray: JQuery[] = [];
+		let $boxArray: HTMLElement[] = [];
 		let maxHeight: number = 0;
-		const lastIndex: number = this.$el.length - 1;
-		this.$el.each( (i: number, elem: HTMLElement): any => {
-			const $box: JQuery = $(elem);
+		const l: number = this.elList.length;
+		const lastIndex: number = l - 1;
+		for (let i: number = 0; i < l; i++) {
+			const elem: HTMLElement = this.elList[i];
 
 			// 要素の高さを強制に無効にする
 			BaserElement.removeCSSProp(elem, 'height');
@@ -326,11 +295,11 @@ class AlignedBoxes extends EventDispatcher {
 			}
 
 			// 配列に追加
-			$boxArray[column] = $box;
+			$boxArray[column] = elem;
 
 			// 現在の高さと最大の高さを比べて最大の高さを更新
 			// column が 0 ならばリセットさせるので最大の高さもリセット
-			const currentHeight: number = $box.height();
+			const currentHeight: number = elem.offsetHeight;
 			if (column === 0 || currentHeight > maxHeight) {
 				maxHeight = currentHeight;
 			}
@@ -344,14 +313,14 @@ class AlignedBoxes extends EventDispatcher {
 						}
 						// コールバックの戻り値がfalseでなければ高さを変更
 						if (!cancel) {
-							$box.height(maxHeight);
+							elem.style.height = `${maxHeight}px`;
 						}
 					}
 				}
 			}
-		});
+		}
 	}
 
 }
 
-export = AlignedBoxes;
+export default AlignedBoxes;

@@ -1,9 +1,4 @@
-import UtilString = require('./UtilString');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import UtilString from './UtilString';
 
 /**
  * URLの情報を管理するクラス
@@ -287,4 +282,4 @@ class Locational {
 
 }
 
-export = Locational;
+export default Locational;

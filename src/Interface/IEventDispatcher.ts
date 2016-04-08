@@ -4,4 +4,4 @@ interface IEventDispatcher {
 	trigger (type: string, args?: any[], context?: any): IEventDispatcher;
 }
 
-export = IEventDispatcher;
+export default IEventDispatcher;

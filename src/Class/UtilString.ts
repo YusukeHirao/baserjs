@@ -122,4 +122,4 @@ class UtilString {
 
 }
 
-export = UtilString;
+export default UtilString;

@@ -1,11 +1,6 @@
-import BaserElement = require('./BaserElement');
-import IFormElement = require('../Interface/IFormElement');
-import FormElementOption = require('../Interface/FormElementOption');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import BaserElement from './BaserElement';
+import IFormElement from '../Interface/IFormElement';
+import { FormElementOption } from '../Interface/';
 
 /**
  * フォーム要素の抽象クラス
@@ -111,10 +106,10 @@ class FormElement extends BaserElement implements IFormElement {
 	/**
 	 * ラベルのテキスト
 	 *
-	 * @since 0.0.1
+	 * @since 1.0.0
 	 *
 	 */
-	public label: string;
+	public labelText: string;
 
 	/**
 	 * 前にあるラベルのテキスト
@@ -173,20 +168,20 @@ class FormElement extends BaserElement implements IFormElement {
 	public hasLabelByForAttr: boolean;
 
 	/**
-	 * ラベル要素のjQueryオブジェクト
+	 * ラベル要素
 	 *
-	 * @since 0.0.1
+	 * @since 1.0.0
 	 *
 	 */
-	public $label: JQuery;
+	public label: HTMLLabelElement;
 
 	/**
-	 * ラッパー要素のjQueryオブジェクト
+	 * ラッパー要素
 	 *
-	 * @since 0.0.4
+	 * @since 1.0.0
 	 *
 	 */
-	public $wrapper: JQuery;
+	public wrapper: HTMLSpanElement;
 
 	/**
 	 * オプション情報
@@ -201,7 +196,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.0.1
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -246,7 +241,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 * @param value 設定する値
 	 * @param isSilent イベントを伝達しない
@@ -280,13 +275,13 @@ class FormElement extends BaserElement implements IFormElement {
 				FormElement.classNameFormElementCommon,
 				'',
 				FormElement.classNameStateDisabled);
-			BaserElement.addClassTo(
-				this.$label,
+			BaserElement.addClass(
+				this.label,
 				FormElement.classNameFormElementCommon,
 				FormElement.classNameLabel,
 				FormElement.classNameStateDisabled);
-			BaserElement.addClassTo(
-				this.$wrapper,
+			BaserElement.addClass(
+				this.wrapper,
 				FormElement.classNameWrapper,
 				'',
 				FormElement.classNameStateDisabled);
@@ -296,13 +291,13 @@ class FormElement extends BaserElement implements IFormElement {
 				FormElement.classNameFormElementCommon,
 				'',
 				FormElement.classNameStateDisabled);
-			BaserElement.removeClassFrom(
-				this.$label,
+			BaserElement.removeClass(
+				this.label,
 				FormElement.classNameFormElementCommon,
 				FormElement.classNameLabel,
 				FormElement.classNameStateDisabled);
-			BaserElement.removeClassFrom(
-				this.$wrapper,
+			BaserElement.removeClass(
+				this.wrapper,
 				FormElement.classNameWrapper,
 				'',
 				FormElement.classNameStateDisabled);
@@ -312,8 +307,8 @@ class FormElement extends BaserElement implements IFormElement {
 	/**
 	 * 既にbaserJSのエレメント化しているかどうか確認する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _isElementized (): boolean {
 		return this.__isElementized(FormElement);
@@ -322,8 +317,8 @@ class FormElement extends BaserElement implements IFormElement {
 	/**
 	 * baserJSのエレメント化したフラグを登録する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _elementize (): void {
 		this.__elementize(FormElement);
@@ -346,27 +341,27 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 *
 	 */
 	protected _createWrapper (): void {
-		const wrapperHtml: string = '<span />';
-		const $wrapper: JQuery = $(wrapperHtml);
+		const wrapper: HTMLSpanElement = document.createElement('span');
 
-		BaserElement.addClassTo($wrapper, FormElement.classNameFormElementCommon);
-		BaserElement.addClassTo($wrapper, FormElement.classNameWrapper);
+		BaserElement.addClass(wrapper, FormElement.classNameFormElementCommon);
+		BaserElement.addClass(wrapper, FormElement.classNameWrapper);
 
 		// TODO: Not use jQuery method
 		if (this.isWrappedByLabel) {
-			this.$label.wrapAll($wrapper);
-			this.$wrapper = this.$label.parent('span');
+			debugger;
+			// this.label.wrapAll(wrapper);
+			this.wrapper = wrapper;
 		} else if (this.hasLabelByForAttr) {
-			$(this.el).wrapAll($wrapper);
-			this.$wrapper = $(this.el).parent('span');
+			$(this.el).wrapAll(wrapper);
+			this.wrapper = wrapper;
 		} else {
-			$(this.el).add(this.$label).wrapAll($wrapper);
-			this.$wrapper = $(this.el).parent('span');
+			$(this.el).add(this.label).wrapAll(wrapper);
+			this.wrapper = wrapper;
 		}
 	}
 
@@ -386,7 +381,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 *
 	 */
@@ -436,13 +431,13 @@ class FormElement extends BaserElement implements IFormElement {
 			FormElement.classNameFormElementCommon,
 			'',
 			FormElement.classNameStateFocus);
-		BaserElement.addClassTo(
-			this.$label,
+		BaserElement.addClass(
+			this.label,
 			FormElement.classNameFormElementCommon,
 			FormElement.classNameLabel,
 			FormElement.classNameStateFocus);
-		BaserElement.addClassTo(
-			this.$wrapper,
+		BaserElement.addClass(
+			this.wrapper,
 			FormElement.classNameWrapper,
 			'',
 			FormElement.classNameStateFocus);
@@ -451,13 +446,13 @@ class FormElement extends BaserElement implements IFormElement {
 			FormElement.classNameFormElementCommon,
 			'',
 			FormElement.classNameStateBlur);
-		BaserElement.removeClassFrom(
-			this.$label,
+		BaserElement.removeClass(
+			this.label,
 			FormElement.classNameFormElementCommon,
 			FormElement.classNameLabel,
 			FormElement.classNameStateBlur);
-		BaserElement.removeClassFrom(
-			this.$wrapper,
+		BaserElement.removeClass(
+			this.wrapper,
 			FormElement.classNameWrapper,
 			'',
 			FormElement.classNameStateBlur);
@@ -479,13 +474,13 @@ class FormElement extends BaserElement implements IFormElement {
 			FormElement.classNameFormElementCommon,
 			'',
 			FormElement.classNameStateBlur);
-		BaserElement.addClassTo(
-			this.$label,
+		BaserElement.addClass(
+			this.label,
 			FormElement.classNameFormElementCommon,
 			FormElement.classNameLabel,
 			FormElement.classNameStateBlur);
-		BaserElement.addClassTo(
-			this.$wrapper,
+		BaserElement.addClass(
+			this.wrapper,
 			FormElement.classNameWrapper,
 			'',
 			FormElement.classNameStateBlur);
@@ -494,13 +489,13 @@ class FormElement extends BaserElement implements IFormElement {
 			FormElement.classNameFormElementCommon,
 			'',
 			FormElement.classNameStateFocus);
-		BaserElement.removeClassFrom(
-			this.$label,
+		BaserElement.removeClass(
+			this.label,
 			FormElement.classNameFormElementCommon,
 			FormElement.classNameLabel,
 			FormElement.classNameStateFocus);
-		BaserElement.removeClassFrom(
-			this.$wrapper,
+		BaserElement.removeClass(
+			this.wrapper,
 			FormElement.classNameWrapper,
 			'',
 			FormElement.classNameStateFocus);
@@ -511,7 +506,7 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 * @param isSilent イベントを伝達しない
 	 *
@@ -539,53 +534,54 @@ class FormElement extends BaserElement implements IFormElement {
 	 */
 	private _setLabelText (): void {
 
+		debugger;
 		if (this._config.label) {
 
-			this.$label.prepend(this._config.label);
+			// this.label.prepend(this._config.label);
 			this.labelBeforeText = this._config.label;
 			this.labelAfterText = '';
 
 		} else {
 
-			const $labelContents: JQuery = this.$label.contents();
-			let $before: JQuery = $();
-			let $after: JQuery = $();
-			let isBefore: boolean = true;
+			// const $labelContents: JQuery = this.label.contents();
+			// let $before: JQuery = $();
+			// let $after: JQuery = $();
+			// let isBefore: boolean = true;
 
-			$labelContents.each( (i: number, node: Node): void => {
-				if (node === this.el) {
-					isBefore = false;
-					return;
-				}
-				if (isBefore) {
-					$before = $before.add($(node));
-				} else {
-					$after = $after.add($(node));
-				}
-			});
+			// $labelContents.each( (i: number, node: Node): void => {
+			// 	if (node === this.el) {
+			// 		isBefore = false;
+			// 		return;
+			// 	}
+			// 	if (isBefore) {
+			// 		$before = $before.add($(node));
+			// 	} else {
+			// 		$after = $after.add($(node));
+			// 	}
+			// });
 
-			$before.text( (i: number, text: string): string => {
-				return $.trim(text);
-			});
+			// $before.text( (i: number, text: string): string => {
+			// 	return $.trim(text);
+			// });
 
-			$after.text( (i: number, text: string): string => {
-				return $.trim(text);
-			});
+			// $after.text( (i: number, text: string): string => {
+			// 	return $.trim(text);
+			// });
 
-			this.labelBeforeText = $before.text() || $(this.el).attr('title') || '';
-			this.labelAfterText = $after.text() || '';
+			// this.labelBeforeText = $before.text() || $(this.el).attr('title') || '';
+			// this.labelAfterText = $after.text() || '';
 
-			if (this.labelBeforeText) {
-				this.$label.prepend($before);
-			}
+			// if (this.labelBeforeText) {
+			// 	this.label.prepend($before);
+			// }
 
-			if (this.labelAfterText) {
-				this.$label.append($after);
-			}
+			// if (this.labelAfterText) {
+			// 	this.label.append($after);
+			// }
 
 		}
 
-		this.label = this.labelBeforeText + this.labelAfterText;
+		this.labelText = this.labelBeforeText + this.labelAfterText;
 
 	}
 
@@ -638,13 +634,14 @@ class FormElement extends BaserElement implements IFormElement {
 		// 	hasLabelByForAttr: this.hasLabelByForAttr
 		// });
 
-		BaserElement.addClassTo($label, FormElement.classNameFormElementCommon);
-		BaserElement.addClassTo($label, FormElement.classNameFormElementCommon, FormElement.classNameLabel);
+		debugger;
+		// BaserElement.addClass($label, FormElement.classNameFormElementCommon);
+		// BaserElement.addClass($label, FormElement.classNameFormElementCommon, FormElement.classNameLabel);
 
-		this.$label = $label;
+		// this.label = $label;
 
 	}
 
 }
 
-export = FormElement;
+export default FormElement;

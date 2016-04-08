@@ -57,7 +57,7 @@ gulp.task 'docs', ->
 	gulp.src './src/baserJS.ts'
 		.pipe typedoc
 			module: 'commonjs'
-			target: 'ES5'
+			target: 'ES6'
 			includeDeclarations: on
 			mode: 'file'
 			out: 'docs'

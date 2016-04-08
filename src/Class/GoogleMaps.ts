@@ -1,5 +1,5 @@
-import BaserElement = require('./BaserElement');
-import GoogleMapsOption = require('../Interface/GoogleMapsOption');
+import BaserElement from './BaserElement';
+import { GoogleMapsOption } from '../Interface/';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -14,6 +14,13 @@ declare var $: {};
  *
  */
 class GoogleMaps extends BaserElement {
+
+	/**
+	 *
+	 */
+	public static defaultOptions: GoogleMapsOption = {
+
+	};
 
 	/**
 	 * 初期設定用の緯度
@@ -97,11 +104,11 @@ class GoogleMaps extends BaserElement {
 	/**
 	 * ピンを置いた座標の要素
 	 *
-	 * @version 0.0.6
+	 * @version 1.0.0
 	 * @since 0.0.6
 	 *
 	 */
-	public $coordinates: JQuery;
+	public coordinates: HTMLElement[];
 
 	/**
 	 * マップオプション
@@ -141,9 +148,9 @@ class GoogleMaps extends BaserElement {
 		}
 
 		if ('google' in window && google.maps) {
-			$(this.el).addClass(GoogleMaps.className);
+			this.addClass(GoogleMaps.className);
 
-			this.mapOption = $.extend({}, options);
+			this.mapOption = this.mergeOptions(GoogleMaps.defaultOptions, options)
 			this._init();
 
 			// TODO: 必要な処理か検討
@@ -204,22 +211,20 @@ class GoogleMaps extends BaserElement {
 	/**
 	 * 再読み込み・再設定
 	 *
-	 * use: jQuery
-	 *
 	 * @version 0.6.0
 	 * @since 0.2.0
 	 *
 	 */
 	public reload (options?: GoogleMapsOption): void {
-		this.mapOption = options ? $.extend({}, options) : this.mapOption;
+		this.mapOption = options ? this.mergeOptions(GoogleMaps.defaultOptions, options) : this.mapOption;
 		this._init();
 	}
 
 	/**
 	 * 既にbaserJSのエレメント化しているかどうか確認する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _isElementized (): boolean {
 		return this.__isElementized(GoogleMaps);
@@ -228,8 +233,8 @@ class GoogleMaps extends BaserElement {
 	/**
 	 * baserJSのエレメント化したフラグを登録する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _elementize (): void {
 		this.__elementize(GoogleMaps);
@@ -238,16 +243,14 @@ class GoogleMaps extends BaserElement {
 	/**
 	 * 初期化
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.0.6
 	 *
 	 */
 	private _init (): void {
 
 		// data-*属性からの継承
-		this.mapOption = <GoogleMapsOption> $.extend(this.mapOption, {
+		this.mapOption = this.mergeOptions(this.mapOption, {
 			zoom: this.data('zoom'),
 			fitBounds: this.data('fit-bounds'),
 		});
@@ -275,7 +278,7 @@ class GoogleMaps extends BaserElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.2.0
 	 * @param mapCenterLat 緯度
 	 * @param mapCenterLng 経度
@@ -283,50 +286,50 @@ class GoogleMaps extends BaserElement {
 	 */
 	private _render (mapCenterLat: number, mapCenterLng: number): void {
 
-		this.$coordinates = this.$coordinates || $(this.el).find('[data-lat][data-lng], [data-address]').detach();
-		if (this.$coordinates.length <= 0) {
-			this.$coordinates = $(this.el);
-		}
+		// this.coordinates = this.coordinates || this.el.querySelectorAll('[data-lat][data-lng], [data-address]'); // .detach();
+		// if (this.coordinates.length <= 0) {
+		// 	this.coordinates = $(this.el);
+		// }
 
-		const coordinates: Coordinate[] = [];
+		// const coordinates: Coordinate[] = [];
 
-		this.$coordinates.each( (i: number, el: HTMLElement): void => {
-			const coordinate: Coordinate = new Coordinate(el, this);
-			coordinates.push(coordinate);
-		});
+		// this.coordinates.each( (i: number, el: HTMLElement): void => {
+		// 	const coordinate: Coordinate = new Coordinate(el, this);
+		// 	coordinates.push(coordinate);
+		// });
 
-		this.mapOption = <GoogleMapsOption> $.extend(
-			{
-				zoom: 14,
-				mapTypeControlOptions: <google.maps.MapTypeControlOptions> {
-					mapTypeIds: <google.maps.MapTypeId[]> [
-						google.maps.MapTypeId.HYBRID,
-						google.maps.MapTypeId.ROADMAP,
-					],
-				},
-				scrollwheel: <boolean> false,
-				center: <google.maps.LatLng> new google.maps.LatLng(mapCenterLat, mapCenterLng),
-				styles: null,
-			},
-			this.mapOption
-		);
+		// this.mapOption = <GoogleMapsOption> $.extend(
+		// 	{
+		// 		zoom: 14,
+		// 		mapTypeControlOptions: <google.maps.MapTypeControlOptions> {
+		// 			mapTypeIds: <google.maps.MapTypeId[]> [
+		// 				google.maps.MapTypeId.HYBRID,
+		// 				google.maps.MapTypeId.ROADMAP,
+		// 			],
+		// 		},
+		// 		scrollwheel: <boolean> false,
+		// 		center: <google.maps.LatLng> new google.maps.LatLng(mapCenterLat, mapCenterLng),
+		// 		styles: null,
+		// 	},
+		// 	this.mapOption
+		// );
 
-		this.info = new google.maps.InfoWindow({
-			disableAutoPan: <boolean> true
-		});
+		// this.info = new google.maps.InfoWindow({
+		// 	disableAutoPan: <boolean> true
+		// });
 
-		this.gmap = new google.maps.Map(this.el, $.extend({}, this.mapOption, {
-			fitBounds: google.maps.Map.prototype.fitBounds
-		}));
+		// this.gmap = new google.maps.Map(this.el, $.extend({}, this.mapOption, {
+		// 	fitBounds: google.maps.Map.prototype.fitBounds
+		// }));
 
-		$.each(coordinates, (i: number, coordinate: Coordinate ): void => {
-			coordinate.markTo( (coordinate: Coordinate): void => {
-				if (this.mapOption.fitBounds) {
-					this.markerBounds.extend(coordinate.position);
-					this.gmap.fitBounds(this.markerBounds);
-				}
-			});
-		});
+		// $.each(coordinates, (i: number, coordinate: Coordinate ): void => {
+		// 	coordinate.markTo( (coordinate: Coordinate): void => {
+		// 		if (this.mapOption.fitBounds) {
+		// 			this.markerBounds.extend(coordinate.position);
+		// 			this.gmap.fitBounds(this.markerBounds);
+		// 		}
+		// 	});
+		// });
 
 	}
 
@@ -366,27 +369,26 @@ class Coordinate {
 	constructor (el: HTMLElement, map: GoogleMaps) {
 
 		this.el = el;
-		this.$el = $(el);
 		this._map = map;
 
 		const address: string = this.$el.data('address');
-		const dfd: JQueryDeferred<void> = $.Deferred<void>();
+		// const dfd: JQueryDeferred<void> = $.Deferred<void>();
 
 		if (address) {
 			GoogleMaps.getLatLngByAddress(address, (lat: number, lng: number): void => {
 				this.lat = lat;
 				this.lng = lng;
 				this.position = new google.maps.LatLng(this.lat, this.lng);
-				dfd.resolve();
+				// dfd.resolve();
 			});
 		} else {
 			this.lat = <number> +this.$el.data('lat');
 			this.lng = <number> +this.$el.data('lng');
 			this.position = new google.maps.LatLng(this.lat, this.lng);
-			dfd.resolve();
+			// dfd.resolve();
 		}
 
-		this._promiseLatLng = dfd.promise();
+		// this._promiseLatLng = dfd.promise();
 
 	}
 
@@ -426,7 +428,7 @@ class Coordinate {
 		const proj: google.maps.Projection = this._map.gmap.getProjection();
 		const currentPoint: google.maps.Point = proj.fromLatLngToPoint(this.position);
 		const scale: number = Math.pow(2, this._map.gmap.getZoom());
-		const height: number = $(content).height();
+		const height: number = content.offsetHeight;
 		const y: number = (currentPoint.y * scale - height) / scale;
 		const newPoint: google.maps.Point = new google.maps.Point(currentPoint.x, y);
 		const newPosition: google.maps.LatLng = proj.fromPointToLatLng(newPoint);
@@ -466,7 +468,7 @@ class Coordinate {
 			icon: this.icon,
 			map: this._map.gmap,
 		});
-		if (this._map.$coordinates[0] !== this._map.el) {
+		if (this._map.coordinates[0] !== this._map.el) {
 			google.maps.event.addListener(this.marker, 'click', (): void => {
 				this.openInfoWindow();
 			});
@@ -475,4 +477,4 @@ class Coordinate {
 
 }
 
-export = GoogleMaps;
+export default GoogleMaps;

@@ -47,4 +47,4 @@ class UtilArray {
 
 }
 
-export = UtilArray;
+export default UtilArray;

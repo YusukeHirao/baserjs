@@ -1,6 +1,6 @@
-import EventDispatcher = require('./EventDispatcher');
-import Browser = require('./Browser');
-import BreakPointsOption = require('../Interface/BreakPointsOption');
+import EventDispatcher from './EventDispatcher';
+import Browser from './Browser';
+import { BreakPointsOption } from '../Interface/';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -58,7 +58,7 @@ class BreakPoints<T> extends EventDispatcher {
 	/**
 	 * コンストラクタ
 	 *
-	 * @version 0.9.1
+	 * @version 1.0.0
 	 * @since 0.7.0
 	 * @param breakPoints ブレークポイントとコールバックに渡す値を設定する
 	 * @param callback 変化に応じたコールバック
@@ -67,7 +67,7 @@ class BreakPoints<T> extends EventDispatcher {
 	constructor (breakPoints: BreakPointsOption<T>, callback?: { (value: T, breakPoint: number, windowWidth: number): void } ) {
 		super();
 		this._setBreakPoints<T>(breakPoints);
-		Browser.browser.on('resizeend', (): void => {
+		Browser.getBrowser().on('resizeend', (): void => {
 			const wW: number = Math.max(window.document.documentElement.clientWidth, window.innerWidth);
 			for (const overPoint of this.breakPoints) {
 				if (wW <= overPoint) {
@@ -84,7 +84,7 @@ class BreakPoints<T> extends EventDispatcher {
 				}
 			}
 		});
-		Browser.browser.trigger('resizeend');
+		Browser.getBrowser().trigger('resizeend');
 	}
 
 	/**
@@ -128,4 +128,4 @@ class BreakPoints<T> extends EventDispatcher {
 
 }
 
-export = BreakPoints;
+export default BreakPoints;

@@ -40,4 +40,4 @@ interface YouTubeMuteControllerOptions {
 	baseClass?: string;
 }
 
-export = YouTubeMuteControllerOptions;
+export default YouTubeMuteControllerOptions;

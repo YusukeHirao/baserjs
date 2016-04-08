@@ -1,8 +1,8 @@
-import UtilString = require('./UtilString');
-import EventDispatcher = require('./EventDispatcher');
-import ElementClassNameCase = require('../Enum/ElementClassNameCase');
-import ClassNameSeparatorForBEM = require('../Enum/ClassNameSeparatorForBEM');
-import IElement = require('../Interface/IElement');
+import UtilString from './UtilString';
+import EventDispatcher from './EventDispatcher';
+import ElementClassNameCase from '../Enum/ElementClassNameCase';
+import ClassNameSeparatorForBEM from '../Enum/ClassNameSeparatorForBEM';
+import IElement from '../Interface/IElement';
 
 const HYPHEN: string = '-';
 const DOUBLE_HYPHEN: string = '--';
@@ -32,7 +32,7 @@ interface IBaserElementCreateElementStyle {
  * DOM要素操作に関するjQueryのメソッドは極力ここに集約したい
  * 脱jQueryの際にこのクラスを改修するだけで済むようにする
  *
- * @version 0.11.0
+ * @version 1.0.0
  * @since 0.0.1
  *
  */
@@ -303,25 +303,6 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
-	 * 【廃止予定】クラス名を付加する
-	 *
-	 * use: jQuery
-	 *
-	 * @deprecated
-	 * @version 0.1.0
-	 * @since 0.1.0
-	 * @param $elem 対象のDOM要素
-	 * @param blockName ブロック名
-	 * @param elementName 要素名
-	 * @param modifierName 状態名
-	 *
-	 */
-	public static addClassTo ($elem: JQuery, blockNames: string, elementNames: string = '', modifierName: string = ''): void {
-		const className: string = BaserElement.createClassName(blockNames, elementNames, modifierName);
-		$elem.addClass(className);
-	}
-
-	/**
 	 * クラス名を取り除く
 	 *
 	 * use: jQuery
@@ -341,28 +322,9 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
-	 * 【廃止予定】クラス名を取り除く
-	 *
-	 * use: jQuery
-	 *
-	 * @deprecated
-	 * @version 0.1.0
-	 * @since 0.1.0
-	 * @param $elem 対象のDOM要素
-	 * @param blockName ブロック名
-	 * @param elementName 要素名
-	 * @param modifierName 状態名
-	 *
-	 */
-	public static removeClassFrom ($elem: JQuery, blockNames: string, elementNames: string = '', modifierName: string = ''): void {
-		const className: string = BaserElement.createClassName(blockNames, elementNames, modifierName);
-		$elem.removeClass(className);
-	}
-
-	/**
 	 * CSSプロパティをDOM要素から取り除く
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.2.2
 	 * @param elem 対象のDOM要素
 	 * @param propName 取り除くCSSプロパティ
@@ -375,6 +337,10 @@ class BaserElement extends EventDispatcher implements IElement {
 		}
 	}
 
+	public static css (elem: HTMLElement, styles: any): void {
+		$(elem).css(styles);
+	}
+
 	/**
 	 * コンストラクタ
 	 *
@@ -382,7 +348,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 * TODO: クラス名のつき方の規則をきちんと決める
 	 *
-	 * @version 0.11.0
+	 * @version 1.0.0
 	 * @since 0.0.1
 	 * @param $el 管理するDOM要素
 	 *
@@ -441,7 +407,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 * TODO: テストを書く
 	 * TODO: サブクラスに反映させる
 	 *
-	 * @version 0.9.1
+	 * @version 1.0.0
 	 * @since 0.8.0
 	 *
 	 */
@@ -531,8 +497,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	/**
 	 * 既にbaserJSのエレメント化しているかどうか確認する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _isElementized (): boolean {
 		return this.__isElementized(BaserElement);
@@ -541,8 +507,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	/**
 	 * baserJSのエレメント化したフラグを登録する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _elementize (): void {
 		this.__elementize(BaserElement);
@@ -551,8 +517,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	/**
 	 * 既にbaserJSのエレメント化しているかどうか確認する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected __isElementized (constructor: any /* Class */): boolean {
 		if (elementizedMap.has(this.el)) {
@@ -565,8 +531,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	/**
 	 * baserJSのエレメント化したフラグを登録する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected __elementize (constructor: any /* Class */): void {
 		let constructorList: Set<Symbol>;
@@ -583,4 +549,4 @@ class BaserElement extends EventDispatcher implements IElement {
 
 }
 
-export = BaserElement;
+export default BaserElement;

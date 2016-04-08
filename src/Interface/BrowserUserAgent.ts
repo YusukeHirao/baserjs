@@ -10,4 +10,4 @@ interface BrowserUserAgent {
 	ie: boolean;
 }
 
-export = BrowserUserAgent;
+export default BrowserUserAgent;

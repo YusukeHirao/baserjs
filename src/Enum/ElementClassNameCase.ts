@@ -11,4 +11,4 @@ enum ElementClassNameCase {
 	CAMEL_CASE
 }
 
-export = ElementClassNameCase;
+export default ElementClassNameCase;

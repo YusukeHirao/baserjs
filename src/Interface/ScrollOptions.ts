@@ -15,4 +15,4 @@ interface ScrollOptions {
 	onScrollProgress?: Function;
 }
 
-export = ScrollOptions;
+export default ScrollOptions;

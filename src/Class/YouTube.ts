@@ -1,14 +1,8 @@
-import UtilArray = require('./UtilArray');
-import DispatchEvent = require('./DispatchEvent');
-import BaserElement = require('./BaserElement');
-import Browser = require('./Browser');
-import YouTubeOption = require('../Interface/YouTubeOption');
-import YoutubeMuteControllerOptions = require('../Interface/YoutubeMuteControllerOptions');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import UtilArray from './UtilArray';
+import DispatchEvent from './DispatchEvent';
+import BaserElement from './BaserElement';
+import Browser from './Browser';
+import { YouTubeOption, YouTubeMuteControllerOptions } from '../Interface/';
 
 /**
  * YouTube要素
@@ -61,8 +55,8 @@ class YouTube extends BaserElement {
 	 * クラス名
 	 *
 	 * @override
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected static _name: Symbol = Symbol('YouTube');
 
@@ -160,25 +154,25 @@ class YouTube extends BaserElement {
 	/**
 	 * YouTubeのiframeのソースURIを生成する
 	 *
-	 * @version 0.9.1
+	 * @version 1.0.0
 	 * @since 0.9.1
 	 */
 	public static getURI (movieId: string, param: any): string {
 		const paramQuery: string = $.param(param);
-		return `${Browser.apiScheme}${YouTube.PLAYER_URL}${movieId}?${paramQuery}`;
+		return `${Browser.getBrowser().availableScheme}${YouTube.PLAYER_URL}${movieId}?${paramQuery}`;
 	}
 
 	/**
 	 * YouTubeのサムネイル画像を取得する
 	 *
-	 * @version 0.10.0
+	 * @version 1.0.0
 	 * @since 0.9.1
 	 *
 	 */
 	public static getPosterImage (movieId: string, highQuality: boolean = false): string {
 		const THUMB_URL: string = highQuality ? '//i.ytimg.com/vi/' : '//img.youtube.com/vi/';
 		const THUMB_FILE_NAME: string = highQuality ? '/maxresdefault.jpg' : '/0.jpg';
-		return `${Browser.apiScheme}${THUMB_URL}${movieId}${THUMB_FILE_NAME}`;
+		return `${Browser.getBrowser().availableScheme}${THUMB_URL}${movieId}${THUMB_FILE_NAME}`;
 	}
 
 	/**
@@ -186,7 +180,7 @@ class YouTube extends BaserElement {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.12.0
+	 * @version 1.0.0
 	 * @since 0.0.7
 	 * @param el 管理するDOM要素
 	 * @param options オプション
@@ -248,42 +242,43 @@ class YouTube extends BaserElement {
 	 *
 	 * TODO: 別のクラスにする
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.5.0
-	 * @param $el アサインするDOM要素のjQueryオブジェクト
+	 * @param el アサインするDOM要素
 	 * @param options オプション
 	 *
 	 */
-	public muteController (el: HTMLElement | JQuery, options: YoutubeMuteControllerOptions): void {
-		const $el: JQuery = $(el);
-		const defaults: YoutubeMuteControllerOptions = {
+	public muteController (el: HTMLElement, options: YouTubeMuteControllerOptions): void {
+		const defaults: YouTubeMuteControllerOptions = {
 			eventType: 'click',
 			mutedClass: 'is-muted',
 			unmutedClass: 'is-unmuted',
 			baseClass: 'youtube-mute-ctrl',
 		};
-		const conf: YoutubeMuteControllerOptions = $.extend(defaults, options);
-		BaserElement.addClassTo($el, conf.baseClass);
+		const conf: YouTubeMuteControllerOptions = $.extend(defaults, options);
+		BaserElement.addClass(el, conf.baseClass);
 		const update: () => void = (): void => {
 			if (this._isMuted) {
-				BaserElement.addClassTo($el, conf.baseClass, '', conf.mutedClass);
-				BaserElement.removeClassFrom($el, conf.baseClass, '', conf.unmutedClass);
+				BaserElement.addClass(el, conf.baseClass, '', conf.mutedClass);
+				BaserElement.removeClass(el, conf.baseClass, '', conf.unmutedClass);
 			} else {
-				BaserElement.addClassTo($el, conf.baseClass, '', conf.unmutedClass);
-				BaserElement.removeClassFrom($el, conf.baseClass, '', conf.mutedClass);
+				BaserElement.addClass(el, conf.baseClass, '', conf.unmutedClass);
+				BaserElement.removeClass(el, conf.baseClass, '', conf.mutedClass);
 			}
 		};
 		const bindCtrl: () => void = (): void => {
-			$el.on(conf.eventType, (e: JQueryEventObject): any => {
-				if (this._isMuted) {
-					this.unMute();
-				} else {
-					this.mute();
-				}
-				update();
-			});
+			el.addEventListener(
+				conf.eventType,
+				(): void => {
+					if (this._isMuted) {
+						this.unMute();
+					} else {
+						this.mute();
+					}
+					update();
+				},
+				false
+			);
 			update();
 		};
 		this.on('onmute onunmute', (): void => {
@@ -302,8 +297,8 @@ class YouTube extends BaserElement {
 	/**
 	 * 既にbaserJSのエレメント化しているかどうか確認する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _isElementized (): boolean {
 		return this.__isElementized(YouTube);
@@ -312,8 +307,8 @@ class YouTube extends BaserElement {
 	/**
 	 * baserJSのエレメント化したフラグを登録する
 	 *
-	 * @version 0.11.0
-	 * @since 0.11.0
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected _elementize (): void {
 		this.__elementize(YouTube);
@@ -322,13 +317,7 @@ class YouTube extends BaserElement {
 	/**
 	 * 初期化
 	 *
-	 * use: jQuery
-	 *
-	 * TODO: 長いので分割
-	 *
-	 * ※ `this.$el` の `embeddedyoutubeplay` イベント非推奨
-	 *
-	 * @version 0.10.3
+	 * @version 1.0.0
 	 * @since 0.0.7
 	 * @param $el 管理するDOM要素のjQueryオブジェクト
 	 * @param options オプション
@@ -360,7 +349,7 @@ class YouTube extends BaserElement {
 			options
 		);
 
-		if (Browser.spec.ua.iOS) {
+		if (Browser.getBrowser().spec.ua.iOS) {
 			this.movieOption.autoplay = false;
 			this.movieOption.preEmbed = true;
 		}
@@ -418,88 +407,88 @@ class YouTube extends BaserElement {
 	 *
 	 */
 	private _createPosterImage (movieId: string): void {
-		const $posterContainer: JQuery = $('<div class="-bc-element -bc-youtube-pseudo-poster-element" />');
-		if (this.movieOption.width) {
-			$posterContainer.width(this.movieOption.width);
-		}
-		if (this.movieOption.height) {
-			$posterContainer.height(this.movieOption.height);
-		}
-		$posterContainer.css({
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			pointerEvents: Browser.spec.ua.iOS ? 'none' : 'all',
-			cursor: 'pointer',
-		});
+		// const posterContainer: HTMLElement = $('<div class="-bc-element -bc-youtube-pseudo-poster-element" />');
+		// if (this.movieOption.width) {
+		// 	posterContainer.width(this.movieOption.width);
+		// }
+		// if (this.movieOption.height) {
+		// 	posterContainer.height(this.movieOption.height);
+		// }
+		// posterContainer.css({
+		// 	position: 'absolute',
+		// 	top: 0,
+		// 	left: 0,
+		// 	pointerEvents: Browser.getBrowser().spec.ua.iOS ? 'none' : 'all',
+		// 	cursor: 'pointer',
+		// });
 
-		if (/^@contents?$/i.test(this.movieOption.poster)) {
-			const $children: JQuery = this.$el.children().detach();
-			if (this.movieOption.preEmbed) {
-				this._createPlayerFrame();
-				this._loadYouTubeAPI();
-			}
-			$posterContainer.append($children);
-			$posterContainer.appendTo(this.$el);
-		} else {
-			if (this.movieOption.poster === '') {
-				this.movieOption.poster = YouTube.getPosterImage(movieId, this.movieOption.posterHighQuality);
-			}
-			if (this.movieOption.preEmbed) {
-				this.$el.empty();
-				this._createPlayerFrame();
-				this._loadYouTubeAPI();
-			} else {
-				$posterContainer.css({
-					position: 'relative',
-				});
-			}
-			$posterContainer.appendTo(this.$el);
-			if (this.movieOption.width) {
-				$posterContainer.width(this.movieOption.width);
-			}
-			if (this.movieOption.height) {
-				$posterContainer.height(this.movieOption.height);
-			}
-			$posterContainer.css({
-				position: 'absolute',
-				top: 0,
-				left: 0,
-				width: '100%',
-				height: '100%',
-				backgroundImage: `url("${this.movieOption.poster}")`,
-				backgroundRepeat: 'no-repeat',
-				backgroundSize: 'cover',
-				backgroundPosition: 'center center',
-				backgroundColor: '#000',
-				pointerEvents: 'none',
-				cursor: 'pointer',
-			});
-		}
-		if (this.movieOption.preEmbed) {
-			$posterContainer.on('click', () => {
-				if (this.player) {
-					$posterContainer.off('click');
-					this._$posterContainer.addClass('-bc-youtube-pseudo-poster-element--loading');
-					this.player.playVideo();
-				}
-			});
-		} else {
-			$posterContainer.css({
-				pointerEvents: 'all',
-			});
-			if (/^@contents?$/i.test(this.movieOption.poster)) {
-				const $children: JQuery = this.$el.children().detach();
-				$posterContainer.append($children);
-				$posterContainer.appendTo(this.$el);
-			}
-			$posterContainer.on('click', () => {
-				this.movieOption.autoplay = true;
-				this._createPlayerFrame();
-				this._loadYouTubeAPI();
-			});
-		}
-		this._$posterContainer = $posterContainer;
+		// if (/^@contents?$/i.test(this.movieOption.poster)) {
+		// 	const children: NodeListOf<HTMLElement> = this.el.children().detach();
+		// 	if (this.movieOption.preEmbed) {
+		// 		this._createPlayerFrame();
+		// 		this._loadYouTubeAPI();
+		// 	}
+		// 	posterContainer.appendChild(children);
+		// 	this.el.appendChild(posterContainer);
+		// } else {
+		// 	if (this.movieOption.poster === '') {
+		// 		this.movieOption.poster = YouTube.getPosterImage(movieId, this.movieOption.posterHighQuality);
+		// 	}
+		// 	if (this.movieOption.preEmbed) {
+		// 		this.$el.empty();
+		// 		this._createPlayerFrame();
+		// 		this._loadYouTubeAPI();
+		// 	} else {
+		// 		posterContainer.css({
+		// 			position: 'relative',
+		// 		});
+		// 	}
+		// 	posterContainer.appendTo(this.$el);
+		// 	if (this.movieOption.width) {
+		// 		posterContainer.width(this.movieOption.width);
+		// 	}
+		// 	if (this.movieOption.height) {
+		// 		posterContainer.height(this.movieOption.height);
+		// 	}
+		// 	posterContainer.css({
+		// 		position: 'absolute',
+		// 		top: 0,
+		// 		left: 0,
+		// 		width: '100%',
+		// 		height: '100%',
+		// 		backgroundImage: `url("${this.movieOption.poster}")`,
+		// 		backgroundRepeat: 'no-repeat',
+		// 		backgroundSize: 'cover',
+		// 		backgroundPosition: 'center center',
+		// 		backgroundColor: '#000',
+		// 		pointerEvents: 'none',
+		// 		cursor: 'pointer',
+		// 	});
+		// }
+		// if (this.movieOption.preEmbed) {
+		// 	posterContainer.on('click', () => {
+		// 		if (this.player) {
+		// 			posterContainer.off('click');
+		// 			this._$posterContainer.addClass('-bc-youtube-pseudo-poster-element--loading');
+		// 			this.player.playVideo();
+		// 		}
+		// 	});
+		// } else {
+		// 	posterContainer.css({
+		// 		pointerEvents: 'all',
+		// 	});
+		// 	if (/^@contents?$/i.test(this.movieOption.poster)) {
+		// 		const $children: JQuery = this.$el.children().detach();
+		// 		posterContainer.append($children);
+		// 		posterContainer.appendTo(this.$el);
+		// 	}
+		// 	posterContainer.on('click', () => {
+		// 		this.movieOption.autoplay = true;
+		// 		this._createPlayerFrame();
+		// 		this._loadYouTubeAPI();
+		// 	});
+		// }
+		// this._$posterContainer = posterContainer;
 	}
 
 	/**
@@ -542,7 +531,7 @@ class YouTube extends BaserElement {
 	 */
 	private _loadYouTubeAPI (): void {
 		if (!('YT' in window && YT.Player)) {
-			$.getScript(`${Browser.apiScheme}${YouTube.API_URL}`);
+			$.getScript(`${Browser.getBrowser().availableScheme}${YouTube.API_URL}`);
 		}
 		const intervalTimer: number = setInterval(
 			() => {
@@ -680,4 +669,4 @@ class YouTube extends BaserElement {
 
 }
 
-export = YouTube;
+export default YouTube;

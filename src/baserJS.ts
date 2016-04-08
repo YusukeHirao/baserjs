@@ -6,10 +6,11 @@ import 'core-js/es6/symbol';
 import 'core-js/fn/set';
 import 'core-js/fn/map';
 
-import baser = require('./baser');
+import * as baser from './baser';
 
-/* tslint:disable: */
-window.baser = baser;
-/* tslint:enable: */
+interface Window {
+	baser: any;
+}
+window['baser'] = baser;
 
 import './Class/JQueryAdapter';

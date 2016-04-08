@@ -1,11 +1,6 @@
-import UtilString = require('./UtilString');
-import DispatchEvent = require('./DispatchEvent');
-import EventDispatcher = require('./EventDispatcher');
-
-/**
- * このモジュール（スコープ）ではjQueryを使用しない
- */
-declare var $: {};
+import UtilString from './UtilString';
+import DispatchEvent from './DispatchEvent';
+import EventDispatcher from './EventDispatcher';
 
 /**
  * イベントハンドラのラッパークラス
@@ -87,4 +82,4 @@ class EventHandler {
 
 }
 
-export = EventHandler;
+export default EventHandler;
