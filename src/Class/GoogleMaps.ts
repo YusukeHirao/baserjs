@@ -1,4 +1,5 @@
 import BaserElement from './BaserElement';
+import Browser from './Browser';
 import { GoogleMapsOption } from '../Interface/';
 
 /**
@@ -291,16 +292,16 @@ class GoogleMaps extends BaserElement {
 	 */
 	private _render (mapCenterLat: number, mapCenterLng: number): void {
 
-		// this.coordinates = this.coordinates || this.el.querySelectorAll('[data-lat][data-lng], [data-address]'); // .detach();
-		// if (this.coordinates.length <= 0) {
-		// 	this.coordinates = $(this.el);
+		// this.$coordinates[0] = this.$coordinates[0] || this.$el.find('[data-lat][data-lng], [data-address]').detach();
+		// if (this.$coordinates[0.length <= 0) {
+		// 	this.$coordinates[0] = this.$el;
 		// }
 
-		// const coordinates: Coordinate[] = [];
+		// const coordinates[0: Coordinate[] = [];
 
-		// this.coordinates.each( (i: number, el: HTMLElement): void => {
+		// this.$coordinates[0.each( (i: number, el: HTMLElement): void => {
 		// 	const coordinate: Coordinate = new Coordinate(el, this);
-		// 	coordinates.push(coordinate);
+		// 	coordinates[0.push(coordinate);
 		// });
 
 		// this.mapOption = <GoogleMapsOption> $.extend(
@@ -320,14 +321,14 @@ class GoogleMaps extends BaserElement {
 		// );
 
 		// this.info = new google.maps.InfoWindow({
-		// 	disableAutoPan: <boolean> true
+		// 	disableAutoPan: <boolean> true,
 		// });
 
 		// this.gmap = new google.maps.Map(this.el, $.extend({}, this.mapOption, {
-		// 	fitBounds: google.maps.Map.prototype.fitBounds
+		// 	fitBounds: google.maps.Map.prototype.fitBounds,
 		// }));
 
-		// $.each(coordinates, (i: number, coordinate: Coordinate ): void => {
+		// $.each(coordinates[0, (i: number, coordinate: Coordinate ): void => {
 		// 	coordinate.markTo( (coordinate: Coordinate): void => {
 		// 		if (this.mapOption.fitBounds) {
 		// 			this.markerBounds.extend(coordinate.position);
@@ -445,7 +446,7 @@ class Coordinate {
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 0.12.0
 	 * @since 0.0.6
 	 *
 	 */
@@ -453,6 +454,8 @@ class Coordinate {
 		this.title = this.$el.attr('title') || this.$el.data('title') || this.$el.find('h1,h2,h3,h4,h5,h6').text() || null;
 		const iconURL: string = this.$el.data('icon');
 		const iconSize: string = this.$el.data('iconSize');
+		const iconHref: string = this.$el.data('iconHref');
+		const iconTarget: boolean = (this.$el.data('iconTarget') === '_blank') || false;
 		if (iconURL) {
 			this.icon = {};
 			this.icon.url = iconURL;
@@ -473,10 +476,10 @@ class Coordinate {
 			icon: this.icon,
 			map: this._map.gmap,
 		});
-		if (this._map.coordinates[0] !== this._map.el) {
-			google.maps.event.addListener(this.marker, 'click', (): void => {
-				this.openInfoWindow();
-			});
+		if (iconHref) {
+			google.maps.event.addListener(this.marker, 'click', Browser.getBrowser().jumpTo.bind(null, iconHref, iconTarget));
+		} else if (this._map.coordinates[0] !== this._map.el) {
+			google.maps.event.addListener(this.marker, 'click', this.openInfoWindow.bind(this));
 		}
 	}
 

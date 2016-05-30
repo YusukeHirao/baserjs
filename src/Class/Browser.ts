@@ -85,7 +85,10 @@ class Browser extends EventDispatcher {
 	}
 
 	public static getBrowser (): Browser {
-		return Browser._browser || new Browser();
+		if (Browser._browser) {
+			Browser._browser = new Browser();
+		}
+		return Browser._browser;
 	}
 
 	public get width (): number {
