@@ -111,7 +111,7 @@ class JQueryAdapter {
 	// @version 1.0.0
 	// @since 0.1.0
 	public bcBoxLink (): JQuery {
-		return $(self).on('click', function (e: JQueryEventObject): void {
+		return $(this).on('click', function (e: JQueryEventObject): void {
 			const $elem: JQuery = $(this);
 			const $link: JQuery = $elem.find('a, area').eq(0);
 			const href: string = $link.prop('href');
