@@ -1,6 +1,6 @@
-import EventDispatcher from './EventDispatcher';
-import Locational from './Locational';
-import { BrowserUserAgent } from '../Interface/';
+import EventDispatcher from '../EventDispatcher';
+import Locational from '../Locational';
+import BrowserUserAgent from './IBrowserUserAgent';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -69,6 +69,13 @@ class Browser extends EventDispatcher {
 	 */
 	private _scrollEndTimer: number;
 
+	public static getBrowser (): Browser {
+		if (Browser._browser) {
+			Browser._browser = new Browser();
+		}
+		return Browser._browser;
+	}
+
 	/**
 	 * コンストラクタ
 	 *
@@ -82,13 +89,6 @@ class Browser extends EventDispatcher {
 		window.addEventListener('resize', this._onResize.bind(this), false);
 		// スクロールイベント
 		window.addEventListener('scroll', this._onScroll.bind(this), false);
-	}
-
-	public static getBrowser (): Browser {
-		if (Browser._browser) {
-			Browser._browser = new Browser();
-		}
-		return Browser._browser;
 	}
 
 	public get width (): number {
@@ -157,7 +157,7 @@ class Browser extends EventDispatcher {
 		if (!isBlank) {
 			window.location.href = href;
 		} else {
-			window.open(href, null);
+			window.open(href, undefined);
 		}
 	}
 

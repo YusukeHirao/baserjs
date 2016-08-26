@@ -1,6 +1,6 @@
-import BaserElement from './BaserElement';
-import Browser from './Browser';
-import { GoogleMapsOption } from '../Interface/';
+import BaserElement from '../BaserElement';
+import Browser from '../Browser';
+import GoogleMapsOption from './IGoogleMapsOption/';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -130,42 +130,6 @@ class GoogleMaps extends BaserElement {
 	public markerBounds: google.maps.LatLngBounds;
 
 	/**
-	 * コンストラクタ
-	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
-	 * @since 0.0.6
-	 * @param el 管理するDOM要素
-	 * @param options マップオプション
-	 *
-	 */
-	constructor (el: HTMLElement, options?: GoogleMapsOption) {
-		super(el);
-
-		// 既にエレメント化されていた場合は何もしない
-		if (this._elementized) {
-			return;
-		}
-
-		if ('google' in window && google.maps) {
-			this.addClass(GoogleMaps.className);
-
-			this.mapOption = this.mergeOptions(GoogleMaps.defaultOptions, options)
-			this._init();
-
-			// TODO: 必要な処理か検討
-			GoogleMaps.maps.push(this);
-			this.data(GoogleMaps.className, this);
-		} else {
-			if ('console' in window) {
-				console.warn('ReferenceError: "//maps.google.com/maps/api/js" を先に読み込む必要があります。');
-				return;
-			}
-		}
-	}
-
-	/**
 	 * 住所文字列から座標を非同期で取得
 	 *
 	 * @version 0.12.0
@@ -212,6 +176,42 @@ class GoogleMaps extends BaserElement {
 				}
 			}
 		);
+	}
+
+	/**
+	 * コンストラクタ
+	 *
+	 * use: jQuery
+	 *
+	 * @version 0.9.0
+	 * @since 0.0.6
+	 * @param el 管理するDOM要素
+	 * @param options マップオプション
+	 *
+	 */
+	constructor (el: HTMLElement, options?: GoogleMapsOption) {
+		super(el);
+
+		// 既にエレメント化されていた場合は何もしない
+		if (this._elementized) {
+			return;
+		}
+
+		if ('google' in window && google.maps) {
+			this.addClass(GoogleMaps.className);
+
+			this.mapOption = this.mergeOptions(GoogleMaps.defaultOptions, options);
+			this._init();
+
+			// TODO: 必要な処理か検討
+			GoogleMaps.maps.push(this);
+			this.data(GoogleMaps.className, this);
+		} else {
+			if ('console' in window) {
+				console.warn('ReferenceError: "//maps.google.com/maps/api/js" を先に読み込む必要があります。');
+				return;
+			}
+		}
 	}
 
 	/**
@@ -351,7 +351,7 @@ class GoogleMaps extends BaserElement {
 class Coordinate {
 
 	public title: string;
-	public icon: google.maps.Icon = null;
+	public icon: google.maps.Icon | undefined;
 	public el: HTMLElement;
 	public $el: JQuery;
 	public lat: number;
@@ -461,8 +461,8 @@ class Coordinate {
 			this.icon.url = iconURL;
 			if (iconSize) {
 				const sizeQ: string[] = `${iconSize}`.split(/\s+/);
-				const width: number = +sizeQ[0] || null;
-				if (width) {
+				const width: number = +sizeQ[0];
+				if (!isNaN(width)) {
 					const height: number = +sizeQ[1] || width;
 					const size: google.maps.Size = new google.maps.Size(width, height);
 					this.icon.size = size;

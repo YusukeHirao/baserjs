@@ -1,6 +1,6 @@
-import DispatchEvent from './DispatchEvent';
-import EventHandler from './EventHandler';
-import IEventDispatcher from '../Interface/IEventDispatcher';
+import DispatchEvent from '../DispatchEvent';
+import EventHandler from '../EventHandler';
+import IEventDispatcher from './IEventDispatcher';
 
 /**
  * イベントを検知してハンドラを発火させることができるクラス
@@ -88,6 +88,9 @@ class EventDispatcher implements IEventDispatcher {
 	 *
 	 */
 	public off (type?: string | string[]): EventDispatcher {
+		if (!type) {
+			return this;
+		}
 		let types: string[];
 		if (typeof type === 'string') {
 			types = type.split(/\s+/g);
@@ -126,8 +129,8 @@ class EventDispatcher implements IEventDispatcher {
 			// sliceをつかってオブジェクトのコピーを渡し参照を切る
 			const handlers: EventHandler[] = EventDispatcher.types[typeName].slice();
 			while (handlers.length) {
-				const eventHandler: EventHandler = handlers.shift();
-				if (eventHandler.context === this) {
+				const eventHandler: EventHandler | undefined = handlers.shift();
+				if (eventHandler && eventHandler.context === this) {
 					const isCancel: boolean = eventHandler.fire(context, e, args);
 					if (isCancel) {
 						e.preventDefault();

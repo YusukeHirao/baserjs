@@ -1,9 +1,10 @@
-import UtilString from './UtilString';
-import EventDispatcher from './EventDispatcher';
-import Browser from './Browser';
-import BreakPoints from './BreakPoints';
-import BaserElement from './BaserElement';
-import { AlignedBoxCallback, BreakPointsOption } from '../Interface/';
+import UtilString from '../Util/String';
+import EventDispatcher from '../EventDispatcher';
+import Browser from '../Browser';
+import BreakPoints from '../BreakPoints';
+import BreakPointsOption from '../BreakPoints/IBreakPointsOption';
+import BaserElement from '../BaserElement';
+import AlignedBoxCallback from './IAlignedBoxCallback';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -17,7 +18,7 @@ declare var $: {};
  * @since 0.7.0
  *
  */
-class AlignedBoxes extends EventDispatcher {
+export default class AlignedBoxes extends EventDispatcher {
 
 	/**
 	 * 監視タイマーID
@@ -113,29 +114,6 @@ class AlignedBoxes extends EventDispatcher {
 	 */
 	private _currentColumn: number;
 
-	/**
-	 * コンストラクタ
-	 *
-	 * @version 1.0.0
-	 * @since 0.7.0
-	 * @param el 対象のボックス要素
-	 * @param column カラム数もしくはブレークポイントに寄るカラム数 `0`の場合すべての要素の高さを揃える
-	 * @param callback ボックスの高さ揃えるときのコールバック
-	 */
-	constructor (el: HTMLElement | NodeListOf<HTMLElement>, column: number | BreakPointsOption<number> = 0, callback?: AlignedBoxCallback) {
-		super();
-		if (el instanceof HTMLElement) {
-			this.elList.push(el);
-		} else {
-			for (const elem of el) {
-				this.elList.push(elem);
-			}
-		}
-		AlignedBoxes.boot();
-		this.id = UtilString.UID();
-		AlignedBoxes.groups[this.id] = this;
-		this._init(column, callback);
-	}
 
 	/**
 	 * 基準の文字要素を生成する
@@ -150,7 +128,7 @@ class AlignedBoxes extends EventDispatcher {
 				tagName: 'div',
 				text: 'M',
 			},
-			null,
+			undefined,
 			{
 				display: 'block',
 				visibility: 'hidden',
@@ -235,6 +213,30 @@ class AlignedBoxes extends EventDispatcher {
 	}
 
 	/**
+	 * コンストラクタ
+	 *
+	 * @version 1.0.0
+	 * @since 0.7.0
+	 * @param el 対象のボックス要素
+	 * @param column カラム数もしくはブレークポイントに寄るカラム数 `0`の場合すべての要素の高さを揃える
+	 * @param callback ボックスの高さ揃えるときのコールバック
+	 */
+	constructor (el: HTMLElement | NodeListOf<HTMLElement>, column: number | BreakPointsOption<number> = 0, callback?: AlignedBoxCallback) {
+		super();
+		if (el instanceof HTMLElement) {
+			this.elList.push(el);
+		} else {
+			for (const elem of el) {
+				this.elList.push(elem);
+			}
+		}
+		AlignedBoxes.boot();
+		this.id = UtilString.UID();
+		AlignedBoxes.groups[this.id] = this;
+		this._init(column, callback);
+	}
+
+	/**
 	 * 高さ揃えを解除する
 	 *
 	 * @version 0.9.0
@@ -242,7 +244,7 @@ class AlignedBoxes extends EventDispatcher {
 	 *
 	 */
 	public destroy (): void {
-		AlignedBoxes.groups[this.id] = null;
+		delete AlignedBoxes.groups[this.id];
 	}
 
 	private _init (column: number | BreakPointsOption<number> = 0, callback?: AlignedBoxCallback): void {
@@ -322,5 +324,3 @@ class AlignedBoxes extends EventDispatcher {
 	}
 
 }
-
-export default AlignedBoxes;

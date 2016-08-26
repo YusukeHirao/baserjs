@@ -1,8 +1,8 @@
-import UtilString from './UtilString';
-import EventDispatcher from './EventDispatcher';
-import ElementClassNameCase from '../Enum/ElementClassNameCase';
-import ClassNameSeparatorForBEM from '../Enum/ClassNameSeparatorForBEM';
-import IElement from '../Interface/IElement';
+import UtilString from '../Util/String';
+import EventDispatcher from '../EventDispatcher';
+import ElementClassNameCase from './EnumElementClassNameCase';
+import ClassNameSeparatorForBEM from './EnumClassNameSeparatorForBEM';
+import IElement from './IElement';
 
 const HYPHEN: string = '-';
 const DOUBLE_HYPHEN: string = '--';
@@ -13,16 +13,16 @@ const elementizedMap: WeakMap<HTMLElement, Set<Symbol>> = new WeakMap();
 
 type Primitive = string | number | boolean;
 
-interface IBaserElementCreateElementOption {
+export interface IBaserElementCreateElementOption {
 	tagName: string;
 	text?: string;
 }
 
-interface IBaserElementCreateElementAttributes {
+export interface IBaserElementCreateElementAttributes {
 	[ attrName: string ]: string | number | boolean;
 }
 
-interface IBaserElementCreateElementStyle {
+export interface IBaserElementCreateElementStyle {
 	[ styleProperty: string ]: string | number;
 }
 
@@ -146,9 +146,9 @@ class BaserElement extends EventDispatcher implements IElement {
 	public static createClassName (blockNames: string, elementNames: string = '', modifierName: string = ''): string {
 		let className: string = '';
 		let prefix: string;
-		let separator: string;
-		let elementSeparator: string;
-		let modifierSeparator: string;
+		let separator: string = '';
+		let elementSeparator: string = '';
+		let modifierSeparator: string = '';
 		switch (BaserElement.classNameDefaultCase) {
 			case ElementClassNameCase.HYPHEN_DELIMITED: {
 				separator = HYPHEN;
@@ -262,20 +262,18 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	public static getBoolAttr (elem: HTMLElement, attrName: string): boolean {
-		let value: any;
 		// DOM APIの標準で判定できるものはそれで判断
-		value = elem[attrName];
-		if (value === true) {
+		if (elem[attrName] === true) {
 			return true;
 		}
 		const attr: Attr = elem.attributes.getNamedItem(attrName);
 		if (attr) {
-			value = attr.value;
+			const value: string = attr.value;
 			if (value === '') {
 				// 値なし属性の場合は存在すれば真
 				return true;
 			} else {
-				return !UtilString.isFalsy(`${value}`);
+				return !UtilString.isFalsy(value);
 			}
 		} else {
 			// 属性がない場合は偽
@@ -367,7 +365,7 @@ class BaserElement extends EventDispatcher implements IElement {
 		this._elementize();
 		// ID・nameの抽出 & 生成
 		const id: string = el.id || UtilString.UID();
-		const name: string = el.getAttribute('name');
+		const name: string = el.getAttribute('name') || '';
 		el.id = id;
 		this.id = id;
 		this.name = name;
@@ -437,7 +435,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public attr (key: string, value: any): void;
 	public attr (key: string): any;
-	public attr (key: string, value?: any): string {
+	public attr (key: string, value?: any): string | undefined {
 		if (value === undefined) {
 			return $(this.el).attr(key);
 		} else {
@@ -450,7 +448,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public data (key: string, value: any): void;
 	public data (key: string): any;
-	public data (key: string, value?: any): Primitive {
+	public data (key: string, value?: any): Primitive | undefined {
 		if (value === undefined) {
 			return $(this.el).data(key);
 		} else {
@@ -471,7 +469,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	public val (): string;
 	public val (value: string): void;
 	public val (value?: string): any {
-		return $(this.el).val(value);
+		return $(this.el).val(value!);
 	}
 
 	/**
@@ -479,7 +477,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	public prop (key: string, value: any): void;
 	public prop (key: string): any;
-	public prop (key: string, value?: any): Primitive {
+	public prop (key: string, value?: any): Primitive | undefined {
 		if (value === undefined) {
 			return $(this.el).prop(key);
 		} else {
@@ -522,7 +520,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 */
 	protected __isElementized (constructor: any /* Class */): boolean {
 		if (elementizedMap.has(this.el)) {
-			const constructorList: Set<Symbol> = elementizedMap.get(this.el);
+			const constructorList: Set<Symbol> = elementizedMap.get(this.el)!;
 			return constructorList.has(constructor._name as Symbol);
 		}
 		return false;
@@ -537,7 +535,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	protected __elementize (constructor: any /* Class */): void {
 		let constructorList: Set<Symbol>;
 		if (elementizedMap.has(this.el)) {
-			constructorList = elementizedMap.get(this.el);
+			constructorList = elementizedMap.get(this.el)!;
 		} else {
 			constructorList = new Set();
 		}

@@ -1,5 +1,5 @@
-import DispatchEvent from './DispatchEvent';
-import EventDispatcher from './EventDispatcher';
+import DispatchEvent from '../DispatchEvent';
+import EventDispatcher from '../EventDispatcher';
 
 /**
  * 時間管理クラス
@@ -37,19 +37,7 @@ class Timer extends EventDispatcher {
 	 * @since 0.0.8
 	 *
 	 */
-	private _timerId: number = null;
-
-	/**
-	 * コンストラクタ
-	 *
-	 * @version 0.9.0
-	 * @since 0.0.1
-	 *
-	 */
-	constructor () {
-		super();
-		this.now();
-	}
+	private _timerId: number;
 
 	/**
 	 * 遅延処理
@@ -67,6 +55,18 @@ class Timer extends EventDispatcher {
 	 */
 	public static wait (time: number, callback: { (currentTime: number, startTime: number, context?: any): void }, context?: any): Timer {
 		return new Timer().wait(time, callback, context);
+	}
+
+	/**
+	 * コンストラクタ
+	 *
+	 * @version 0.9.0
+	 * @since 0.0.1
+	 *
+	 */
+	constructor () {
+		super();
+		this.now();
 	}
 
 	/**
@@ -118,35 +118,10 @@ class Timer extends EventDispatcher {
 	public start (time: number = Infinity): Timer {
 		// call: 0
 		const START_TIMESTAMP: number = this.now();
-		clearTimeout(this._timerId);
 		// call: 1
-		const tick: (time: number) => void = (time: number): void => {
-			// call: 3, 7, 12... onTick
-			this._timerId = setTimeout(
-				(): void => {
-					// call: 5, 10... onProgress
-					const now: number = this.now();
-					const period: number = now - START_TIMESTAMP;
-					if (period < time) {
-						// call: 6, 11... onKickTick
-						tick(time);
-						// call: 9, 14... onFireProgressHandler
-						const e: DispatchEvent = new DispatchEvent('progress');
-						this.trigger(e, [now, START_TIMESTAMP, this], this);
-						if (e.isDefaultPrevented()) {
-							this.stop();
-							// didn't calling onProgress
-						}
-					} else {
-						this.stop();
-					}
-				},
-				this.interval
-			);
-			// call: 4, 8, 13... onStacked
-		};
+		clearTimeout(this._timerId);
 		// call: 2
-		tick(time);
+		this._tick(time, START_TIMESTAMP);
 		return this;
 	}
 
@@ -164,7 +139,6 @@ class Timer extends EventDispatcher {
 		this.trigger(e, [now, this._timerId, this], this);
 		if (!e.isDefaultPrevented()) {
 			clearTimeout(this._timerId);
-			this._timerId = null;
 		}
 		return this;
 	}
@@ -201,6 +175,31 @@ class Timer extends EventDispatcher {
 			delay
 		);
 		return this;
+	}
+
+	private _tick (time: number, startTimestamp: number): void {
+		// call: 3, 7, 12... onTick
+		this._timerId = setTimeout(this._tickEnd.bind(this, time, startTimestamp), this.interval);
+		// call: 4, 8, 13... onStacked
+	};
+
+	private _tickEnd (time: number, startTimestamp: number): void {
+		// call: 5, 10... onProgress
+		const now: number = this.now();
+		const period: number = now - startTimestamp;
+		if (period < time) {
+			// call: 6, 11... onKickTick
+			this._tick(time, startTimestamp);
+			// call: 9, 14... onFireProgressHandler
+			const e: DispatchEvent = new DispatchEvent('progress');
+			this.trigger(e, [now, startTimestamp, this], this);
+			if (e.isDefaultPrevented()) {
+				this.stop();
+				// didn't calling onProgress
+			}
+		} else {
+			this.stop();
+		}
 	}
 
 }

@@ -1,6 +1,6 @@
-import UtilString from './UtilString';
-import DispatchEvent from './DispatchEvent';
-import EventDispatcher from './EventDispatcher';
+import UtilString from '../Util/String';
+import DispatchEvent from '../DispatchEvent';
+import EventDispatcher from '../EventDispatcher';
 
 /**
  * イベントハンドラのラッパークラス

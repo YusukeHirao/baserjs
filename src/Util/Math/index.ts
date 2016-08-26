@@ -1,4 +1,4 @@
-import { Dimension } from '../Interface/';
+import Dimension from '../../BaserElement/IDimension';
 
 /**
  * ユーティリティ算術クラス

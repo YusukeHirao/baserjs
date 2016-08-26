@@ -109,10 +109,10 @@ class UtilString {
 	 */
 	public static divide (str: string, separator: string): string[] {
 		const splited: string[] = str.split(separator);
-		let prefix: string;
-		let suffix: string;
+		let prefix: string = '';
+		let suffix: string = '';
 		if (splited) {
-			prefix = splited.shift();
+			prefix = splited.shift() || '';
 			if (splited.length) {
 				suffix = splited.join(separator);
 			}

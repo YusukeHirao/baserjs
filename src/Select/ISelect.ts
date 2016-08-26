@@ -1,4 +1,4 @@
-import IFormElement from './IFormElement';
+import IFormElement from '../FormElement/IFormElement';
 
 interface ISelect extends IFormElement {
 	// defaultSelectedIndex: number;

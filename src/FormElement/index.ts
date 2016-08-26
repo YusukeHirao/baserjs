@@ -1,6 +1,6 @@
-import BaserElement from './BaserElement';
-import IFormElement from '../Interface/IFormElement';
-import { FormElementOption } from '../Interface/';
+import BaserElement from '../BaserElement';
+import IFormElement from './IFormElement';
+import FormElementOption from './IFormElementOption';
 
 /**
  * フォーム要素の抽象クラス
@@ -353,7 +353,6 @@ class FormElement extends BaserElement implements IFormElement {
 
 		// TODO: Not use jQuery method
 		if (this.isWrappedByLabel) {
-			debugger;
 			// this.label.wrapAll(wrapper);
 			this.wrapper = wrapper;
 		} else if (this.hasLabelByForAttr) {
@@ -399,7 +398,7 @@ class FormElement extends BaserElement implements IFormElement {
 			if (arg && arg.isSilent) {
 				this._onSilentChange();
 			} else {
-				this.trigger('change', null, this);
+				this.trigger('change', undefined, this);
 			}
 		});
 	}
@@ -534,7 +533,6 @@ class FormElement extends BaserElement implements IFormElement {
 	 */
 	private _setLabelText (): void {
 
-		debugger;
 		if (this._config.label) {
 
 			// this.label.prepend(this._config.label);
@@ -615,7 +613,7 @@ class FormElement extends BaserElement implements IFormElement {
 		}
 
 		// ラベルがないときにラベル要素を生成する
-		if (this._config.autoLabeling && !hasLabel) {
+		if (this._config.autoLabeling && this._config.labelTag && !hasLabel) {
 			// label(もしくは別の)要素の生成
 			$label = $(`<${this._config.labelTag.toLowerCase()} />`);
 			$label.insertAfter(this.el);
@@ -634,7 +632,6 @@ class FormElement extends BaserElement implements IFormElement {
 		// 	hasLabelByForAttr: this.hasLabelByForAttr
 		// });
 
-		debugger;
 		// BaserElement.addClass($label, FormElement.classNameFormElementCommon);
 		// BaserElement.addClass($label, FormElement.classNameFormElementCommon, FormElement.classNameLabel);
 

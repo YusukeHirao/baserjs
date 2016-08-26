@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import BaserElement from '../BaserElement';
 
 class BaserElementCollection {
 

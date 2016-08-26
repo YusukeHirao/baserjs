@@ -1,7 +1,8 @@
-import UtilMath from './UtilMath';
-import Browser from './Browser';
-import BaserElement from './BaserElement';
-import { BackgroundContainerOption, Dimension } from '../Interface/';
+import UtilMath from '../Util/Math';
+import Browser from '../Browser';
+import BaserElement from '../BaserElement';
+import Dimension from '../BaserElement/IDimension';
+import BackgroundContainerOption from './IBackgroundContainerOption';
 
 /**
  * ラジオボタンとチェックボックスの抽象クラス
@@ -70,14 +71,15 @@ class BackgroundContainer extends BaserElement {
 
 		this.addClass(BackgroundContainer.className);
 
+		this._config = this.mergeOptions(BackgroundContainer.defaultOption, options);
 
-		this._config = $.extend({}, BackgroundContainer.defaultOption, options);
-
-		for (const elem of this.el.querySelectorAll(this._config.child) as NodeListOf<HTMLElement>) {
-			this._bgElements.push(elem);
+		if (this._config.child) {
+			for (const elem of this.el.querySelectorAll(this._config.child) as NodeListOf<HTMLElement>) {
+				this._bgElements.push(elem);
+			}
 		}
 
-		const currentCSSPosition: string = this.el.style.position;
+		const currentCSSPosition: string | null = getComputedStyle(this.el).position;
 		if (currentCSSPosition === 'static' || currentCSSPosition === '' || currentCSSPosition == null) {
 			this.el.style.position = 'relative';
 		}

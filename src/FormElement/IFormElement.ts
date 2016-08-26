@@ -1,4 +1,4 @@
-import IElement from './IElement';
+import IElement from '../BaserElement/IElement';
 
 interface IFormElement extends IElement {
 	labelText: string;

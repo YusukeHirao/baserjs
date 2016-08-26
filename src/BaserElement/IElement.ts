@@ -1,4 +1,4 @@
-import IEventDispatcher from './IEventDispatcher';
+import IEventDispatcher from '../EventDispatcher/IEventDispatcher';
 
 interface IElement extends IEventDispatcher {
 	id: string;

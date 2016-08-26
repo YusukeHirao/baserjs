@@ -1,7 +1,7 @@
-import DispatchEvent from './DispatchEvent';
-import Browser from './Browser';
-import Timer from './Timer';
-import { ScrollOptions } from '../Interface/';
+import DispatchEvent from '../DispatchEvent';
+import Browser from '../Browser';
+import Timer from '../Timer';
+import ScrollOptions from './IScrollOptions';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -23,8 +23,8 @@ class Scroll {
 
 	public targetX: number;
 	public targetY: number;
-	public prevX: number;
-	public prevY: number;
+	public prevX: number | null;
+	public prevY: number | null;
 	public isScroll: boolean;
 	public timer: Timer = new Timer();
 	public options: ScrollOptions;
@@ -71,7 +71,7 @@ class Scroll {
 			if (!target) {
 				return this;
 			}
-			let elem: HTMLElement = target[0];
+			let elem: HTMLElement = target;
 			// スクロール先座標をセットする
 			let x: number = 0;
 			let y: number = 0;
@@ -90,12 +90,12 @@ class Scroll {
 			this.targetX = Math.min(x, maxScrollX) + offset;
 			this.targetY = Math.min(y, maxScrollY) + offset;
 		} else {
-			const target: HTMLElement = document.getElementById(location.hash.replace('#', ''));
+			const target: HTMLElement | null = document.getElementById(location.hash.replace('#', ''));
 			if (target) {
 				Timer.wait(Scroll.delayWhenURLHashTarget, (): void => {
 					window.scrollTo(0, 0);
 					this.to(target, {
-						offset: offset
+						offset: offset,
 					});
 					return;
 				});

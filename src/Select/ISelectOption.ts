@@ -1,4 +1,4 @@
-import FormElementOption from './FormElementOption';
+import FormElementOption from '../FormElement/IFormElementOption';
 
 /**
  * Selectクラスのオプションハッシュのインターフェイス

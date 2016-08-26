@@ -1,18 +1,26 @@
-import UtilMath from './UtilMath';
+import UtilMath from './Util/Math';
 import Timer from './Timer';
 import Browser from './Browser';
 import BaserElement from './BaserElement';
 import AlignedBoxes from './AlignedBoxes';
+import AlignedBoxCallback from './AlignedBoxes/IAlignedBoxCallback';
 import BackgroundContainer from './BackgroundContainer';
+import BackgroundContainerOption from './BackgroundContainer/IBackgroundContainerOption';
 import Select from './Select';
+import SelectOption from './Select/ISelectOption';
 import Scroll from './Scroll';
+import ScrollOptions from './Scroll/IScrollOptions';
 import GoogleMaps from './GoogleMaps';
+import GoogleMapsOption from './GoogleMaps/IGoogleMapsOption';
 import YouTube from './YouTube';
-import { BreakPointsOption, BackgroundContainerOption, AlignedBoxCallback, SelectOption, ScrollOptions, GoogleMapsOption, YouTubeOption } from '../Interface/';
+import YouTubeOption from './YouTube/IYouTubeOption';
+import BreakPointsOption from './BreakPoints/IBreakPointsOption';
+
+import '../typings/jquery/jquery';
 
 class JQueryAdapter {
 
-	public static bcScrollTo (selector: any, options?: ScrollOptions): void {
+	public static bcScrollTo (selector: any, options?: ScrollOptions): void  {
 		const scroll: Scroll = new Scroll();
 		scroll.to(selector, options);
 	}
@@ -90,7 +98,7 @@ class JQueryAdapter {
 			if (detailTarget) {
 				const $detailTarget: JQuery = self.find(detailTarget);
 				if ($detailTarget.length) {
-					self.each(function () {
+					self.each(function (this: HTMLElement) {
 						const $split: JQuery = $(this).find(detailTarget);
 						/* tslint:disable */
 						new AlignedBoxes($split[0], column, callback);
@@ -111,7 +119,7 @@ class JQueryAdapter {
 	// @version 1.0.0
 	// @since 0.1.0
 	public bcBoxLink (): JQuery {
-		return $(this).on('click', function (e: JQueryEventObject): void {
+		return $(this).on('click', function (this: HTMLElement, e: JQueryEventObject): void {
 			const $elem: JQuery = $(this);
 			const $link: JQuery = $elem.find('a, area').eq(0);
 			const href: string = $link.prop('href');
@@ -139,11 +147,11 @@ class JQueryAdapter {
 	public bcSelect (options: string | SelectOption): JQuery {
 		const self: JQuery = $(this);
 		return self.each( (i: number, elem: HTMLSelectElement): void => {
-			const $elem: JQuery = $(elem);
+			// const $elem: JQuery = $(elem);
 			if (typeof options === 'string') {
 				switch (options) {
 					case 'update': {
-						const select: Select = <Select> $elem.data('bc-element');
+						// const select: Select = <Select> $elem.data('bc-element');
 						// select.update();
 					}
 					break;
@@ -182,17 +190,15 @@ class JQueryAdapter {
 			const $imgs: JQuery = $elem.filter('img').add($elem.find('img'));
 			if ($imgs.length) {
 				$imgs.hide();
-				$imgs.each(function (): void {
+				$imgs.each(function (this: HTMLImageElement): void {
 					const loaded: JQueryDeferred<any> = $.Deferred();
-					let img: HTMLImageElement = new Image();
+					let img: HTMLImageElement | null = new Image();
 					img.onload = function (): any {
 						loaded.resolve();
-						img.onload = null; // GC
 						img = null; // GC
 					};
 					img.onabort = img.onerror = function (e: Event): any {
 						loaded.reject(e);
-						img.onload = null; // GC
 						img = null; // GC
 					};
 					img.src = this.src;
@@ -280,13 +286,13 @@ class JQueryAdapter {
 	 */
 	public bcScrollTo (options?: ScrollOptions): JQuery {
 		const self: JQuery = $(this);
-		return self.on('click', function (e: JQueryMouseEventObject): void {
+		return self.on('click', function (this: HTMLElement, e: JQueryMouseEventObject): void {
 			const $this: JQuery = $(this);
 			let href: string = $this.attr('href');
 			const scroll: Scroll = new Scroll();
 			if (href) {
 				// キーワードを一番に優先する
-				if (options && $.isPlainObject(options.keywords)) {
+				if (options && options.keywords && $.isPlainObject(options.keywords)) {
 					for (const keyword in options.keywords) {
 						if (options.keywords.hasOwnProperty(keyword)) {
 							const target: string = options.keywords[keyword];
@@ -370,11 +376,13 @@ class JQueryAdapter {
 				BaserElement.addClass(col, CLASS_NAME, '', CLASS_NAME_NTH + columnSize);
 				col.appendChild(elem);
 				for (let j: number = 0; j < sizeByColumn; j++) {
-					const item: HTMLElement = itemArray.shift();
-					col.appendChild(item);
-					// TODO: item.data(config.dataKey, i);
-					BaserElement.addClass(item, CLASS_NAME, CLASS_NAME_ITEM);
-					BaserElement.addClass(item, CLASS_NAME, CLASS_NAME_ITEM, CLASS_NAME_NTH + i);
+					const item: HTMLElement | undefined = itemArray.shift();
+					if (item) {
+						col.appendChild(item);
+						// TODO: item.data(config.dataKey, i);
+						BaserElement.addClass(item, CLASS_NAME, CLASS_NAME_ITEM);
+						BaserElement.addClass(item, CLASS_NAME, CLASS_NAME_ITEM, CLASS_NAME_NTH + i);
+					}
 				}
 			}
 
@@ -468,15 +476,5 @@ class JQueryAdapter {
 
 }
 
-$.prototype.bcBackground = JQueryAdapter.prototype.bcBackground;
-$.prototype.bcBoxAlignHeight = JQueryAdapter.prototype.bcBoxAlignHeight;
-$.prototype.bcBoxLink = JQueryAdapter.prototype.bcBoxLink;
-$.prototype.bcSelect = JQueryAdapter.prototype.bcSelect;
-$.prototype.bcImageLoaded = JQueryAdapter.prototype.bcImageLoaded;
-$.prototype.bcKeepAspectRatio = JQueryAdapter.prototype.bcKeepAspectRatio;
-$.prototype.bcScrollTo = JQueryAdapter.prototype.bcScrollTo;
-$.prototype.bcSplitList = JQueryAdapter.prototype.bcSplitList;
-$.prototype.bcMaps = JQueryAdapter.prototype.bcMaps;
-$.prototype.bcYoutube = JQueryAdapter.prototype.bcYoutube;
-
-$['bcScrollTo'] = JQueryAdapter.bcScrollTo;
+$.extend($, JQueryAdapter);
+$.extend($.fn, JQueryAdapter.prototype);

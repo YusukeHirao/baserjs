@@ -1,6 +1,6 @@
-import EventDispatcher from './EventDispatcher';
-import Browser from './Browser';
-import { BreakPointsOption } from '../Interface/';
+import EventDispatcher from '../EventDispatcher';
+import Browser from '../Browser';
+import BreakPointsOption from './IBreakPointsOption';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない

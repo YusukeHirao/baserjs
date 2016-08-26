@@ -5,7 +5,7 @@
  * @since 0.0.10
  *
  */
-class DispatchEvent {
+export default class DispatchEvent {
 
 	/**
 	 * イベントのタイプ
@@ -93,5 +93,3 @@ class DispatchEvent {
 	}
 
 }
-
-export default DispatchEvent;

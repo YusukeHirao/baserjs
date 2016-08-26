@@ -1,4 +1,4 @@
-import UtilString from './UtilString';
+import UtilString from '../Util/String';
 
 /**
  * URLの情報を管理するクラス
@@ -118,39 +118,6 @@ class Locational {
 	public params: { [ index: string ]: string | string[] };
 
 	/**
-	 * コンストラクタ
-	 *
-	 * @version 0.7.0
-	 * @since 0.7.0
-	 * @param originalLocation 元となるロケーションオブジェクト
-	 *
-	 */
-	constructor (originalLocation: Location | HTMLAnchorElement | HTMLAreaElement) {
-		// ex) http:
-		this.protocol = originalLocation.protocol;
-
-		// ex) www.sample.com:80
-		this.host = originalLocation.host;
-
-		// ex) www.sample.com
-		this.hostname = originalLocation.hostname;
-
-		// ex) 80
-		this.port = originalLocation.port;
-
-		// /path/dir/file.ext
-		this.pathname = originalLocation.pathname;
-
-		// ?key=value&key2=value
-		this.search = originalLocation.search;
-
-		// #hash
-		this.hash = originalLocation.hash;
-
-		this.update();
-	}
-
-	/**
 	 * クエリー文字列をハッシュにして返す
 	 *
 	 * @version 0.10.0
@@ -184,6 +151,39 @@ class Locational {
 			}
 		}
 		return params;
+	}
+
+	/**
+	 * コンストラクタ
+	 *
+	 * @version 0.7.0
+	 * @since 0.7.0
+	 * @param originalLocation 元となるロケーションオブジェクト
+	 *
+	 */
+	constructor (originalLocation: Location | HTMLAnchorElement | HTMLAreaElement) {
+		// ex) http:
+		this.protocol = originalLocation.protocol;
+
+		// ex) www.sample.com:80
+		this.host = originalLocation.host;
+
+		// ex) www.sample.com
+		this.hostname = originalLocation.hostname;
+
+		// ex) 80
+		this.port = originalLocation.port;
+
+		// /path/dir/file.ext
+		this.pathname = originalLocation.pathname;
+
+		// ?key=value&key2=value
+		this.search = originalLocation.search;
+
+		// #hash
+		this.hash = originalLocation.hash;
+
+		this.update();
 	}
 
 	/**

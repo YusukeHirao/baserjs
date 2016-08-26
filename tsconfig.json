@@ -1,9 +1,19 @@
 {
-    "compilerOptions": {
-        "target": "es2015",
-        "module": "es2015"
-    },
-    "exclude": [
-        "node_modules"
-    ]
+	"compileOnSave": true,
+	"compilerOptions": {
+		"target": "es2015",
+		"module": "commonjs",
+		"noImplicitThis": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"strictNullChecks": true,
+		"declaration": true,
+		"sourceMap": true,
+		"outDir": "lib",
+		"traceResolution": true
+	},
+	"exclude": [
+		"node_modules",
+		"lib"
+	]
 }

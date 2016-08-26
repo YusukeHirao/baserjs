@@ -1,7 +1,7 @@
 // import BaserElement from './BaserElement';
-import FormElement from './FormElement';
+import FormElement from '../FormElement';
 // import Browser from './Browser';
-import ISelect from '../Interface/ISelect';
+import ISelect from './ISelect';
 // import { SelectOption } from '../Interface/';
 
 /**

@@ -1,4 +1,4 @@
-import EventDispatcher from './EventDispatcher';
+import EventDispatcher from '../EventDispatcher';
 
 /**
  * 非同期逐次処理クラス
@@ -43,7 +43,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _promise: Promise<any> = null;
+	// private _promise: Promise<any> | null = null;
 
 	/**
 	 * シーケンスのリゾルバ
@@ -52,7 +52,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _resolver: Promise<any> = null;
+	private _resolver: Promise<any> | null = null;
 
 	/**
 	 * 遅延時間
@@ -222,12 +222,12 @@ class Sequence extends EventDispatcher {
 	 * @since 0.9.0
 	 *
 	 */
-	private _reset (): void {
-		// this._waitTimer.stop();
-		this._promise = null;
-		this._resolver = null;
-		this._waitingTime = 0;
-	}
+	// private _reset (): void {
+	// 	// this._waitTimer.stop();
+	// 	this._promise = null;
+	// 	this._resolver = null;
+	// 	this._waitingTime = 0;
+	// }
 
 }
 

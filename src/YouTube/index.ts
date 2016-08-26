@@ -1,8 +1,9 @@
-import UtilArray from './UtilArray';
-import DispatchEvent from './DispatchEvent';
-import BaserElement from './BaserElement';
-import Browser from './Browser';
-import { YouTubeOption, YouTubeMuteControllerOptions } from '../Interface/';
+import UtilArray from '../Util/Array';
+import DispatchEvent from '../DispatchEvent';
+import BaserElement from '../BaserElement';
+import Browser from '../Browser';
+import YouTubeOption from './IYouTubeOption';
+import YouTubeMuteControllerOptions from './IYouTubeMuteControllerOptions';
 
 /**
  * YouTube要素
@@ -256,19 +257,19 @@ class YouTube extends BaserElement {
 			baseClass: 'youtube-mute-ctrl',
 		};
 		const conf: YouTubeMuteControllerOptions = $.extend(defaults, options);
-		BaserElement.addClass(el, conf.baseClass);
+		BaserElement.addClass(el, conf.baseClass!);
 		const update: () => void = (): void => {
 			if (this._isMuted) {
-				BaserElement.addClass(el, conf.baseClass, '', conf.mutedClass);
-				BaserElement.removeClass(el, conf.baseClass, '', conf.unmutedClass);
+				BaserElement.addClass(el, conf.baseClass!, '', conf.mutedClass);
+				BaserElement.removeClass(el, conf.baseClass!, '', conf.unmutedClass);
 			} else {
-				BaserElement.addClass(el, conf.baseClass, '', conf.unmutedClass);
-				BaserElement.removeClass(el, conf.baseClass, '', conf.mutedClass);
+				BaserElement.addClass(el, conf.baseClass!, '', conf.unmutedClass);
+				BaserElement.removeClass(el, conf.baseClass!, '', conf.mutedClass);
 			}
 		};
 		const bindCtrl: () => void = (): void => {
 			el.addEventListener(
-				conf.eventType,
+				conf.eventType!,
 				(): void => {
 					if (this._isMuted) {
 						this.unMute();
@@ -354,13 +355,13 @@ class YouTube extends BaserElement {
 			this.movieOption.preEmbed = true;
 		}
 
-		let movieIdList: string[] = this.movieOption.id.split(/\s*,\s*/);
+		let movieIdList: string[] = this.movieOption.id ? this.movieOption.id.split(/\s*,\s*/) : [];
 
 		if (this.movieOption.shuffle) {
 			movieIdList = UtilArray.shuffle<string>(movieIdList);
 		}
 
-		const movieId: string = movieIdList[this.movieOption.index];
+		const movieId: string = movieIdList[this.movieOption.index || 0];
 
 		const param: any = {
 			version: 3,
@@ -533,7 +534,7 @@ class YouTube extends BaserElement {
 		if (!('YT' in window && YT.Player)) {
 			$.getScript(`${Browser.getBrowser().availableScheme}${YouTube.API_URL}`);
 		}
-		const intervalTimer: number = setInterval(
+		let intervalTimer: number = setInterval(
 			() => {
 				if (!this.player && 'YT' in window && YT.Player) {
 					this._createPlayer(this.playerDomId);

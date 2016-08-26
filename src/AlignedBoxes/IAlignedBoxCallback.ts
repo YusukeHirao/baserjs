@@ -1,4 +1,4 @@
-import AlignedBoxes from '../Class/AlignedBoxes';
+import AlignedBoxes from './';
 
 /**
  * ボックスの高さ揃えるときのコールバック
