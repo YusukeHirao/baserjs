@@ -16,8 +16,6 @@ import YouTube from './YouTube';
 import YouTubeOption from './YouTube/IYouTubeOption';
 import BreakPointsOption from './BreakPoints/IBreakPointsOption';
 
-import '../typings/jquery/jquery';
-
 class JQueryAdapter {
 
 	public static bcScrollTo (selector: any, options?: ScrollOptions): void  {

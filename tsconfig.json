@@ -1,5 +1,4 @@
 {
-	"compileOnSave": true,
 	"compilerOptions": {
 		"target": "es2015",
 		"module": "commonjs",
@@ -10,10 +9,14 @@
 		"declaration": true,
 		"sourceMap": true,
 		"outDir": "lib",
-		"traceResolution": true
+		"traceResolution": true,
+		"types": [
+			"jquery",
+			"googlemaps",
+			"youtube"
+		]
 	},
 	"exclude": [
-		"node_modules",
-		"lib"
+		"node_modules"
 	]
 }

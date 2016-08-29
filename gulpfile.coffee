@@ -1,5 +1,6 @@
 gulp = require 'gulp'
-webpack = require 'webpack-stream'
+webpack = require 'webpack'
+gulpWebpack = require 'webpack-stream'
 ts = require 'gulp-typescript'
 tsc = require 'typescript'
 babel = require 'gulp-babel'
@@ -35,8 +36,15 @@ gulp.task 'ts', ->
     .pipe gulp.dest './lib/'
 
 gulp.task 'pack', ->
-  gulp.src './out/src/baserJS.js'
-    .pipe webpack output: filename: 'baser.js'
+  gulp.src './lib/baser-browser.js'
+    .pipe gulpWebpack
+      plugins: [
+        new webpack.optimize.DedupePlugin()
+        new webpack.optimize.AggressiveMergingPlugin()
+      ]
+      output: filename: 'baser.js'
+    ,
+      webpack
     .pipe header banner, pkg: pkg, moment: moment, git: git
     .pipe gulp.dest './dist/'
     .pipe gulp.dest "./dist/v#{pkg.version}/"
