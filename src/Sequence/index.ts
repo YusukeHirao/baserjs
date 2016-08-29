@@ -7,7 +7,7 @@ import EventDispatcher from '../EventDispatcher';
  * @since 0.4.0
  *
  */
-class Sequence extends EventDispatcher {
+class Sequence<T> extends EventDispatcher {
 
 	/**
 	 * シーケンスの持つタスク
@@ -16,7 +16,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _tasks: Task[] = [];
+	private _tasks: Task<T>[] = [];
 
 	/**
 	 * 現在実行中のタスク番号
@@ -39,20 +39,11 @@ class Sequence extends EventDispatcher {
 	/**
 	 * シーケンスのプロミスオブジェクト
 	 *
-	 * @version 0.4.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 *
 	 */
-	// private _promise: Promise<any> | null = null;
-
-	/**
-	 * シーケンスのリゾルバ
-	 *
-	 * @version 0.4.0
-	 * @since 0.4.0
-	 *
-	 */
-	private _resolver: Promise<any> | null = null;
+	private _promise: Promise<T> | null = null;
 
 	/**
 	 * 遅延時間
@@ -62,6 +53,24 @@ class Sequence extends EventDispatcher {
 	 *
 	 */
 	private _waitingTime: number;
+
+	/**
+	 * 時間ID
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	private _waitTimerID: number;
+
+	/**
+	 * キャンセラー
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	private _canceler: (reason?: any) => void;
 
 	/**
 	 * 停止状態
@@ -89,16 +98,15 @@ class Sequence extends EventDispatcher {
 
 	/**
 	 * タスクの実行
-	 * TODO: ネイティブのPromiseを使う
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 * @param value タスクに渡すデータ
 	 * @param isLoop 最後のタスクが終了したあとに最初に戻ってループ処理をするかどうか
 	 * @return インスタンス自身
 	 *
 	 */
-	public act (value: any, isLoop: boolean = false): Sequence {
+	public act (value: T, isLoop: boolean = false): Sequence<T> {
 
 		// ストップ状態解除
 		this._isStop = false;
@@ -107,34 +115,39 @@ class Sequence extends EventDispatcher {
 		this.trigger('beforeact');
 
 		// タスク取得
-		const task: Task = this._tasks[this._currentTaskIndex];
+		const task: Task<T> = this._tasks[this._currentTaskIndex];
 
 		// タスク実行
-		const result: any = task.act(value);
+		const result: T = task.act(value);
 
 		// 戻り値によるプロミスの設定
 		this._setPromiseFrom(result);
 
 		// プロミスの結果から次のタスクを実行
-		// this._promise.done( (doneResult: any): void => {
-		// 	this._reset();
-		// 	this._currentTaskIndex += 1;
-		// 	this._iterator += 1;
-		// 	if (!this._isStop && (this._currentTaskIndex < this._tasks.length || isLoop)) {
-		// 		if (this._currentTaskIndex >= this._tasks.length && isLoop) {
-		// 			this._currentTaskIndex = 0;
-		// 		}
-		// 		this.act(doneResult, isLoop);
-		// 	} else {
-		// 		// TODO: 引数の設計とテスト書く
-		// 		this.trigger('stop');
-		// 	}
-		// }).fail( (): void => {
-		// 	this._reset();
-		// 	// TODO: 引数の設計とテスト書く
-		// 	this.trigger('exit');
-		// 	this.trigger('stop');
-		// });
+		if (this._promise) {
+			this._promise.then(
+				(doneResult: any): void => {
+					this._reset();
+					this._currentTaskIndex += 1;
+					this._iterator += 1;
+					if (!this._isStop && (this._currentTaskIndex < this._tasks.length || isLoop)) {
+						if (this._currentTaskIndex >= this._tasks.length && isLoop) {
+							this._currentTaskIndex = 0;
+						}
+						this.act(doneResult, isLoop);
+					} else {
+						// TODO: 引数の設計とテスト書く
+						this.trigger('stop');
+					}
+				},
+				(): void => {
+					this._reset();
+					// TODO: 引数の設計とテスト書く
+					this.trigger('exit');
+					this.trigger('stop');
+				}
+			);
+		}
 		return this;
 	}
 
@@ -145,7 +158,7 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	public loop (value: any): Sequence {
+	public loop (value: any): Sequence<T> {
 		return this.act(value, true);
 	}
 
@@ -156,11 +169,8 @@ class Sequence extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	public exit (): Sequence {
+	public exit (): Sequence<T> {
 		this._isStop = true;
-		if (this._resolver) {
-			// this._resolver.reject();
-		}
 		return this;
 	}
 
@@ -188,46 +198,46 @@ class Sequence extends EventDispatcher {
 
 	/**
 	 * プロミスの設定
-	 * TODO: ネイティブのPromiseを使う
 	 * TODO: this._waitTimerのTimerクラスにcancelイベントを実装してリゾルバのリジェクトを実装する
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.9.0
 	 *
 	 */
-	private _setPromiseFrom (value: any): void {
-		// if (this._isJQueryPromiseLikeObject(value)) {
-		// 	// 値がプロミスであればそのままそれを設定
-		// 	this._promise = value.promise();
-		// } else {
-		// 	// 値がプロミスでない場合は
-		// 	// プロミスを生成してリゾルバへ一時的に設定
-		// 	this._resolver = $.Deferred<any>();
-		// 	this._promise = this._resolver.promise();
-		// 	// タイマーを使い遅延実行後リゾルバからプロミスを解決
-		// 	this._waitTimer.wait(this._waitingTime, (): void => {
-		// 		this._resolver.resolve(value);
-		// 	});
-		// 	// TODO: Timerクラス側が未実装
-		// 	this._waitTimer.on('cencel', () => {
-		// 		this._resolver.reject(value);
-		// 	});
-		// }
+	private _setPromiseFrom (value: T): void {
+		if (value instanceof Promise) {
+			// 値がプロミスであればそのままそれを設定
+			this._promise = value;
+		} else {
+			// 値がプロミスでない場合は
+			// プロミスを生成してリゾルバへ一時的に設定
+			this._promise = new Promise<T>(
+				(resolver: (value?: T | PromiseLike<T>) => void, canceler: (reason?: any) => void): void => {
+					// タイマーを使い遅延実行後リゾルバからプロミスを解決
+					this._waitTimerID = setTimeout(resolver, this._waitingTime, value);
+					this._canceler = canceler;
+				}
+			);
+
+
+		}
 	}
 
 	/**
 	 * 次のタスクを実行するために一時的なオブジェクトをリセットする
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.9.0
 	 *
 	 */
-	// private _reset (): void {
-	// 	// this._waitTimer.stop();
-	// 	this._promise = null;
-	// 	this._resolver = null;
-	// 	this._waitingTime = 0;
-	// }
+	private _reset (): void {
+		clearTimeout(this._waitTimerID);
+		this._promise = null;
+		this._waitingTime = 0;
+		if (this._canceler) {
+			this._canceler(`reset`);
+		}
+	}
 
 }
 
@@ -239,7 +249,7 @@ class Sequence extends EventDispatcher {
  * @since 0.4.0
  *
  */
-class Task {
+class Task<U> {
 
 	/**
 	 * 紐づくシーケンサ
@@ -248,7 +258,7 @@ class Task {
 	 * @since 0.9.0
 	 *
 	 */
-	private _sequencer: Sequence;
+	private _sequencer: Sequence<U>;
 
 	/**
 	 * ___
@@ -267,7 +277,7 @@ class Task {
 	 * @since 0.4.0
 	 *
 	 */
-	constructor (func: Function, sequencer: Sequence) {
+	constructor (func: Function, sequencer: Sequence<U>) {
 		this._func = func;
 		this._sequencer = sequencer;
 	}
@@ -281,8 +291,8 @@ class Task {
 	 * @return 実行したタスクの戻り値
 	 *
 	 */
-	public act (value: any): any {
-		const result: any = this._func.call(this._sequencer, this._sequencer.getCount(), value);
+	public act (value: U): U {
+		const result: U = this._func.call(this._sequencer, this._sequencer.getCount(), value);
 		return result;
 	}
 

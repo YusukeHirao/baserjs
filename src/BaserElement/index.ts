@@ -1,7 +1,5 @@
 import UtilString from '../Util/String';
 import EventDispatcher from '../EventDispatcher';
-import ElementClassNameCase from './EnumElementClassNameCase';
-import ClassNameSeparatorForBEM from './EnumClassNameSeparatorForBEM';
 import IElement from './IElement';
 
 const HYPHEN: string = '-';
@@ -9,6 +7,7 @@ const DOUBLE_HYPHEN: string = '--';
 const UNDERSCORE: string = '_';
 const DOUBLE_UNDERSCORE: string = '__';
 
+const elements: WeakMap<BaserElement, HTMLElement> = new WeakMap();
 const elementizedMap: WeakMap<HTMLElement, Set<Symbol>> = new WeakMap();
 
 type Primitive = string | number | boolean;
@@ -25,6 +24,24 @@ export interface IBaserElementCreateElementAttributes {
 export interface IBaserElementCreateElementStyle {
 	[ styleProperty: string ]: string | number;
 }
+
+/**
+ * クラス名の形式
+ *
+ * @version 1.0.0
+ * @since 0.0.1
+ *
+ */
+export type ClassNameCase = 'HYPHEN_DELIMITED' | 'SNAKE_CASE' | 'CAMEL_CASE';
+
+/**
+ * BEM式のクラス名の接続形式
+ *
+ * @version 1.0.0
+ * @since 0.1.0
+ *
+ */
+export type ClassNameSeparatorForBEM = 'HYPHEN' | 'DOUBLE_HYPHEN' | 'UNDERSCORE' | 'DOUBLE_UNDERSCORE' | 'CAMEL_CASE';
 
 /**
  * DOM要素の抽象クラス
@@ -57,45 +74,77 @@ class BaserElement extends EventDispatcher implements IElement {
 	public static classNameElementCommon: string = 'element';
 
 	/**
+	 * クラス名の形式
+	 *
+	 * @version 1.0.0
+	 * @since 0.0.1
+	 *
+	 */
+	public static classNameCase: {
+		HYPHEN_DELIMITED: ClassNameCase,
+		SNAKE_CASE: ClassNameCase,
+		CAMEL_CASE: ClassNameCase,
+	} = {
+		HYPHEN_DELIMITED: 'HYPHEN_DELIMITED',
+		SNAKE_CASE: 'SNAKE_CASE',
+		CAMEL_CASE: 'CAMEL_CASE',
+	};
+
+	/**
+	 * クラス名の形式
+	 *
+	 * @version 1.0.0
+	 * @since 0.0.1
+	 *
+	 */
+	public static classNameSeparatorForBEM: {
+		HYPHEN: ClassNameSeparatorForBEM,
+		DOUBLE_HYPHEN: ClassNameSeparatorForBEM,
+		UNDERSCORE: ClassNameSeparatorForBEM,
+		DOUBLE_UNDERSCORE: ClassNameSeparatorForBEM,
+		CAMEL_CASE: ClassNameSeparatorForBEM,
+	} = {
+		HYPHEN: 'HYPHEN',
+		DOUBLE_HYPHEN: 'DOUBLE_HYPHEN',
+		UNDERSCORE: 'UNDERSCORE',
+		DOUBLE_UNDERSCORE: 'DOUBLE_UNDERSCORE',
+		CAMEL_CASE: 'CAMEL_CASE',
+	};
+
+	/**
 	 * クラス名のデフォルトの単語繋ぎの形式
 	 *
-	 * @version 0.1.0
+	 * @version 1.0.0
 	 * @since 0.1.0
 	 *
 	 */
-	public static classNameDefaultCase: ElementClassNameCase = ElementClassNameCase.HYPHEN_DELIMITED;
+	public static classNameDefaultCase: ClassNameCase = 'HYPHEN_DELIMITED';
 
 	/**
 	 * BEMのエレメントのクラス名の繋ぎ文字
 	 *
-	 * @version 0.1.0
+	 * @version 1.0.0
 	 * @since 0.1.0
 	 *
 	 */
-	public static classNameDefaultSeparatorForElement: ClassNameSeparatorForBEM = ClassNameSeparatorForBEM.DOUBLE_UNDERSCORE;
+	public static classNameDefaultSeparatorForElement: ClassNameSeparatorForBEM = 'DOUBLE_UNDERSCORE';
 
 	/**
 	 * BEMのモディファイアのクラス名の繋ぎ文字
 	 *
-	 * @version 0.1.0
+	 * @version 1.0.0
 	 * @since 0.1.0
 	 *
 	 */
-	public static classNameDefaultSeparatorForModifier: ClassNameSeparatorForBEM = ClassNameSeparatorForBEM.DOUBLE_HYPHEN;
+	public static classNameDefaultSeparatorForModifier: ClassNameSeparatorForBEM = 'DOUBLE_HYPHEN';
 
 	/**
 	 * クラス名
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 */
 	protected static _name: Symbol = Symbol('BaserElement');
-
-	/**
-	 * 管理するDOM要素
-	 *
-	 * @version 0.9.0
-	 * @since 0.9.0
-	 *
-	 */
-	public el: HTMLElement;
 
 	/**
 	 * 管理するDOM要素のid属性値
@@ -150,21 +199,21 @@ class BaserElement extends EventDispatcher implements IElement {
 		let elementSeparator: string = '';
 		let modifierSeparator: string = '';
 		switch (BaserElement.classNameDefaultCase) {
-			case ElementClassNameCase.HYPHEN_DELIMITED: {
+			case BaserElement.classNameCase.HYPHEN_DELIMITED: {
 				separator = HYPHEN;
 				blockNames = UtilString.hyphenDelimited(blockNames);
 				elementNames = UtilString.hyphenDelimited(elementNames);
 				modifierName = UtilString.hyphenDelimited(modifierName);
 			}
 			break;
-			case ElementClassNameCase.SNAKE_CASE: {
+			case BaserElement.classNameCase.SNAKE_CASE: {
 				separator = UNDERSCORE;
 				blockNames = UtilString.snakeCase(blockNames);
 				elementNames = UtilString.snakeCase(elementNames);
 				modifierName = UtilString.snakeCase(modifierName);
 			}
 			break;
-			case ElementClassNameCase.CAMEL_CASE: {
+			case BaserElement.classNameCase.CAMEL_CASE: {
 				separator = '';
 				blockNames = UtilString.camelCase(blockNames, true);
 				elementNames = UtilString.camelCase(elementNames);
@@ -176,23 +225,23 @@ class BaserElement extends EventDispatcher implements IElement {
 			}
 		}
 		switch (BaserElement.classNameDefaultSeparatorForElement) {
-			case ClassNameSeparatorForBEM.HYPHEN: {
+			case BaserElement.classNameSeparatorForBEM.HYPHEN: {
 				elementSeparator = HYPHEN;
 			}
 			break;
-			case ClassNameSeparatorForBEM.DOUBLE_HYPHEN: {
+			case BaserElement.classNameSeparatorForBEM.DOUBLE_HYPHEN: {
 				elementSeparator = DOUBLE_HYPHEN;
 			}
 			break;
-			case ClassNameSeparatorForBEM.UNDERSCORE: {
+			case BaserElement.classNameSeparatorForBEM.UNDERSCORE: {
 				elementSeparator = UNDERSCORE;
 			}
 			break;
-			case ClassNameSeparatorForBEM.DOUBLE_UNDERSCORE: {
+			case BaserElement.classNameSeparatorForBEM.DOUBLE_UNDERSCORE: {
 				elementSeparator = DOUBLE_UNDERSCORE;
 			}
 			break;
-			case ClassNameSeparatorForBEM.CAMEL_CASE: {
+			case BaserElement.classNameSeparatorForBEM.CAMEL_CASE: {
 				elementSeparator = '';
 			}
 			break;
@@ -201,23 +250,23 @@ class BaserElement extends EventDispatcher implements IElement {
 			}
 		}
 		switch (BaserElement.classNameDefaultSeparatorForModifier) {
-			case ClassNameSeparatorForBEM.HYPHEN: {
+			case BaserElement.classNameSeparatorForBEM.HYPHEN: {
 				modifierSeparator = HYPHEN;
 			}
 			break;
-			case ClassNameSeparatorForBEM.DOUBLE_HYPHEN: {
+			case BaserElement.classNameSeparatorForBEM.DOUBLE_HYPHEN: {
 				modifierSeparator = DOUBLE_HYPHEN;
 			}
 			break;
-			case ClassNameSeparatorForBEM.UNDERSCORE: {
+			case BaserElement.classNameSeparatorForBEM.UNDERSCORE: {
 				modifierSeparator = UNDERSCORE;
 			}
 			break;
-			case ClassNameSeparatorForBEM.DOUBLE_UNDERSCORE: {
+			case BaserElement.classNameSeparatorForBEM.DOUBLE_UNDERSCORE: {
 				modifierSeparator = DOUBLE_UNDERSCORE;
 			}
 			break;
-			case ClassNameSeparatorForBEM.CAMEL_CASE: {
+			case BaserElement.classNameSeparatorForBEM.CAMEL_CASE: {
 				modifierSeparator = '';
 			}
 			break;
@@ -374,6 +423,20 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
+	 *
+	 */
+	set el (element: HTMLElement) {
+		elements.set(this, element);
+	}
+
+	/**
+	 *
+	 */
+	get el (): HTMLElement {
+		return elements.get(this)!;
+	}
+
+	/**
 	 * クラス名を付加する
 	 *
 	 * @version 0.9.0
@@ -469,7 +532,11 @@ class BaserElement extends EventDispatcher implements IElement {
 	public val (): string;
 	public val (value: string): void;
 	public val (value?: string): any {
-		return $(this.el).val(value!);
+		if (value) {
+			$(this.el).val(value);
+			return;
+		}
+		return $(this.el).val();
 	}
 
 	/**
@@ -541,7 +608,7 @@ class BaserElement extends EventDispatcher implements IElement {
 		}
 		constructorList.add(constructor._name as Symbol);
 		elementizedMap.set(this.el, constructorList);
-		console.log(constructor._name);
+		// console.log(constructor._name);
 
 	}
 

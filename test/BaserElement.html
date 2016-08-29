@@ -58,13 +58,13 @@ QUnit.test('baser.BaserElement.createClassNameのテスト', function (assert) {
 	assert.equal(baser.BaserElement.createClassName('block-block', 'element-element', 'modifier-modifier'), '-bc-block-block__element-element--modifier-modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 	assert.equal(baser.BaserElement.createClassName('block_block', 'element_element', 'modifier_modifier'), '-bc-block-block__element-element--modifier-modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 
-	baser.BaserElement.classNameDefaultCase = baser.ElementClassNameCase.SNAKE_CASE;
+	baser.BaserElement.classNameDefaultCase = baser.BaserElement.classNameCase.SNAKE_CASE;
 	assert.equal(baser.BaserElement.createClassName('block', 'element', 'modifier'), '-bc_block__element--modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 	assert.equal(baser.BaserElement.createClassName('blockBlock', 'elementElement', 'modifierModifier'), '-bc_block_block__element_element--modifier_modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 	assert.equal(baser.BaserElement.createClassName('block-block', 'element-element', 'modifier-modifier'), '-bc_block_block__element_element--modifier_modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 	assert.equal(baser.BaserElement.createClassName('block_block', 'element_element', 'modifier_modifier'), '-bc_block_block__element_element--modifier_modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 
-	baser.BaserElement.classNameDefaultCase = baser.ElementClassNameCase.CAMEL_CASE;
+	baser.BaserElement.classNameDefaultCase = baser.BaserElement.classNameCase.CAMEL_CASE;
 	assert.equal(baser.BaserElement.createClassName('block', 'element', 'modifier'), '-bcBlock__element--modifier', 'baser.BaserElement.createClassName の変換は成功しています');
 	assert.equal(baser.BaserElement.createClassName('blockBlock', 'elementElement', 'modifierModifier'), '-bcBlockBlock__elementElement--modifierModifier', 'baser.BaserElement.createClassName の変換は成功しています');
 	assert.equal(baser.BaserElement.createClassName('block-block', 'element-element', 'modifier-modifier'), '-bcBlockBlock__elementElement--modifierModifier', 'baser.BaserElement.createClassName の変換は成功しています');
@@ -78,7 +78,7 @@ QUnit.test('baser.BaserElement.createClassNameのテスト', function (assert) {
 QUnit.test('baser.BaserElement.prototype.addClassのテスト', function (assert) {
 
 	// リセット
-	baser.BaserElement.classNameDefaultCase = baser.ElementClassNameCase.HYPHEN_DELIMITED;
+	baser.BaserElement.classNameDefaultCase = baser.BaserElement.classNameCase.HYPHEN_DELIMITED;
 
 	var test = document.getElementById('test');
 	var testElem = new baser.BaserElement(test);
@@ -98,7 +98,7 @@ QUnit.test('baser.BaserElement.prototype.addClassのテスト', function (assert
 
 });
 
-QUnit.test('baser.BaserElement.prototype.getBoolAttrのテスト', function() {
+QUnit.test('baser.BaserElement.prototype.getBoolAttrのテスト', function (assert) {
 
 	// <input type="checkbox" checked data-foo data-bar="bar" data-hoge="" data-fuga="false" data-false="0" data-true="1.0">
 

@@ -80,28 +80,9 @@ class FormElement extends BaserElement implements IFormElement {
 	public static classNameStateDisabled: string = 'disabled';
 
 	/**
-	 * フォーム関連要素リスト
-	 *
-	 * @version 0.7.0
-	 * @since 0.7.0
-	 *
-	 */
-	public static elements: FormElement[] = [];
-
-	/**
 	 * クラス名
 	 */
 	protected static _name: Symbol = Symbol('FormElement');
-
-	/**
-	 * 管理するDOM要素
-	 *
-	 * @override
-	 * @version 0.9.0
-	 * @since 0.9.0
-	 *
-	 */
-	public el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
 	/**
 	 * ラベルのテキスト
@@ -231,9 +212,6 @@ class FormElement extends BaserElement implements IFormElement {
 		this.setDisabled(<boolean> this.prop('disabled'));
 		this._onblur();
 
-		// フォーム要素に登録
-		// TODO: 有要な処理か検討
-		FormElement.elements.push(this);
 	}
 
 	/**
@@ -267,8 +245,9 @@ class FormElement extends BaserElement implements IFormElement {
 	 *
 	 */
 	public setDisabled (isDisabled: boolean): void {
+		const el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement = this.el as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 		this.disabled = isDisabled;
-		this.el.disabled = isDisabled;
+		el.disabled = isDisabled;
 		if (this.disabled) {
 			BaserElement.addClass(
 				this.el,
@@ -353,14 +332,14 @@ class FormElement extends BaserElement implements IFormElement {
 
 		// TODO: Not use jQuery method
 		if (this.isWrappedByLabel) {
-			// this.label.wrapAll(wrapper);
-			this.wrapper = wrapper;
+			$(this.label).wrapAll(wrapper);
+			this.wrapper = $(this.el).closest('span').get(0);
 		} else if (this.hasLabelByForAttr) {
 			$(this.el).wrapAll(wrapper);
-			this.wrapper = wrapper;
+			this.wrapper = $(this.el).closest('span').get(0);
 		} else {
 			$(this.el).add(this.label).wrapAll(wrapper);
-			this.wrapper = wrapper;
+			this.wrapper = $(this.el).closest('span').get(0);
 		}
 	}
 
@@ -541,41 +520,41 @@ class FormElement extends BaserElement implements IFormElement {
 
 		} else {
 
-			// const $labelContents: JQuery = this.label.contents();
-			// let $before: JQuery = $();
-			// let $after: JQuery = $();
-			// let isBefore: boolean = true;
+			const $labelContents: JQuery = $(this.label).contents();
+			let $before: JQuery = $();
+			let $after: JQuery = $();
+			let isBefore: boolean = true;
 
-			// $labelContents.each( (i: number, node: Node): void => {
-			// 	if (node === this.el) {
-			// 		isBefore = false;
-			// 		return;
-			// 	}
-			// 	if (isBefore) {
-			// 		$before = $before.add($(node));
-			// 	} else {
-			// 		$after = $after.add($(node));
-			// 	}
-			// });
+			$labelContents.each( (i: number, node: Node): void => {
+				if (node === this.el) {
+					isBefore = false;
+					return;
+				}
+				if (isBefore) {
+					$before = $before.add($(node));
+				} else {
+					$after = $after.add($(node));
+				}
+			});
 
-			// $before.text( (i: number, text: string): string => {
-			// 	return $.trim(text);
-			// });
+			$before.text( (i: number, text: string): string => {
+				return $.trim(text);
+			});
 
-			// $after.text( (i: number, text: string): string => {
-			// 	return $.trim(text);
-			// });
+			$after.text( (i: number, text: string): string => {
+				return $.trim(text);
+			});
 
-			// this.labelBeforeText = $before.text() || $(this.el).attr('title') || '';
-			// this.labelAfterText = $after.text() || '';
+			this.labelBeforeText = $before.text() || $(this.el).attr('title') || '';
+			this.labelAfterText = $after.text() || '';
 
-			// if (this.labelBeforeText) {
-			// 	this.label.prepend($before);
-			// }
+			if (this.labelBeforeText) {
+				$(this.label).prepend($before);
+			}
 
-			// if (this.labelAfterText) {
-			// 	this.label.append($after);
-			// }
+			if (this.labelAfterText) {
+				$(this.label).append($after);
+			}
 
 		}
 
@@ -629,13 +608,13 @@ class FormElement extends BaserElement implements IFormElement {
 		// console.log({
 		// 	hasLabel: hasLabel,
 		// 	isWrappedByLabel: this.isWrappedByLabel,
-		// 	hasLabelByForAttr: this.hasLabelByForAttr
+		// 	hasLabelByForAttr: this.hasLabelByForAttr,
 		// });
 
-		// BaserElement.addClass($label, FormElement.classNameFormElementCommon);
-		// BaserElement.addClass($label, FormElement.classNameFormElementCommon, FormElement.classNameLabel);
+		BaserElement.addClass($label[0], FormElement.classNameFormElementCommon);
+		BaserElement.addClass($label[0], FormElement.classNameFormElementCommon, FormElement.classNameLabel);
 
-		// this.label = $label;
+		this.label = $label[0] as HTMLLabelElement;
 
 	}
 

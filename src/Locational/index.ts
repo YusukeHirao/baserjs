@@ -115,7 +115,7 @@ class Locational {
 	 * @since 0.7.0
 	 *
 	 */
-	public params: { [ index: string ]: string | string[] };
+	public params: { [ index: string ]: string | undefined | (string | undefined)[] };
 
 	/**
 	 * クエリー文字列をハッシュにして返す
@@ -126,18 +126,23 @@ class Locational {
 	 * @return ハッシュデータ
 	 *
 	 */
-	public static parseQueryString (queryString: string): { [index: string]: string | string[] } {
-		const params: { [index: string]: string | string[] } = {};
+	public static parseQueryString (queryString: string): { [index: string]: string | undefined | (string | undefined)[] } {
+		const params: { [index: string]: string | undefined | (string | undefined)[] } = {};
 		if (queryString) {
 			const queries: string[] = queryString.split(/&/g);
 			for (const query of queries) {
-				const keyValue: string[] = UtilString.divide(query, '=');
+				const keyValue: [string, string | undefined] = UtilString.divide(query, '=');
 				let key: string = keyValue[0];
-				const value: string = keyValue[1];
+				let value: string | undefined;
+				if (keyValue[1] || keyValue[1] === '') {
+					value = `${keyValue[1]}`;
+				} else {
+					value = undefined;
+				}
 				if (key) {
 					if (/\[\]$/.test(key)) {
 						key = key.replace(/\[\]$/, '');
-						const child: string | string[] = params[key];
+						const child: string | undefined | (string | undefined)[] = params[key];
 						if (child && child instanceof Array) {
 							child.push(value);
 							params[key] = child;

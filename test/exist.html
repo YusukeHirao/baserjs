@@ -13,7 +13,7 @@
 <div id="qunit-fixture"></div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -25,34 +25,33 @@
 <script>
 "use strict";
 
-test('モジュールの存在確認', function() {
-	ok(baser, 'baser は存在します');
-	ok(baser.EventDispatcher, 'baser.EventDispatcher は存在します');
-	ok(baser.Browser, 'baser.Browser は存在します');
-	ok(baser.Scroll, 'baser.Scroll は存在します');
-	ok(baser.Timer, 'baser.Timer は存在します');
-	ok(baser.BaserElement, 'baser.BaserElement は存在します');
-	ok(baser.FormElement, 'baser.FormElement は存在します');
-	ok(baser.GoogleMaps, 'baser.GoogleMaps は存在します');
-	ok(baser.Select, 'baser.Select は存在します');
-	ok(baser.YouTube, 'baser.Youtube は存在します');
-	ok(baser.AlignedBoxes, 'baser.AlignedBoxes は存在します');
-	ok(baser.UtilString, 'baser.UtilString は存在します');
+QUnit.test('モジュールの存在確認', function (assert) {
+	assert.ok(baser, 'baser は存在します');
+	assert.ok(baser.EventDispatcher, 'baser.EventDispatcher は存在します');
+	assert.ok(baser.Browser, 'baser.Browser は存在します');
+	assert.ok(baser.Scroll, 'baser.Scroll は存在します');
+	assert.ok(baser.Timer, 'baser.Timer は存在します');
+	assert.ok(baser.BaserElement, 'baser.BaserElement は存在します');
+	assert.ok(baser.FormElement, 'baser.FormElement は存在します');
+	assert.ok(baser.GoogleMaps, 'baser.GoogleMaps は存在します');
+	assert.ok(baser.Select, 'baser.Select は存在します');
+	assert.ok(baser.YouTube, 'baser.Youtube は存在します');
+	assert.ok(baser.AlignedBoxes, 'baser.AlignedBoxes は存在します');
 });
 
-test('jQueryインスタンスメソッドの存在確認', function() {
-	ok(jQuery.fn.bcBackground, 'bcBackground method は存在します');
-	ok(jQuery.fn.bcBoxAlignHeight, 'bcBoxAlignHeight method は存在します');
-	ok(jQuery.fn.bcImageLoaded, 'bcImageLoaded method は存在します');
-	ok(jQuery.fn.bcKeepAspectRatio, 'bcKeepAspectRatio method は存在します');
-	ok(jQuery.fn.bcMaps, 'bcMaps method は存在します');
-	ok(jQuery.fn.bcScrollTo, 'bcScrollTo method は存在します');
-	ok(jQuery.fn.bcSelect, 'bcSelect method は存在します');
-	ok(jQuery.fn.bcYoutube, 'bcYoutube method は存在します');
+QUnit.test('jQueryインスタンスメソッドの存在確認', function (assert) {
+	assert.ok(jQuery.fn.bcBackground, 'bcBackground method は存在します');
+	assert.ok(jQuery.fn.bcBoxAlignHeight, 'bcBoxAlignHeight method は存在します');
+	assert.ok(jQuery.fn.bcImageLoaded, 'bcImageLoaded method は存在します');
+	assert.ok(jQuery.fn.bcKeepAspectRatio, 'bcKeepAspectRatio method は存在します');
+	assert.ok(jQuery.fn.bcMaps, 'bcMaps method は存在します');
+	assert.ok(jQuery.fn.bcScrollTo, 'bcScrollTo method は存在します');
+	assert.ok(jQuery.fn.bcSelect, 'bcSelect method は存在します');
+	assert.ok(jQuery.fn.bcYoutube, 'bcYoutube method は存在します');
 });
 
-test('jQuery静的メソッドの存在確認', function() {
-	ok(jQuery.bcScrollTo, 'bcScrollTo static method は存在します');
+QUnit.test('jQuery静的メソッドの存在確認', function (assert) {
+	assert.ok(jQuery.bcScrollTo, 'bcScrollTo static method は存在します');
 });
 
 </script>

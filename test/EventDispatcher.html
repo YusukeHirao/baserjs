@@ -13,7 +13,7 @@
 <div id="qunit-fixture"></div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -25,30 +25,32 @@
 <script>
 "use strict";
 
-test('baser.EventDispatcher.on/trigger のテスト', 2, function() {
+QUnit.test('baser.EventDispatcher.on/trigger のテスト', function (assert) {
+	assert.expect(2);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 	});
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.trigger('xEvent');
 
 });
 
-test('baser.EventDispatcher.on/off のテスト', 0, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト', function (assert) {
+	assert.expect(0);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 	});
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.off('xEvent');
@@ -57,31 +59,33 @@ test('baser.EventDispatcher.on/off のテスト', 0, function() {
 
 });
 
-test('baser.EventDispatcher.on/off のテスト return false キャンセル', 1, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト return false キャンセル', function (assert) {
+	assert.expect(1);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 		return false;
 	});
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.trigger('xEvent');
 
 });
 
-test('baser.EventDispatcher.on/off のテスト return false キャンセル2', 2, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト return false キャンセル2', function (assert) {
+	assert.expect(2);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 	});
 	eDispatcher.on('xEvent', function() {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 		return false;
 	});
 
@@ -89,31 +93,33 @@ test('baser.EventDispatcher.on/off のテスト return false キャンセル2', 
 
 });
 
-test('baser.EventDispatcher.on/off のテスト stopImmediatePropagation キャンセル', 1, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト stopImmediatePropagation キャンセル', function (assert) {
+	assert.expect(1);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 		e.stopImmediatePropagation();
 	});
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.trigger('xEvent');
 
 });
 
-test('baser.EventDispatcher.on/off のテスト stopImmediatePropagation キャンセル2', 2, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト stopImmediatePropagation キャンセル2', function (assert) {
+	assert.expect(2);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 	});
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 		e.stopImmediatePropagation();
 	});
 
@@ -121,33 +127,35 @@ test('baser.EventDispatcher.on/off のテスト stopImmediatePropagation キャ�
 
 });
 
-test('baser.EventDispatcher.on/off のテスト preventDefault キャンセル', 2, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト preventDefault キャンセル', function (assert) {
+	assert.expect(2);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 		e.preventDefault();
 	});
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.trigger('xEvent');
 
 });
 
-test('baser.EventDispatcher.on/off のテスト preventDefault キャンセル2', 1, function() {
+QUnit.test('baser.EventDispatcher.on/off のテスト preventDefault キャンセル2', function (assert) {
+	assert.expect(1);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent', function(e) {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 		e.preventDefault();
 	});
 	eDispatcher.on('xEvent', function(e) {
 		if (!e.isDefaultPrevented()) {
-			ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
+			assert.ok(true, 'カスタムイベントが on メソッドで 2つ 登録され、 trigger メソッドで発火した');
 		}
 	});
 
@@ -155,24 +163,26 @@ test('baser.EventDispatcher.on/off のテスト preventDefault キャンセル2'
 
 });
 
-test('baser.EventDispatcher.on 複数イベント のテスト', 1, function() {
+QUnit.test('baser.EventDispatcher.on 複数イベント のテスト', function (assert) {
+	assert.expect(1);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent xEvent2', function() {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.trigger('xEvent');
 
 });
 
-test('baser.EventDispatcher.on 複数イベント のテスト2', 2, function() {
+QUnit.test('baser.EventDispatcher.on 複数イベント のテスト2', function (assert) {
+	assert.expect(2);
 
 	var eDispatcher = new baser.EventDispatcher();
 
 	eDispatcher.on('xEvent xEvent2', function() {
-		ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
+		assert.ok(true, 'カスタムイベントが on メソッドで登録され、 trigger メソッドで発火した');
 	});
 
 	eDispatcher.trigger('xEvent');

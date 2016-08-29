@@ -13,7 +13,7 @@
 <div id="qunit-fixture"></div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -25,7 +25,8 @@
 <script>
 "use strict";
 
-test('baser.Timer.start/stop のテスト', 13, function(assert) {
+QUnit.test('baser.Timer.start/stop のテスト', function (assert) {
+	assert.expect(13);
 
 	var done = assert.async();
 
@@ -49,7 +50,8 @@ test('baser.Timer.start/stop のテスト', 13, function(assert) {
 
 });
 
-test('baser.Timer.start/this.stop のテスト', 13, function(assert) {
+QUnit.test('baser.Timer.start/this.stop のテスト', function (assert) {
+	assert.expect(13);
 
 	var done = assert.async();
 
@@ -74,7 +76,8 @@ test('baser.Timer.start/this.stop のテスト', 13, function(assert) {
 });
 
 
-test('baser.Timer.start/context.stop のテスト', 13, function(assert) {
+QUnit.test('baser.Timer.start/context.stop のテスト', function (assert) {
+	assert.expect(13);
 
 	var done = assert.async();
 
@@ -98,7 +101,8 @@ test('baser.Timer.start/context.stop のテスト', 13, function(assert) {
 
 });
 
-test('baser.Timer stopイベント return false のテスト', 14, function(assert) {
+QUnit.test('baser.Timer stopイベント return false のテスト', function (assert) {
+	assert.expect(14);
 
 	var done = assert.async();
 	var timer = new baser.Timer();
@@ -123,7 +127,8 @@ test('baser.Timer stopイベント return false のテスト', 14, function(asse
 
 });
 
-test('baser.Timer stopイベント preventDefault のテスト', 14, function(assert) {
+QUnit.test('baser.Timer stopイベント preventDefault のテスト', function (assert) {
+	assert.expect(14);
 
 	var done = assert.async();
 	var timer = new baser.Timer();
@@ -148,7 +153,7 @@ test('baser.Timer stopイベント preventDefault のテスト', 14, function(as
 
 });
 
-test('baser.Timer start(time)のテスト', function(assert) {
+QUnit.test('baser.Timer start(time)のテスト', function (assert) {
 
 	var done = assert.async();
 	var timer = new baser.Timer();
@@ -165,7 +170,7 @@ test('baser.Timer start(time)のテスト', function(assert) {
 
 });
 
-test('baser.Timer waitのテスト', function(assert) {
+QUnit.test('baser.Timer waitのテスト', function (assert) {
 
 	var done = assert.async();
 	var timer = new baser.Timer();

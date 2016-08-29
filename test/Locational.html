@@ -13,7 +13,7 @@
 <div id="qunit-fixture"></div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -25,7 +25,7 @@
 <script>
 "use strict";
 
-test('baser.Locational コンストラクタ のテスト', function() {
+QUnit.test('baser.Locational コンストラクタ のテスト', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -37,11 +37,11 @@ test('baser.Locational コンストラクタ のテスト', function() {
 		hash: '#hogehoge'
 	});
 
-	equal(loc.origin, 'http://baserproject.github.io:80', 'origin');
-	equal(loc.path, '/baserjs/test/baser.Locational.html?notrycatch&noglobals&key=Z&key%5B%5D=asdf&a%5B%5D=123%2C234234%2C234234key%5B%5D#hogehoge', 'path');
-	equal(loc.href, 'http://baserproject.github.io:80/baserjs/test/baser.Locational.html?notrycatch&noglobals&key=Z&key%5B%5D=asdf&a%5B%5D=123%2C234234%2C234234key%5B%5D#hogehoge', 'href');
-	equal(loc.query, 'notrycatch&noglobals&key=Z&key%5B%5D=asdf&a%5B%5D=123%2C234234%2C234234key%5B%5D', 'query');
-	deepEqual(loc.params, {
+	assert.equal(loc.origin, 'http://baserproject.github.io:80', 'origin');
+	assert.equal(loc.path, '/baserjs/test/baser.Locational.html?notrycatch&noglobals&key=Z&key%5B%5D=asdf&a%5B%5D=123%2C234234%2C234234key%5B%5D#hogehoge', 'path');
+	assert.equal(loc.href, 'http://baserproject.github.io:80/baserjs/test/baser.Locational.html?notrycatch&noglobals&key=Z&key%5B%5D=asdf&a%5B%5D=123%2C234234%2C234234key%5B%5D#hogehoge', 'href');
+	assert.equal(loc.query, 'notrycatch&noglobals&key=Z&key%5B%5D=asdf&a%5B%5D=123%2C234234%2C234234key%5B%5D', 'query');
+	assert.deepEqual(loc.params, {
 		notrycatch: undefined,
 		noglobals: undefined,
 		key: 'Z',
@@ -51,7 +51,7 @@ test('baser.Locational コンストラクタ のテスト', function() {
 
 });
 
-test('baser.Locational コンストラクタ のテスト2', function() {
+QUnit.test('baser.Locational コンストラクタ のテスト2', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -63,7 +63,7 @@ test('baser.Locational コンストラクタ のテスト2', function() {
 		hash: '#hogehoge'
 	});
 
-	deepEqual(loc.params, {
+	assert.deepEqual(loc.params, {
 		notrycatch: undefined,
 		noglobals: undefined,
 		key: '234',
@@ -73,7 +73,7 @@ test('baser.Locational コンストラクタ のテスト2', function() {
 
 });
 
-test('baser.Locational コンストラクタ のテスト3', function() {
+QUnit.test('baser.Locational コンストラクタ のテスト3', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -85,7 +85,7 @@ test('baser.Locational コンストラクタ のテスト3', function() {
 		hash: '#hogehoge'
 	});
 
-	deepEqual(loc.params, {
+	assert.deepEqual(loc.params, {
 		notrycatch: undefined,
 		noglobals: undefined,
 		key: [
@@ -97,7 +97,7 @@ test('baser.Locational コンストラクタ のテスト3', function() {
 
 });
 
-test('baser.Locational コンストラクタ のテスト4', function() {
+QUnit.test('baser.Locational コンストラクタ のテスト4', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -109,7 +109,7 @@ test('baser.Locational コンストラクタ のテスト4', function() {
 		hash: '#hogehoge'
 	});
 
-	deepEqual(loc.params, {
+	assert.deepEqual(loc.params, {
 		notrycatch: undefined,
 		noglobals: undefined,
 		key: [
@@ -121,7 +121,7 @@ test('baser.Locational コンストラクタ のテスト4', function() {
 
 });
 
-test('baser.Locational addParam のテスト', function() {
+QUnit.test('baser.Locational addParam のテスト', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -135,7 +135,7 @@ test('baser.Locational addParam のテスト', function() {
 
 	loc.addParam('smartphone', 'on');
 
-	deepEqual(loc.params, {
+	assert.deepEqual(loc.params, {
 		notrycatch: undefined,
 		noglobals: undefined,
 		key: 'Z',
@@ -146,7 +146,7 @@ test('baser.Locational addParam のテスト', function() {
 
 });
 
-test('baser.Locational addParam のテスト2', function() {
+QUnit.test('baser.Locational addParam のテスト2', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -160,14 +160,14 @@ test('baser.Locational addParam のテスト2', function() {
 
 	loc.addParam('smartphone', 'on');
 
-	equal(loc.search, '?smartphone=on', 'search');
-	deepEqual(loc.params, {
+	assert.equal(loc.search, '?smartphone=on', 'search');
+	assert.deepEqual(loc.params, {
 		smartphone: 'on'
 	}, 'params');
 
 });
 
-test('baser.Locational addParam のテスト3', function() {
+QUnit.test('baser.Locational addParam のテスト3', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -181,14 +181,14 @@ test('baser.Locational addParam のテスト3', function() {
 
 	loc.addParam('smartphone');
 
-	equal(loc.search, '?smartphone', 'search');
-	deepEqual(loc.params, {
+	assert.equal(loc.search, '?smartphone', 'search');
+	assert.deepEqual(loc.params, {
 		smartphone: undefined
 	}, 'params');
 
 });
 
-test('baser.Locational addParam のテスト4', function() {
+QUnit.test('baser.Locational addParam のテスト4', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -202,14 +202,14 @@ test('baser.Locational addParam のテスト4', function() {
 
 	loc.addParam('smartphone', null);
 
-	equal(loc.search, '?smartphone=null', 'search');
-	deepEqual(loc.params, {
+	assert.equal(loc.search, '?smartphone=null', 'search');
+	assert.deepEqual(loc.params, {
 		smartphone: 'null'
 	}, 'params');
 
 });
 
-test('baser.Locational addParam のテスト5', function() {
+QUnit.test('baser.Locational addParam のテスト5', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -223,15 +223,15 @@ test('baser.Locational addParam のテスト5', function() {
 
 	loc.addParam('smartphone', '');
 
-	equal(loc.search, '?smartphone=', 'search');
-	deepEqual(loc.params, {
+	assert.equal(loc.search, '?smartphone=', 'search');
+	assert.deepEqual(loc.params, {
 		smartphone: ''
 	}, 'params');
 
 });
 
 
-test('baser.Locational addParam のテスト6', function() {
+QUnit.test('baser.Locational addParam のテスト6', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -245,8 +245,8 @@ test('baser.Locational addParam のテスト6', function() {
 
 	loc.addParam('smartphone', [1, 2, 3]);
 
-	equal(loc.search, '?smartphone[]=1&smartphone[]=2&smartphone[]=3', 'search');
-	deepEqual(loc.params, {
+	assert.equal(loc.search, '?smartphone[]=1&smartphone[]=2&smartphone[]=3', 'search');
+	assert.deepEqual(loc.params, {
 		smartphone: [
 			'1', '2', '3'
 		]
@@ -254,7 +254,7 @@ test('baser.Locational addParam のテスト6', function() {
 
 });
 
-test('baser.Locational removeParam のテスト', function() {
+QUnit.test('baser.Locational removeParam のテスト', function (assert) {
 
 	var loc = new baser.Locational({
 		protocol: 'http:',
@@ -268,8 +268,8 @@ test('baser.Locational removeParam のテスト', function() {
 
 	loc.removeParam('key');
 
-	equal(loc.query, 'notrycatch&noglobals&a%5B%5D=123%2C234234%2C234234key%5B%5D&', 'query');
-	deepEqual(loc.params, {
+	assert.equal(loc.query, 'notrycatch&noglobals&a%5B%5D=123%2C234234%2C234234key%5B%5D&', 'query');
+	assert.deepEqual(loc.params, {
 		notrycatch: undefined,
 		noglobals: undefined,
 		'a%5B%5D': '123%2C234234%2C234234key%5B%5D'

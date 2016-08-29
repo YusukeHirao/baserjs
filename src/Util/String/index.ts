@@ -107,10 +107,10 @@ class UtilString {
 	 * @return 分割した文字列
 	 *
 	 */
-	public static divide (str: string, separator: string): string[] {
+	public static divide (str: string, separator: string): [string, string | undefined] {
 		const splited: string[] = str.split(separator);
 		let prefix: string = '';
-		let suffix: string = '';
+		let suffix: string | undefined;
 		if (splited) {
 			prefix = splited.shift() || '';
 			if (splited.length) {

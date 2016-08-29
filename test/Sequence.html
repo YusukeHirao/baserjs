@@ -15,7 +15,7 @@
 </div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -27,9 +27,12 @@
 <script>
 "use strict";
 
-test('Basic Test: iterator and value, this context', function (assert) {
+QUnit.config.testTimeout = 10000;
 
-	var done = assert.async();
+QUnit.test('Basic Test: iterator and value, this context', function (assert) {
+
+
+	var done = assert.async(1);
 
 	var s = new baser.Sequence([
 		function (i, value) {
@@ -50,7 +53,7 @@ test('Basic Test: iterator and value, this context', function (assert) {
 
 });
 
-test('Loop Test', function (assert) {
+QUnit.test('Loop Test', function (assert) {
 
 	assert.expect(200);
 
@@ -79,7 +82,7 @@ test('Loop Test', function (assert) {
 });
 
 
-test('Waiting Test', function (assert) {
+QUnit.test('Waiting Test', function (assert) {
 
 	var done = assert.async();
 
@@ -110,7 +113,7 @@ test('Waiting Test', function (assert) {
 
 });
 
-test('Loop & Wait Test', function (assert) {
+QUnit.test('Loop & Wait Test', function (assert) {
 
 	assert.expect(20);
 
@@ -143,7 +146,7 @@ test('Loop & Wait Test', function (assert) {
 });
 
 
-test('jQuery Deferred Test', function (assert) {
+QUnit.test('jQuery Deferred Test', function (assert) {
 
 	var done = assert.async();
 
@@ -177,7 +180,7 @@ test('jQuery Deferred Test', function (assert) {
 
 });
 
-test('jQuery Deferred Test2', function (assert) {
+QUnit.test('jQuery Deferred Test2', function (assert) {
 
 	var done = assert.async();
 
@@ -211,7 +214,7 @@ test('jQuery Deferred Test2', function (assert) {
 
 });
 
-test('jQuery Animation Test1', function (assert) {
+QUnit.test('jQuery Animation Test1', function (assert) {
 
 	var done = assert.async();
 
@@ -227,7 +230,7 @@ test('jQuery Animation Test1', function (assert) {
 			assert.strictEqual(i, 0, 'iterator');
 			assert.strictEqual(value, 'value', 'value');
 			assert.strictEqual(this, s, 'this context');
-			return $anim.fadeOut(WAIT_TIME);
+			return $anim.fadeOut(WAIT_TIME).promise();
 		},
 		function (i, value) {
 			var end = Date.now();
@@ -243,7 +246,7 @@ test('jQuery Animation Test1', function (assert) {
 
 });
 
-test('jQuery Animation Test2', function (assert) {
+QUnit.test('jQuery Animation Test2', function (assert) {
 
 	var done = assert.async();
 
@@ -263,7 +266,7 @@ test('jQuery Animation Test2', function (assert) {
 				top: -500
 			}, {
 				duration: WAIT_TIME
-			});
+			}).promise();
 		},
 		function (i, value) {
 			var end = Date.now();
@@ -279,7 +282,7 @@ test('jQuery Animation Test2', function (assert) {
 
 });
 
-test('jQuery Ajax Test', function (assert) {
+QUnit.test('jQuery Ajax Test', function (assert) {
 
 	var done = assert.async();
 

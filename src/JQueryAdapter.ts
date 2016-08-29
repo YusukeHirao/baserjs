@@ -16,12 +16,19 @@ import YouTube from './YouTube';
 import YouTubeOption from './YouTube/IYouTubeOption';
 import BreakPointsOption from './BreakPoints/IBreakPointsOption';
 
-class JQueryAdapter {
+namespace JQueryAdapter {
+	'use strict';
 
-	public static bcScrollTo (selector: any, options?: ScrollOptions): void  {
+	export function bcScrollTo (selector: any, options?: ScrollOptions): void  {
+		'use strict';
 		const scroll: Scroll = new Scroll();
 		scroll.to(selector, options);
 	}
+
+}
+
+namespace JQueryAdapterPrototype {
+	'use strict';
 
 	/**
 	 * 自信の要素を基準に、指定の子要素を背景のように扱う
@@ -57,10 +64,9 @@ class JQueryAdapter {
 	 * comming soon...
 	 *
 	 */
-	public bcBackground (options: BackgroundContainerOption): JQuery {
-
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLElement): void => {
+	export function bcBackground (this: JQuery, options: BackgroundContainerOption): JQuery {
+		'use strict';
+		return this.each( (i: number, elem: HTMLElement): void => {
 			/* tslint:disable */
 			new BackgroundContainer(elem, options);
 			/* tslint:enable */
@@ -74,14 +80,13 @@ class JQueryAdapter {
 	 * @since 0.0.15
 	 *
 	 */
-	public bcBoxAlignHeight (columnOrKeyword: string | number | BreakPointsOption<number> = 0, detailTarget?: string, callback?: AlignedBoxCallback): JQuery {
-
-		const self: JQuery = $(this);
+	export function bcBoxAlignHeight (this: JQuery, columnOrKeyword: string | number | BreakPointsOption<number> = 0, detailTarget?: string, callback?: AlignedBoxCallback): JQuery {
+		'use strict';
 		if (typeof columnOrKeyword === 'string') {
 			const keyword: string = columnOrKeyword;
 			switch (keyword) {
 				case 'destroy': {
-					const boxes: AlignedBoxes = <AlignedBoxes> self.data(/* TODO */);
+					const boxes: AlignedBoxes = <AlignedBoxes> this.data(/* TODO */);
 					boxes.destroy();
 				}
 				break;
@@ -94,9 +99,9 @@ class JQueryAdapter {
 			const column: number | BreakPointsOption<number> = columnOrKeyword;
 			// 要素群の高さを揃え、setsに追加
 			if (detailTarget) {
-				const $detailTarget: JQuery = self.find(detailTarget);
+				const $detailTarget: JQuery = this.find(detailTarget);
 				if ($detailTarget.length) {
-					self.each(function (this: HTMLElement) {
+					this.each(function (this: HTMLElement) {
 						const $split: JQuery = $(this).find(detailTarget);
 						/* tslint:disable */
 						new AlignedBoxes($split[0], column, callback);
@@ -105,19 +110,20 @@ class JQueryAdapter {
 				}
 			} else {
 				/* tslint:disable */
-				new AlignedBoxes(self[0], column, callback);
+				new AlignedBoxes(this[0], column, callback);
 				/* tslint:enable */
 			}
 		}
 
-		return self;
+		return this;
 
 	}
 
 	// @version 1.0.0
 	// @since 0.1.0
-	public bcBoxLink (): JQuery {
-		return $(this).on('click', function (this: HTMLElement, e: JQueryEventObject): void {
+	export function bcBoxLink (this: JQuery): JQuery {
+		'use strict';
+		return this.on('click', function (this: HTMLElement, e: JQueryEventObject): void {
 			const $elem: JQuery = $(this);
 			const $link: JQuery = $elem.find('a, area').eq(0);
 			const href: string = $link.prop('href');
@@ -142,9 +148,9 @@ class JQueryAdapter {
 	 * comming soon...
 	 *
 	 */
-	public bcSelect (options: string | SelectOption): JQuery {
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLSelectElement): void => {
+	export function bcSelect (this: JQuery, options: string | SelectOption): JQuery {
+		'use strict';
+		return this.each( (i: number, elem: HTMLSelectElement): void => {
 			// const $elem: JQuery = $(elem);
 			if (typeof options === 'string') {
 				switch (options) {
@@ -180,9 +186,9 @@ class JQueryAdapter {
 	 * comming soon...
 	 *
 	 */
-	public bcImageLoaded (success: () => any, error?: (e: Event) => any): JQuery {
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLElement): void => {
+	export function bcImageLoaded (this: JQuery, success: () => any, error?: (e: Event) => any): JQuery {
+		'use strict';
+		return this.each( (i: number, elem: HTMLElement): void => {
 			const $elem: JQuery = $(elem);
 			const manifest: JQueryPromise<any>[] = [];
 			const $imgs: JQuery = $elem.filter('img').add($elem.find('img'));
@@ -245,10 +251,10 @@ class JQueryAdapter {
 	 * comming soon...
 	 *
 	 */
-	public bcKeepAspectRatio (): JQuery {
+	export function bcKeepAspectRatio (this: JQuery): JQuery {
+		'use strict';
 		const $w: JQuery = $(window);
-		const self: JQuery = $(this);
-		self.each( (i: number, elem: HTMLElement): void => {
+		this.each( (i: number, elem: HTMLElement): void => {
 			const $elem: JQuery = $(elem);
 			const baseWidth: number = <number> +$elem.data('width');
 			const baseHeight: number = <number> +$elem.data('height');
@@ -265,9 +271,9 @@ class JQueryAdapter {
 		Timer.wait(30, () => {
 			$w.trigger('resize');
 		});
-		return self;
-	}
 
+		return this;
+	}
 
 	/**
 	 * リンク要素からのアンカーまでスムーズにスクロールをさせる
@@ -282,9 +288,9 @@ class JQueryAdapter {
 	 * comming soon...
 	 *
 	 */
-	public bcScrollTo (options?: ScrollOptions): JQuery {
-		const self: JQuery = $(this);
-		return self.on('click', function (this: HTMLElement, e: JQueryMouseEventObject): void {
+	export function bcScrollTo (this: JQuery, options?: ScrollOptions): JQuery {
+		'use strict';
+		return this.on('click', function (this: HTMLElement, e: JQueryMouseEventObject): void {
 			const $this: JQuery = $(this);
 			let href: string = $this.attr('href');
 			const scroll: Scroll = new Scroll();
@@ -335,8 +341,8 @@ class JQueryAdapter {
 	 * @since 0.0.14
 	 *
 	 */
-	public bcSplitList (columnSize: number, options: any): JQuery {
-		const self: JQuery = $(this);
+	export function bcSplitList (this: JQuery, columnSize: number, options: any): JQuery {
+		'use strict';
 		const CLASS_NAME: string = 'splited-list';
 		const CLASS_NAME_NTH: string = 'nth';
 		const CLASS_NAME_ITEM: string = 'item';
@@ -347,7 +353,7 @@ class JQueryAdapter {
 			},
 			options
 		);
-		self.each( (index: number, elem: HTMLElement): void => {
+		this.each( (index: number, elem: HTMLElement): void => {
 
 			const $container: JQuery = $(elem);
 			const $list: JQuery = $container.find('>ul');
@@ -387,7 +393,7 @@ class JQueryAdapter {
 			$list.remove();
 
 		});
-		return self;
+		return this;
 	}
 
 	/**
@@ -419,9 +425,9 @@ class JQueryAdapter {
 	 * comming soon...
 	 *
 	 */
-	public bcMaps (options?: GoogleMapsOption): JQuery {
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLElement): void => {
+	export function bcMaps (this: JQuery, options?: GoogleMapsOption): JQuery {
+		'use strict';
+		return this.each( (i: number, elem: HTMLElement): void => {
 			const $elem: JQuery = $(elem);
 			const data: GoogleMaps = $elem.data(GoogleMaps.className);
 			if (data) {
@@ -457,9 +463,9 @@ class JQueryAdapter {
 	 * ```
 	 *
 	 */
-	public bcYoutube (options?: YouTubeOption): JQuery {
-		const self: JQuery = $(this);
-		return self.each( (i: number, elem: HTMLElement): void => {
+	export function bcYoutube (this: JQuery, options?: YouTubeOption): JQuery {
+		'use strict';
+		return this.each( (i: number, elem: HTMLElement): void => {
 			const $elem: JQuery = $(elem);
 			const data: YouTube = $elem.data(YouTube.className);
 			if (data) {
@@ -475,4 +481,4 @@ class JQueryAdapter {
 }
 
 $.extend($, JQueryAdapter);
-$.extend($.fn, JQueryAdapter.prototype);
+$.extend($.fn, JQueryAdapterPrototype);
