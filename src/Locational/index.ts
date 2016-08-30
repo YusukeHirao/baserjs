@@ -228,7 +228,7 @@ class Locational {
 	 * @return インスタンス自身
 	 *
 	 */
-	public addParam (key: string, value?: string | string[]): Locational {
+	public addParam (key: string, value?: string | (string | undefined)[]): Locational {
 		if (typeof value === 'string' || !value) {
 			let eqAndValue: string = '';
 			if (value !== undefined) {

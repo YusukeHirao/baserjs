@@ -51,7 +51,7 @@
 </div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -63,17 +63,15 @@
 <script>
 "use strict";
 
-test('jQuery.prototype.bcSplitListのテスト', function() {
+QUnit.test('jQuery.prototype.bcSplitListのテスト', function (assert) {
 
-	ok($.fn.bcSplitList, 'jQuery.prototype.bcSplitListメソッドの有無');
+	assert.ok($.fn.bcSplitList, 'jQuery.prototype.bcSplitListメソッドの有無');
 
 	// $('#test').bcSplitList(3);
 
-	// console.log($('#test')[0].innerHTML.replace(/<\/([a-z]+)>/ig, '</$1>\n'));
-
 });
 
-// test('jQuery.prototype.bcSplitListのテスト (splitChildren: false)', function() {
+// QUnit.test('jQuery.prototype.bcSplitListのテスト (splitChildren: false)', function() {
 
 // 	$('#test').bcSplitList(5, {
 // 		splitChildren: false

@@ -1,13 +1,25 @@
 import EventDispatcher from '../EventDispatcher';
 
 /**
+ * タスクのルーチンインターフェイス
+ *
+ * @private
+ * @version 1.0.0
+ * @since 0.4.0
+ *
+ */
+export interface SequenceTaskFunction<V> {
+	(this: Sequence<V>, iterator: number, value: V): Promise<V> | V | undefined;
+}
+
+/**
  * 非同期逐次処理クラス
  *
  * @version 0.9.0
  * @since 0.4.0
  *
  */
-class Sequence<T> extends EventDispatcher {
+export default class Sequence<T> extends EventDispatcher {
 
 	/**
 	 * シーケンスの持つタスク
@@ -43,16 +55,16 @@ class Sequence<T> extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	private _promise: Promise<T> | null = null;
+	private _promise: PromiseLike<T> | null = null;
 
 	/**
 	 * 遅延時間
 	 *
-	 * @version 0.4.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 *
 	 */
-	private _waitingTime: number;
+	private _waitingTime: number = 0;
 
 	/**
 	 * 時間ID
@@ -82,6 +94,15 @@ class Sequence<T> extends EventDispatcher {
 	private _isStop: boolean = true;
 
 	/**
+	 * リゾルバ
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	private _promiseResolver: ((value?: T | PromiseLike<T>) => void) | null;
+
+	/**
 	 * コンストラクタ
 	 *
 	 * @version 0.9.0
@@ -89,7 +110,7 @@ class Sequence<T> extends EventDispatcher {
 	 * @param tasks タスク
 	 *
 	 */
-	constructor (tasks: Function[]) {
+	constructor (tasks: SequenceTaskFunction<T>[]) {
 		super();
 		for (const task of tasks) {
 			this._tasks.push(new Task(task, this));
@@ -118,7 +139,7 @@ class Sequence<T> extends EventDispatcher {
 		const task: Task<T> = this._tasks[this._currentTaskIndex];
 
 		// タスク実行
-		const result: T = task.act(value);
+		const result: Promise<T> | T | undefined = task.act(value);
 
 		// 戻り値によるプロミスの設定
 		this._setPromiseFrom(result);
@@ -126,7 +147,7 @@ class Sequence<T> extends EventDispatcher {
 		// プロミスの結果から次のタスクを実行
 		if (this._promise) {
 			this._promise.then(
-				(doneResult: any): void => {
+				(result: T): void => {
 					this._reset();
 					this._currentTaskIndex += 1;
 					this._iterator += 1;
@@ -134,7 +155,7 @@ class Sequence<T> extends EventDispatcher {
 						if (this._currentTaskIndex >= this._tasks.length && isLoop) {
 							this._currentTaskIndex = 0;
 						}
-						this.act(doneResult, isLoop);
+						this.act(result, isLoop);
 					} else {
 						// TODO: 引数の設計とテスト書く
 						this.trigger('stop');
@@ -158,7 +179,7 @@ class Sequence<T> extends EventDispatcher {
 	 * @since 0.4.0
 	 *
 	 */
-	public loop (value: any): Sequence<T> {
+	public loop (value: T): Sequence<T> {
 		return this.act(value, true);
 	}
 
@@ -197,6 +218,20 @@ class Sequence<T> extends EventDispatcher {
 	}
 
 	/**
+	 * 解決状態に変更
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	public resolve (value: T): Sequence<T> {
+		if (this._promiseResolver) {
+			this._promiseResolver(value);
+		}
+		return this;
+	}
+
+	/**
 	 * プロミスの設定
 	 * TODO: this._waitTimerのTimerクラスにcancelイベントを実装してリゾルバのリジェクトを実装する
 	 *
@@ -204,10 +239,29 @@ class Sequence<T> extends EventDispatcher {
 	 * @since 0.9.0
 	 *
 	 */
-	private _setPromiseFrom (value: T): void {
-		if (value instanceof Promise) {
+	private _setPromiseFrom (value: PromiseLike<T> | T | undefined): void {
+		if (value === undefined) {
+			// 戻り値なしの場合
+			this._promise = new Promise<T>(
+				(resolver: (value?: T | PromiseLike<T>) => void, canceler: (reason?: any) => void): void => {
+					// タイマーを使い遅延実行後リゾルバからプロミスを解決
+					this._promiseResolver = resolver;
+					this._canceler = canceler;
+				}
+			);
+		} else if (
+			// instanceof Promise
+			value instanceof Promise
+			||
+			// instanceof PromiseLike
+			typeof value === 'object'
+			&&
+			('then' in value)
+			&&
+			('apply' in (value as PromiseLike<T>).then)
+		) {
 			// 値がプロミスであればそのままそれを設定
-			this._promise = value;
+			this._promise = value as PromiseLike<T> | null;
 		} else {
 			// 値がプロミスでない場合は
 			// プロミスを生成してリゾルバへ一時的に設定
@@ -218,8 +272,6 @@ class Sequence<T> extends EventDispatcher {
 					this._canceler = canceler;
 				}
 			);
-
-
 		}
 	}
 
@@ -234,6 +286,7 @@ class Sequence<T> extends EventDispatcher {
 		clearTimeout(this._waitTimerID);
 		this._promise = null;
 		this._waitingTime = 0;
+		this._promiseResolver = null;
 		if (this._canceler) {
 			this._canceler(`reset`);
 		}
@@ -268,7 +321,7 @@ class Task<U> {
 	 * @since 0.4.0
 	 *
 	 */
-	private _func: Function;
+	private _func: SequenceTaskFunction<U>;
 
 	/**
 	 * コンストラクタ
@@ -277,7 +330,7 @@ class Task<U> {
 	 * @since 0.4.0
 	 *
 	 */
-	constructor (func: Function, sequencer: Sequence<U>) {
+	constructor (func: SequenceTaskFunction<U>, sequencer: Sequence<U>) {
 		this._func = func;
 		this._sequencer = sequencer;
 	}
@@ -285,17 +338,15 @@ class Task<U> {
 	/**
 	 * タスクの実行
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 * @param value タスクに渡すデータ
 	 * @return 実行したタスクの戻り値
 	 *
 	 */
-	public act (value: U): U {
-		const result: U = this._func.call(this._sequencer, this._sequencer.getCount(), value);
+	public act (value: U): Promise<U> | U | undefined {
+		const result: Promise<U> | U | undefined = this._func.call(this._sequencer, this._sequencer.getCount(), value);
 		return result;
 	}
 
 }
-
-export default Sequence;

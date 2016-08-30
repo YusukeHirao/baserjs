@@ -184,7 +184,7 @@ QUnit.test('jQuery Deferred Test2', function (assert) {
 
 	var done = assert.async();
 
-	var WAIT_TIME = 1000;
+	var WAIT_TIME = 4000;
 
 	var start;
 
@@ -250,7 +250,7 @@ QUnit.test('jQuery Animation Test2', function (assert) {
 
 	var done = assert.async();
 
-	var WAIT_TIME = 1000;
+	var WAIT_TIME = 4000;
 
 	var start;
 
@@ -286,7 +286,7 @@ QUnit.test('jQuery Ajax Test', function (assert) {
 
 	var done = assert.async();
 
-	// ローカルではテストしない
+	// ローカルではテストできない
 	if (location.protocol === 'file:') {
 		assert.ok(true, 'ignore test');
 		done();
@@ -306,6 +306,33 @@ QUnit.test('jQuery Ajax Test', function (assert) {
 		function (i, value) {
 			assert.strictEqual(i, 1, 'iterator');
 			assert.deepEqual(value, { key: 'value' }, 'got JSON');
+			assert.strictEqual(this, s, 'this context');
+			done();
+		}
+	]);
+
+	s.act('value');
+
+});
+
+QUnit.test('Sequence resolver test', function (assert) {
+
+	var done = assert.async();
+
+	var WAIT_TIME = 4000;
+
+	var s = new baser.Sequence([
+		function (i, value) {
+			assert.strictEqual(i, 0, 'iterator');
+			assert.strictEqual(value, 'value', 'value');
+			assert.strictEqual(this, s, 'this context');
+			setTimeout(function () {
+				s.resolve(value);
+			}, WAIT_TIME);
+		},
+		function (i, value) {
+			assert.strictEqual(i, 1, 'iterator');
+			assert.strictEqual(value, 'value', 'value');
 			assert.strictEqual(this, s, 'this context');
 			done();
 		}

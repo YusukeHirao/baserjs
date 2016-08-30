@@ -16,7 +16,7 @@ declare var $: {};
  * @since 0.0.2
  *
  */
-class Browser extends EventDispatcher {
+export default class Browser extends EventDispatcher {
 
 	/**
 	 *
@@ -70,7 +70,7 @@ class Browser extends EventDispatcher {
 	private _scrollEndTimer: number;
 
 	public static getBrowser (): Browser {
-		if (Browser._browser) {
+		if (!Browser._browser) {
 			Browser._browser = new Browser();
 		}
 		return Browser._browser;
@@ -176,7 +176,7 @@ class Browser extends EventDispatcher {
 			return;
 		}
 		const query: string = targetParam;
-		const value: string | string[] = thisLocation.params[targetParam];
+		const value: string | (string | undefined)[] | undefined = thisLocation.params[targetParam];
 		for (const elem of target) {
 			const targetElem: LinkElement = <LinkElement> elem;
 			const loc: Locational = new Locational(targetElem);
@@ -253,5 +253,3 @@ class Browser extends EventDispatcher {
 	}
 
 }
-
-export default Browser;

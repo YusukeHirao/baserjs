@@ -46,7 +46,7 @@
 </div>
 
 <!-- Libraries -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
 <!-- Core Module -->
 <script src="../dist/baser.js"></script>
@@ -58,26 +58,26 @@
 <script>
 "use strict";
 
-test('added class names', function() {
-	expect(10);
+QUnit.test('added class names', function (assert) {
+	assert.expect(10);
 
 	var $target = $('#target');
 
 	var target = new baser.Select($target[0]);
 
-	ok($(target.el).parent('span').hasClass('-bc-form-element'), 'class name of wrapper');
-	ok($(target.el).parent('span').hasClass('-bc-wrapper'), 'class name of wrapper');
-	ok($(target.el).parent('span').hasClass('-bc-wrapper--blur'), 'class name of wrapper on blur');
-	ok($(target.el).hasClass('-bc-element'), 'class name of this element');
-	ok($(target.el).hasClass('-bc-form-element'), 'class name of this element');
-	ok($(target.el).hasClass('-bc-form-element--blur'), 'class name of this element on blur');
+	assert.ok($(target.el).parent('span').hasClass('-bc-form-element'), 'class name of wrapper');
+	assert.ok($(target.el).parent('span').hasClass('-bc-wrapper'), 'class name of wrapper');
+	assert.ok($(target.el).parent('span').hasClass('-bc-wrapper--blur'), 'class name of wrapper on blur');
+	assert.ok($(target.el).hasClass('-bc-element'), 'class name of this element');
+	assert.ok($(target.el).hasClass('-bc-form-element'), 'class name of this element');
+	assert.ok($(target.el).hasClass('-bc-form-element--blur'), 'class name of this element on blur');
 
 	$(target.el).on('focus', function () {
 		var $this = $(this);
-		ok(!$this.parent('span').hasClass('-bc-wrapper--blur'), 'removed check blur class name of wrapper');
-		ok($this.parent('span').hasClass('-bc-wrapper--focus'), 'class name of wrapper on focus');
-		ok(!$this.hasClass('-bc-form-element--blur'), 'removed check blur class name of this element');
-		ok($this.hasClass('-bc-form-element--focus'), 'class name of this element on focus');
+		assert.ok(!$this.parent('span').hasClass('-bc-wrapper--blur'), 'removed check blur class name of wrapper');
+		assert.ok($this.parent('span').hasClass('-bc-wrapper--focus'), 'class name of wrapper on focus');
+		assert.ok(!$this.hasClass('-bc-form-element--blur'), 'removed check blur class name of this element');
+		assert.ok($this.hasClass('-bc-form-element--focus'), 'class name of this element on focus');
 	});
 
 	$(target.el).trigger('focus');
@@ -85,31 +85,31 @@ test('added class names', function() {
 	// console.log(target);
 	// console.log(target.$wrapper.attr('class'));
 	// console.log($(target.el).attr('class'));
-	// console.log(target.$label.attr('class'));
+	// console.log($(target.label).attr('class'));
 	// console.log(target.$pseudo.attr('class'));
 	// console.log(target.$selected.attr('class'));
 	// console.log(target.$options.attr('class'));
 
 });
 
-test('wrapped label', function() {
-	expect(4);
+QUnit.test('wrapped label', function (assert) {
+	assert.expect(4);
 
 	var $target = $('#target-wrapped-label');
 
 	var target = new baser.Select($target[0]);
 
-	ok(target.$label.hasClass('-bc-form-element'), 'class name of label element');
-	ok(target.$label.hasClass('-bc-form-element__label'), 'class name of label element');
+	assert.ok($(target.label).hasClass('-bc-form-element'), 'class name of label element');
+	assert.ok($(target.label).hasClass('-bc-form-element__label'), 'class name of label element');
 
-	ok(target.isWrappedByLabel, 'label is wrapped');
+	assert.ok(target.isWrappedByLabel, 'label is wrapped');
 
-	equal(target.label, 'beforeLabelTextafterLabelText', 'text of label');
+	assert.equal(target.labelText, 'beforeLabelTextafterLabelText', 'text of label');
 
 });
 
-test('wrapped label - optional label', function() {
-	expect(1);
+QUnit.test('wrapped label - optional label', function (assert) {
+	assert.expect(1);
 
 	var $target = $('#target-wrapped-label');
 
@@ -117,28 +117,28 @@ test('wrapped label - optional label', function() {
 		label: 'labelFromOption'
 	});
 
-	equal(target.label, 'labelFromOption', 'text of label');
+	assert.equal(target.labelText, 'labelFromOption', 'text of label');
 
 });
 
-test('leaved label', function() {
-	expect(4);
+QUnit.test('leaved label', function (assert) {
+	assert.expect(4);
 
 	var $target = $('#target-with-label');
 
 	var target = new baser.Select($target[0]);
 
-	ok(target.$label.hasClass('-bc-form-element'), 'class name of label element');
-	ok(target.$label.hasClass('-bc-form-element__label'), 'class name of label element');
+	assert.ok($(target.label).hasClass('-bc-form-element'), 'class name of label element');
+	assert.ok($(target.label).hasClass('-bc-form-element__label'), 'class name of label element');
 
-	ok(!target.isWrappedByLabel, 'label is leaved');
+	assert.ok(!target.isWrappedByLabel, 'label is leaved');
 
-	equal(target.label, 'withLabel', 'text of label');
+	assert.equal(target.labelText, 'withLabel', 'text of label');
 
 });
 
-test('leaved label - optional label', function() {
-	expect(1);
+QUnit.test('leaved label - optional label', function (assert) {
+	assert.expect(1);
 
 	var $target = $('#target-with-label');
 
@@ -146,43 +146,43 @@ test('leaved label - optional label', function() {
 		label: 'labelFromOption'
 	});
 
-	equal(target.label, 'labelFromOption', 'text of label');
+	assert.equal(target.labelText, 'labelFromOption', 'text of label');
 
 });
 
-test('title label - optional label', function() {
-	expect(1);
+QUnit.test('title label - optional label', function (assert) {
+	assert.expect(1);
 
 	var $target = $('#target-title-label');
 
 	var target = new baser.Select($target[0]);
 
-	equal(target.label, 'title-label', 'text of label');
+	assert.equal(target.labelText, 'title-label', 'text of label');
 
 });
 
-test('default value', function() {
+QUnit.test('default value', function (assert) {
 
 	var $target = $('#target-default-value');
 
 	var target = new baser.Select($target[0]);
 
-	equal(target.defaultValue, 'default-value', 'default value');
+	assert.equal(target.defaultValue, 'default-value', 'default value');
 
 });
 
-test('disabled - get', function() {
-	expect(2);
+QUnit.test('disabled - get', function (assert) {
+	assert.expect(2);
 
 	var $target = $('#target-disabled');
 
 	var target = new baser.Select($target[0]);
 
-	ok(target.disabled, 'disabled is true');
-	ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
+	assert.ok(target.disabled, 'disabled is true');
+	assert.ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
 
 	// フォーカスできないはず
-	$(target.el).on('focus', function () {
+	$(target.el).on('focus', function (assert) {
 		throw new Error('focused');
 	});
 
@@ -190,58 +190,58 @@ test('disabled - get', function() {
 
 });
 
-test('disabled - change', function() {
-	expect(5);
+QUnit.test('disabled - change', function (assert) {
+	assert.expect(5);
 
 	var $target = $('#target-disabled');
 
 	var target = new baser.Select($target[0]);
 
-	ok(target.disabled, 'disabled is true');
-	ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
+	assert.ok(target.disabled, 'disabled is true');
+	assert.ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
 
 	target.setDisabled(false);
 
-	ok(!target.disabled, 'disabled is false after changed');
+	assert.ok(!target.disabled, 'disabled is false after changed');
 
 	// フォーカスできる
 	$(target.el).on('focus', function () {
 		var $this = $(this);
-		ok(true, 'focus success'); // このOKにたどりつける
-		ok(!$this.hasClass('-bc-form-element--disabled'), 'class name of undisabled this element');
+		assert.ok(true, 'focus success'); // このOKにたどりつける
+		assert.ok(!$this.hasClass('-bc-form-element--disabled'), 'class name of undisabled this element');
 	});
 
 	$(target.el).trigger('focus');
 
 });
 
-test('disabled - change', function() {
-	expect(5);
+QUnit.test('disabled - change', function (assert) {
+	assert.expect(5);
 
 	var $target = $('#target-disabled');
 
 	var target = new baser.Select($target[0]);
 
-	ok(target.disabled, 'disabled is true');
-	ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
+	assert.ok(target.disabled, 'disabled is true');
+	assert.ok($(target.el).hasClass('-bc-form-element--disabled'), 'class name of disabled this element');
 
 	target.setDisabled(false);
 
-	ok(!target.disabled, 'disabled is false after changed');
+	assert.ok(!target.disabled, 'disabled is false after changed');
 
 	// フォーカスできる
 	$(target.el).on('focus', function () {
 		var $this = $(this);
-		ok(true, 'focus success'); // このOKにたどりつける
-		ok(!$this.hasClass('-bc-form-element--disabled'), 'class name of undisabled this element');
+		assert.ok(true, 'focus success'); // このOKにたどりつける
+		assert.ok(!$this.hasClass('-bc-form-element--disabled'), 'class name of undisabled this element');
 	});
 
 	$(target.el).trigger('focus');
 
 });
 
-test('setValue (invalid value) / change event', function() {
-	expect(0);
+QUnit.test('setValue (invalid value) / change event', function (assert) {
+	assert.expect(0);
 
 	var settingValue = 'setting-value';
 
@@ -250,23 +250,24 @@ test('setValue (invalid value) / change event', function() {
 	var target = new baser.Select($target[0]);
 
 	target.on('change', function (e) {
-		equal($(target.el).val(), settingValue, 'fired baserJS change');
+		assert.equal($(target.el).val(), settingValue, 'fired baserJS change');
 	});
 
-	target.on('change', function (e) {
-		equal($(target.el).val(), settingValue, 'fired jQuery change');
+	$(target).on('change', function (e) {
+		assert.equal($(target.el).val(), settingValue, 'fired jQuery change');
 	});
 
-	target.on('change', function (e) {
-		equal($(target.el).val(), settingValue, 'fired DOM change');
+	target.el.addEventListener('change', function (e) {
+		assert.equal($(target.el).val(), settingValue, 'fired DOM change');
 	});
+	console.log(target.el);
 
 	target.setValue(settingValue);
 
 });
 
-test('setValue / change event', function() {
-	expect(3);
+QUnit.test('setValue / change event', function (assert) {
+	assert.expect(3);
 
 	var settingValue = 'value2';
 
@@ -275,15 +276,15 @@ test('setValue / change event', function() {
 	var target = new baser.Select($target[0]);
 
 	target.on('change', function (e) {
-		equal($(target.el).val(), settingValue, 'fired baserJS change');
+		assert.equal($(target.el).val(), settingValue, 'fired baserJS change');
 	});
 
 	target.on('change', function (e) {
-		equal($(target.el).val(), settingValue, 'fired jQuery change');
+		assert.equal($(target.el).val(), settingValue, 'fired jQuery change');
 	});
 
 	target.on('change', function (e) {
-		equal($(target.el).val(), settingValue, 'fired DOM change');
+		assert.equal($(target.el).val(), settingValue, 'fired DOM change');
 	});
 
 	target.setValue(settingValue);
