@@ -1,7 +1,7 @@
 /**!
 * baserjs - v1.0.0-alpha
-* revision: 025adcc2afd72af16c21aa30d6e1d73728912955
-* update: 2016-08-31
+* revision: 52cead7c412eb02bec2af5bfee86e8d939998a34
+* update: 2016-09-01
 * Author: baserCMS Users Community [https://github.com/baserproject/]
 * Github: https://github.com/baserproject/baserjs
 * License: Licensed under the MIT License
@@ -258,7 +258,13 @@ var BaserElement = function (_EventDispatcher_1$de) {
                                 attrs[optName] = this.getAttr(optName);
                             }
                     }
-                    dataAttrs[optName] = this.data(optName);
+                    var el = this.el;
+                    if (el.dataset) {
+                        dataAttrs[optName] = el.dataset[optName];
+                    } else {
+                        // TODO: IE9でテスト
+                        dataAttrs[optName] = el.getAttribute('data-' + String_1.default.hyphenDelimited(optName));
+                    }
                 }
             }
             return $.extend({}, defaultOptions, options, dataAttrs, attrs);
@@ -303,62 +309,43 @@ var BaserElement = function (_EventDispatcher_1$de) {
         value: function getAttr(name) {
             return this.el.getAttribute(name);
         }
-    }, {
-        key: 'data',
-        value: function data(key, value) {
-            if (value === undefined) {
-                return $(this.el).data(key);
-            } else {
-                $(this.el).data(key, value);
-            }
-        }
+        // /**
+        //  * 要素にフラグを紐付ける
+        //  *
+        //  * use jQuery
+        //  *
+        //  * @deprecated
+        //  */
+        // public data (key: string, value: any): void;
+        // public data (key: string): any;
+        // public data (key: string, value?: any): any | void {
+        // 	if (value === undefined) {
+        // 		return $(this.el).data(key);
+        // 	} else {
+        // 		$(this.el).data(key, value);
+        // 	}
+        // }
         /**
-         * セレクタにマッチする先祖要素を取得する
+         * 要素名にマッチする先祖要素を取得する
          *
-         * use jQuery
-         *
-         * @deprecated
+         * @version 1.0.0
+         * @since 1.0.0
+         * @param nodeName 要素名
          *
          */
 
     }, {
         key: 'closest',
-        value: function closest(selector) {
-            return $(this.el).closest(selector)[0];
-        }
-    }, {
-        key: 'val',
-        value: function val(value) {
-            if (value) {
-                $(this.el).val(value);
-                return;
-            }
-            return $(this.el).val();
-        }
-    }, {
-        key: 'prop',
-        value: function prop(key, value) {
-            if (value === undefined) {
-                return $(this.el).prop(key);
-            } else {
-                $(this.el).prop(key, value);
-            }
-        }
-        /**
-         * 要素をラップする
-         *
-         * getAttr/setAttr を利用する
-         *
-         * use jQuery
-         *
-         * @deprecated
-         *
-         */
-
-    }, {
-        key: 'wrap',
-        value: function wrap(wrapper) {
-            $(this.el).wrap(wrapper);
+        value: function closest(nodeName) {
+            nodeName = nodeName.toUpperCase();
+            var parent = this.el;
+            do {
+                parent = parent.parentElement;
+                if (!parent) {
+                    return null;
+                }
+            } while (parent.nodeName !== nodeName);
+            return parent;
         }
         /**
          * 既にbaserJSのエレメント化しているかどうか確認する
@@ -664,24 +651,6 @@ var BaserElement = function (_EventDispatcher_1$de) {
             if (style) {
                 style.removeProperty(propName);
             }
-        }
-        /**
-         * CSSを付加する
-         *
-         * use jQuery
-         *
-         * @deprecated
-         * @version 1.0.0
-         * @since unknown
-         * @param elem 対象のDOM要素
-         * @param styles CSSマップ
-         *
-         */
-
-    }, {
-        key: 'css',
-        value: function css(elem, styles) {
-            $(elem).css(styles);
         }
     }]);
 
@@ -2958,22 +2927,15 @@ var BackgroundContainer = function (_BaserElement_1$defau) {
                     var top = _Math_1$default$stret.top;
                     var left = _Math_1$default$stret.left;
 
-                    var bgStyle = {
-                        position: 'absolute',
-                        width: 0,
-                        height: 0,
-                        top: 0,
-                        left: 0,
-                        maxWidth: 'none',
-                        minWidth: 0,
-                        maxHeight: 'none',
-                        minHeight: 0
-                    };
-                    bgStyle.width = width;
-                    bgStyle.height = height;
-                    bgStyle.top = top;
-                    bgStyle.left = left;
-                    BaserElement_1.default.css(el, bgStyle);
+                    el.style.position = 'absolute';
+                    el.style.width = width + 'px';
+                    el.style.maxWidth = 'none';
+                    el.style.minWidth = '0';
+                    el.style.height = height + 'px';
+                    el.style.maxHeight = 'none';
+                    el.style.minHeight = '0';
+                    el.style.top = top + 'px';
+                    el.style.left = left + 'px';
                 }
             } catch (err) {
                 _didIteratorError2 = true;
@@ -3348,8 +3310,8 @@ var FormElement = function (_BaserElement_1$defau) {
         // イベントを登録
         _this._bindEvents();
         // 初期状態を設定
-        _this.defaultValue = _this.val();
-        _this.setDisabled(_this.prop('disabled'));
+        _this.defaultValue = el.value;
+        _this.setDisabled(el.disabled);
         _this._onblur();
         return _this;
     }
@@ -3371,10 +3333,11 @@ var FormElement = function (_BaserElement_1$defau) {
         value: function setValue(value) {
             var isSilent = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
+            var el = this.el;
             var valueString = '' + value;
-            var currentValue = this.val();
+            var currentValue = '' + el.value;
             if (!this.disabled && currentValue !== valueString) {
-                this.val(valueString);
+                el.value = valueString;
                 this._fireChangeEvent(isSilent);
             }
         }
@@ -3655,7 +3618,7 @@ var FormElement = function (_BaserElement_1$defau) {
          *
          * use: jQuery
          *
-         * @version 0.9.0
+         * @version 1.0.0
          * @since 0.4.0
          *
          */
@@ -3665,38 +3628,31 @@ var FormElement = function (_BaserElement_1$defau) {
         value: function _asignLabel() {
             this.hasLabelByForAttr = false;
             // 祖先のlabel要素を検索
-            var $label = $(this.closest('label'));
-            // label要素の存在
-            var hasLabel = !!$label.length;
+            var label = this.closest('label');
             // labelでネストされていたかどうか
-            this.isWrappedByLabel = hasLabel;
+            this.isWrappedByLabel = !!label;
             // for属性に関連づいたlabel要素を取得
-            if (!hasLabel) {
-                $label = $('label[for="' + this.id + '"]');
-                hasLabel = !!$label.length;
-                this.hasLabelByForAttr = hasLabel;
+            if (!label) {
+                label = document.querySelector('label[for="' + this.id + '"]');
+                this.hasLabelByForAttr = !!label;
             }
             // ラベルがないときにラベル要素を生成する
-            if (this._config.autoLabeling && this._config.labelTag && !hasLabel) {
+            if (this._config.autoLabeling && !label) {
                 // label(もしくは別の)要素の生成
-                $label = $('<' + this._config.labelTag.toLowerCase() + ' />');
+                label = document.createElement('label');
+                var $label = $(label);
                 $label.insertAfter(this.el);
                 if (this._config.labelClass) {
                     $label.addClass(this._config.labelClass);
                 }
-                if (this._config.labelTag.toLowerCase() === 'label') {
-                    // labelを生成したのならfor属性にidを紐付ける
-                    $label.attr('for', this.id);
-                }
+                // labelを生成したのならfor属性にidを紐付ける
+                label.htmlFor = this.id;
             }
-            // console.log({
-            // 	hasLabel: hasLabel,
-            // 	isWrappedByLabel: this.isWrappedByLabel,
-            // 	hasLabelByForAttr: this.hasLabelByForAttr,
-            // });
-            BaserElement_1.default.addClass($label[0], FormElement.classNameFormElementCommon);
-            BaserElement_1.default.addClass($label[0], FormElement.classNameFormElementCommon, FormElement.classNameLabel);
-            this.label = $label[0];
+            if (label) {
+                BaserElement_1.default.addClass(label, FormElement.classNameFormElementCommon);
+                BaserElement_1.default.addClass(label, FormElement.classNameFormElementCommon, FormElement.classNameLabel);
+                this.label = label;
+            }
         }
     }]);
 
@@ -3713,7 +3669,6 @@ var FormElement = function (_BaserElement_1$defau) {
 
 FormElement.defaultOption = {
     label: '',
-    labelTag: 'label',
     labelClass: '',
     autoLabeling: true
 };
@@ -3803,9 +3758,7 @@ var GoogleMaps = function (_BaserElement_1$defau) {
     /**
      * コンストラクタ
      *
-     * use: jQuery
-     *
-     * @version 0.9.0
+     * @version 1.0.0
      * @since 0.0.6
      * @param el 管理するDOM要素
      * @param options マップオプション
@@ -3824,7 +3777,6 @@ var GoogleMaps = function (_BaserElement_1$defau) {
             _this.addClass(GoogleMaps.className);
             _this.mapOption = _this.mergeOptions(GoogleMaps.defaultOptions, options);
             _this._init();
-            _this.data(GoogleMaps.className, _this);
         } else {
             if ('console' in window) {
                 console.warn('ReferenceError: "//maps.google.com/maps/api/js" を先に読み込む必要があります。');
@@ -3893,22 +3845,14 @@ var GoogleMaps = function (_BaserElement_1$defau) {
         value: function _init() {
             var _this2 = this;
 
-            // data-*属性からの継承
-            this.mapOption = this.mergeOptions(this.mapOption, {
-                zoom: this.data('zoom'),
-                fitBounds: this.data('fit-bounds')
-            });
             this.markerBounds = new google.maps.LatLngBounds();
-            var mapCenterLat = parseInt(this.data('lat'), 10) || GoogleMaps.defaultLat;
-            var mapCenterLng = parseInt(this.data('lng'), 10) || GoogleMaps.defaultLng;
-            var mapCenterAddress = this.data('address') || '';
-            if (mapCenterAddress) {
+            if (this.mapOption.address) {
                 // 住所から緯度・経度を検索する（非同期）
-                GoogleMaps.getLatLngByAddress(mapCenterAddress, function (lat, lng) {
+                GoogleMaps.getLatLngByAddress(this.mapOption.address, function (lat, lng) {
                     _this2._render(lat, lng);
                 });
             } else {
-                this._render(mapCenterLat, mapCenterLng);
+                this._render(this.mapOption.lat, this.mapOption.lng);
             }
         }
         /**
@@ -4013,29 +3957,20 @@ var GoogleMaps = function (_BaserElement_1$defau) {
     return GoogleMaps;
 }(BaserElement_1.default);
 /**
+ * オプションのデフォルト値
+ *
+ * 初期値の経緯度は東京都庁
+ *
+ * @version 1.0.0
+ * @since 1.0.0
  *
  */
 
 
-GoogleMaps.defaultOptions = {};
-/**
- * 初期設定用の緯度
- * 東京都庁
- *
- * @version 0.0.6
- * @since 0.0.6
- *
- */
-GoogleMaps.defaultLat = 35.681382;
-/**
- * 初期設定用の経度
- * 東京都庁
- *
- * @version 0.0.6
- * @since 0.0.6
- *
- */
-GoogleMaps.defaultLng = 139.766084;
+GoogleMaps.defaultOptions = {
+    lat: 35.681382,
+    lng: 139.766084
+};
 /**
  * 管理対象の要素に付加するclass属性値のプレフィックス
  *

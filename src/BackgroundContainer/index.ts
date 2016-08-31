@@ -111,32 +111,15 @@ class BackgroundContainer<E extends HTMLElement> extends BaserElement<E> {
 				this._config.align,
 				this._config.valign
 			);
-			const bgStyle: {
-				position: 'absolute';
-				width: number;
-				height: number;
-				maxWidth: number | string;
-				minWidth: number | string;
-				maxHeight: number | string;
-				minHeight: number | string;
-				top: number;
-				left: number;
-			} = {
-				position: 'absolute',
-				width: 0,
-				height: 0,
-				top: 0,
-				left: 0,
-				maxWidth: 'none',
-				minWidth: 0,
-				maxHeight: 'none',
-				minHeight: 0,
-			};
-			bgStyle.width = width;
-			bgStyle.height = height;
-			bgStyle.top = top;
-			bgStyle.left = left;
-			BaserElement.css(el, bgStyle);
+			el.style.position = 'absolute';
+			el.style.width = `${width}px`;
+			el.style.maxWidth = 'none';
+			el.style.minWidth = '0';
+			el.style.height = `${height}px`;
+			el.style.maxHeight = 'none';
+			el.style.minHeight = '0';
+			el.style.top = `${top}px`;
+			el.style.left = `${left}px`;
 		}
 	}
 

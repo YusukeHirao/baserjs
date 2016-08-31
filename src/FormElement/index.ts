@@ -2,6 +2,8 @@ import BaserElement from '../BaserElement';
 import IFormElement from './IFormElement';
 import FormElementOption from './IFormElementOption';
 
+export type HTMLFormChildElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+
 /**
  * フォーム要素の抽象クラス
  *
@@ -9,7 +11,7 @@ import FormElementOption from './IFormElementOption';
  * @since 0.0.1
  *
  */
-class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLProgressElement> extends BaserElement<HTMLElement> implements IFormElement<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLProgressElement> {
+class FormElement<E> extends BaserElement<HTMLFormChildElement> implements IFormElement<E> {
 
 	/**
 	 * オプションのデフォルト値
@@ -20,7 +22,6 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 	 */
 	public static defaultOption: FormElementOption = {
 		label: '',
-		labelTag: 'label',
 		labelClass: '',
 		autoLabeling: true,
 	};
@@ -130,7 +131,7 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 	 * @since 0.4.0
 	 *
 	 */
-	public defaultValue: string;
+	public defaultValue: string | number;
 
 	/**
 	 * ラベル要素にラップされているかどうか
@@ -183,7 +184,7 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 	 * @param options オプション
 	 *
 	 */
-	constructor (el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, options: FormElementOption) {
+	constructor (el: HTMLFormChildElement, options: FormElementOption) {
 
 		super(el);
 
@@ -208,8 +209,8 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 		this._bindEvents();
 
 		// 初期状態を設定
-		this.defaultValue = this.val();
-		this.setDisabled(<boolean> this.prop('disabled'));
+		this.defaultValue = el.value;
+		this.setDisabled(el.disabled);
 		this._onblur();
 
 	}
@@ -226,10 +227,11 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 	 *
 	 */
 	public setValue (value: string | number | boolean, isSilent: boolean = false): void {
+		const el: HTMLFormChildElement = this.el;
 		const valueString: string = `${value}`;
-		const currentValue: string = this.val();
+		const currentValue: string = `${el.value}`;
 		if (!this.disabled && currentValue !== valueString) {
-			this.val(valueString);
+			el.value = valueString;
 			this._fireChangeEvent(isSilent);
 		}
 	}
@@ -245,7 +247,7 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 	 *
 	 */
 	public setDisabled (isDisabled: boolean): void {
-		const el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement = this.el as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+		const el: HTMLFormChildElement = this.el;
 		this.disabled = isDisabled;
 		el.disabled = isDisabled;
 		if (this.disabled) {
@@ -567,7 +569,7 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 	 *
 	 * use: jQuery
 	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.4.0
 	 *
 	 */
@@ -576,45 +578,36 @@ class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaE
 		this.hasLabelByForAttr = false;
 
 		// 祖先のlabel要素を検索
-		let $label: JQuery = $(this.closest('label'));
-
-		// label要素の存在
-		let hasLabel: boolean = !!$label.length;
+		let label: HTMLLabelElement | null = this.closest<HTMLLabelElement>('label');
 
 		// labelでネストされていたかどうか
-		this.isWrappedByLabel = hasLabel;
+		this.isWrappedByLabel = !!label;
 
 		// for属性に関連づいたlabel要素を取得
-		if (!hasLabel) {
-			$label = $(`label[for="${this.id}"]`);
-			hasLabel = !!$label.length;
-			this.hasLabelByForAttr = hasLabel;
+		if (!label) {
+			label = document.querySelector(`label[for="${this.id}"]`) as HTMLLabelElement;
+			this.hasLabelByForAttr = !!label;
 		}
 
 		// ラベルがないときにラベル要素を生成する
-		if (this._config.autoLabeling && this._config.labelTag && !hasLabel) {
+		if (this._config.autoLabeling && !label) {
 			// label(もしくは別の)要素の生成
-			$label = $(`<${this._config.labelTag.toLowerCase()} />`);
+			label = document.createElement('label');
+			const $label: JQuery = $(label);
 			$label.insertAfter(this.el);
 			if (this._config.labelClass) {
 				$label.addClass(this._config.labelClass);
 			}
-			if (this._config.labelTag.toLowerCase() === 'label') {
-				// labelを生成したのならfor属性にidを紐付ける
-				$label.attr('for', this.id);
-			}
+			// labelを生成したのならfor属性にidを紐付ける
+			label.htmlFor = this.id;
 		}
 
-		// console.log({
-		// 	hasLabel: hasLabel,
-		// 	isWrappedByLabel: this.isWrappedByLabel,
-		// 	hasLabelByForAttr: this.hasLabelByForAttr,
-		// });
+		if (label) {
+			BaserElement.addClass(label, FormElement.classNameFormElementCommon);
+			BaserElement.addClass(label, FormElement.classNameFormElementCommon, FormElement.classNameLabel);
 
-		BaserElement.addClass($label[0], FormElement.classNameFormElementCommon);
-		BaserElement.addClass($label[0], FormElement.classNameFormElementCommon, FormElement.classNameLabel);
-
-		this.label = $label[0] as HTMLLabelElement;
+			this.label = label;
+		}
 
 	}
 

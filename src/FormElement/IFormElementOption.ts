@@ -16,15 +16,6 @@ interface FormElementOption {
 	label?: string;
 
 	/**
-	 * 任意で指定するラベルのタグ名
-	 *
-	 * @since 0.0.1
-	 * @default "label"
-	 *
-	 */
-	labelTag?: string;
-
-	/**
 	 * 任意で指定するラベルに付加するクラス属性値
 	 *
 	 * @since 0.0.1

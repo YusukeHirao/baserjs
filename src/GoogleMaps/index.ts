@@ -1,6 +1,6 @@
 import BaserElement from '../BaserElement';
 import Browser from '../Browser';
-import GoogleMapsOption from './IGoogleMapsOption/';
+import GoogleMapsOption from './IGoogleMapsOption';
 
 /**
  * このモジュール（スコープ）ではjQueryを使用しない
@@ -17,31 +17,18 @@ declare var $: {};
 class GoogleMaps extends BaserElement<HTMLDivElement> {
 
 	/**
+	 * オプションのデフォルト値
+	 *
+	 * 初期値の経緯度は東京都庁
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 *
 	 */
 	public static defaultOptions: GoogleMapsOption = {
-
+		lat: 35.681382,
+		lng: 139.766084,
 	};
-
-	/**
-	 * 初期設定用の緯度
-	 * 東京都庁
-	 *
-	 * @version 0.0.6
-	 * @since 0.0.6
-	 *
-	 */
-	public static defaultLat: number = 35.681382;
-
-	/**
-	 * 初期設定用の経度
-	 * 東京都庁
-	 *
-	 * @version 0.0.6
-	 * @since 0.0.6
-	 *
-	 */
-	public static defaultLng: number = 139.766084;
 
 	/**
 	 * 管理対象の要素に付加するclass属性値のプレフィックス
@@ -172,9 +159,7 @@ class GoogleMaps extends BaserElement<HTMLDivElement> {
 	/**
 	 * コンストラクタ
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.0.6
 	 * @param el 管理するDOM要素
 	 * @param options マップオプション
@@ -194,7 +179,6 @@ class GoogleMaps extends BaserElement<HTMLDivElement> {
 			this.mapOption = this.mergeOptions(GoogleMaps.defaultOptions, options);
 			this._init();
 
-			this.data(GoogleMaps.className, this);
 		} else {
 			if ('console' in window) {
 				console.warn('ReferenceError: "//maps.google.com/maps/api/js" を先に読み込む必要があります。');
@@ -244,26 +228,15 @@ class GoogleMaps extends BaserElement<HTMLDivElement> {
 	 */
 	private _init (): void {
 
-		// data-*属性からの継承
-		this.mapOption = this.mergeOptions(this.mapOption, {
-			zoom: this.data('zoom'),
-			fitBounds: this.data('fit-bounds'),
-		});
-
 		this.markerBounds = new google.maps.LatLngBounds();
 
-		const mapCenterLat: number = parseInt(this.data('lat'), 10) || GoogleMaps.defaultLat;
-		const mapCenterLng: number = parseInt(this.data('lng'), 10) || GoogleMaps.defaultLng;
-
-		const mapCenterAddress: string = this.data('address') || '';
-
-		if (mapCenterAddress) {
+		if (this.mapOption.address) {
 			// 住所から緯度・経度を検索する（非同期）
-			GoogleMaps.getLatLngByAddress(mapCenterAddress, (lat: number, lng: number): void => {
+			GoogleMaps.getLatLngByAddress(this.mapOption.address, (lat: number, lng: number): void => {
 				this._render(lat, lng);
 			});
 		} else {
-			this._render(mapCenterLat, mapCenterLng);
+			this._render(this.mapOption.lat!, this.mapOption.lng!);
 		}
 
 	}

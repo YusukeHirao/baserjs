@@ -384,22 +384,6 @@ class BaserElement<E extends HTMLElement> extends EventDispatcher implements IEl
 	}
 
 	/**
-	 * CSSを付加する
-	 *
-	 * use jQuery
-	 *
-	 * @deprecated
-	 * @version 1.0.0
-	 * @since unknown
-	 * @param elem 対象のDOM要素
-	 * @param styles CSSマップ
-	 *
-	 */
-	public static css (elem: HTMLElement, styles: {}): void {
-		$(elem).css(styles);
-	}
-
-	/**
 	 * コンストラクタ
 	 *
 	 * @version 1.0.0
@@ -481,7 +465,7 @@ class BaserElement<E extends HTMLElement> extends EventDispatcher implements IEl
 	 */
 	public mergeOptions (defaultOptions: any, options: any): any {
 		const attrs: { [option: string ]: Primitive | null } = {};
-		const dataAttrs: { [option: string ]: Primitive } = {};
+		const dataAttrs: { [option: string ]: string | null | undefined } = {};
 
 		for (const optName in defaultOptions) {
 			if (defaultOptions.hasOwnProperty(optName)) {
@@ -494,7 +478,13 @@ class BaserElement<E extends HTMLElement> extends EventDispatcher implements IEl
 						attrs[optName] = this.getAttr(optName);
 					}
 				}
-				dataAttrs[optName] = this.data(optName);
+				const el: E = this.el;
+				if (el.dataset) {
+					dataAttrs[optName] = el.dataset[optName];
+				} else {
+					// TODO: IE9でテスト
+					dataAttrs[optName] = el.getAttribute(`data-${UtilString.hyphenDelimited(optName)}`);
+				}
 			}
 		}
 		return $.extend({}, defaultOptions, options, dataAttrs, attrs);
@@ -536,87 +526,41 @@ class BaserElement<E extends HTMLElement> extends EventDispatcher implements IEl
 		return this.el.getAttribute(name);
 	}
 
-	/**
-	 * 要素にフラグを紐付ける
-	 *
-	 * use jQuery
-	 *
-	 * @deprecated
-	 */
-	public data (key: string, value: any): void;
-	public data (key: string): any;
-	public data (key: string, value?: any): any | void {
-		if (value === undefined) {
-			return $(this.el).data(key);
-		} else {
-			$(this.el).data(key, value);
-		}
-	}
+	// /**
+	//  * 要素にフラグを紐付ける
+	//  *
+	//  * use jQuery
+	//  *
+	//  * @deprecated
+	//  */
+	// public data (key: string, value: any): void;
+	// public data (key: string): any;
+	// public data (key: string, value?: any): any | void {
+	// 	if (value === undefined) {
+	// 		return $(this.el).data(key);
+	// 	} else {
+	// 		$(this.el).data(key, value);
+	// 	}
+	// }
 
 	/**
-	 * セレクタにマッチする先祖要素を取得する
+	 * 要素名にマッチする先祖要素を取得する
 	 *
-	 * use jQuery
-	 *
-	 * @deprecated
-	 *
-	 */
-	public closest (selector: string): HTMLElement {
-		return $(this.el).closest(selector)[0];
-	}
-
-	/**
-	 * フォーム要素の値を取得する
-	 *
-	 * this.el.valueを利用する
-	 *
-	 * use jQuery
-	 *
-	 * @deprecated
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 * @param nodeName 要素名
 	 *
 	 */
-	public val (): string;
-	public val (value: string): void;
-	public val (value?: string): any {
-		if (value) {
-			$(this.el).val(value);
-			return;
-		}
-		return $(this.el).val();
-	}
-
-	/**
-	 * 属性の取得と設定
-	 *
-	 * getAttr/setAttr を利用する
-	 *
-	 * use jQuery
-	 *
-	 * @deprecated
-	 *
-	 */
-	public prop (key: string, value: any): void;
-	public prop (key: string): any;
-	public prop (key: string, value?: any): Primitive | undefined {
-		if (value === undefined) {
-			return $(this.el).prop(key);
-		} else {
-			$(this.el).prop(key, value);
-		}
-	}
-
-	/**
-	 * 要素をラップする
-	 *
-	 * getAttr/setAttr を利用する
-	 *
-	 * use jQuery
-	 *
-	 * @deprecated
-	 *
-	 */
-	public wrap (wrapper: HTMLDivElement | HTMLSpanElement) {
-		$(this.el).wrap(wrapper);
+	public closest<P extends HTMLElement> (nodeName: string): P | null {
+		nodeName = nodeName.toUpperCase();
+		let parent: HTMLElement | null = this.el;
+		do {
+			parent = parent.parentElement;
+			if (!parent) {
+				return null;
+			}
+		} while (parent.nodeName !== nodeName);
+		return parent as P;
 	}
 
 	/**

@@ -1,10 +1,10 @@
 import IElement from '../BaserElement/IElement';
 
-interface IFormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLProgressElement> extends IElement<HTMLElement> {
+interface IFormElement<E> extends IElement<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> {
 	labelText: string;
 	hasFocus: boolean;
 	disabled: boolean;
-	defaultValue: string;
+	defaultValue: string | number;
 	isWrappedByLabel: boolean;
 	label: HTMLLabelElement;
 	wrapper: HTMLSpanElement;

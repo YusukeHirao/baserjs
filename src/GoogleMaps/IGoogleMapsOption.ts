@@ -62,6 +62,32 @@ interface GoogleMapsOption {
 	 */
 	fitBounds?: boolean;
 
+	/**
+	 * 緯度
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	lat?: number;
+
+	/**
+	 * 経度
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	lng?: number;
+
+	/**
+	 * 住所
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 *
+	 */
+	address?: string;
 }
 
 export default GoogleMapsOption;
