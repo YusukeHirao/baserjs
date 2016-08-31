@@ -1,6 +1,6 @@
 import IFormElement from '../FormElement/IFormElement';
 
-interface ISelect extends IFormElement {
+interface ISelect extends IFormElement<HTMLSelectElement> {
 	// defaultSelectedIndex: number;
 	// $selected: JQuery;
 	// $pseudo: JQuery;

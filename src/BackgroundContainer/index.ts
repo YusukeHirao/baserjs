@@ -5,13 +5,13 @@ import Dimension from '../BaserElement/IDimension';
 import BackgroundContainerOption from './IBackgroundContainerOption';
 
 /**
- * ラジオボタンとチェックボックスの抽象クラス
+ * 擬似背景のコンテナ
  *
- * @version 0.11.0
+ * @version 1.0.0
  * @since 0.11.0
  *
  */
-class BackgroundContainer extends BaserElement {
+class BackgroundContainer<E extends HTMLElement> extends BaserElement<E> {
 
 	/**
 	 * 管理対象の要素に付加するclass属性値のプレフィックス
@@ -60,7 +60,7 @@ class BackgroundContainer extends BaserElement {
 	 * @param options オプション
 	 *
 	 */
-	constructor (el: HTMLElement, options: BackgroundContainerOption) {
+	constructor (el: E, options: BackgroundContainerOption) {
 
 		super(el);
 

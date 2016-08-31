@@ -434,7 +434,7 @@ namespace JQueryAdapterPrototype {
 				data.reload(options);
 			} else {
 				/* tslint:disable */
-				new GoogleMaps(elem, options);
+				new GoogleMaps(elem as HTMLDivElement, options);
 				/* tslint:enable */
 			}
 		});
@@ -472,7 +472,7 @@ namespace JQueryAdapterPrototype {
 				data.reload(options);
 			} else {
 				/* tslint:disable */
-				new YouTube(elem, options);
+				new YouTube(elem as HTMLDivElement, options);
 				/* tslint:enable */
 			}
 		});

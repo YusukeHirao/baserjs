@@ -11,7 +11,7 @@ import SelectOption from './ISelectOption';
  * @since 0.0.1
  *
  */
-class Select extends FormElement implements ISelect {
+class Select extends FormElement<HTMLSelectElement> implements ISelect {
 
 	/**
 	 * オプションのデフォルト値

@@ -1,6 +1,6 @@
 import IElement from '../BaserElement/IElement';
 
-interface IFormElement extends IElement {
+interface IFormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLProgressElement> extends IElement<HTMLElement> {
 	labelText: string;
 	hasFocus: boolean;
 	disabled: boolean;

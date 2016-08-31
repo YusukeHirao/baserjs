@@ -14,7 +14,7 @@ import YouTubeMuteControllerOptions from './IYouTubeMuteControllerOptions';
  * @since 0.0.7
  *
  */
-class YouTube extends BaserElement {
+class YouTube extends BaserElement<HTMLDivElement> {
 
 	/**
 	 * 管理対象の要素に付加するclass属性値のプレフィックス
@@ -187,7 +187,7 @@ class YouTube extends BaserElement {
 	 * @param options オプション
 	 *
 	 */
-	constructor (el: HTMLElement, options?: YouTubeOption) {
+	constructor (el: HTMLDivElement, options?: YouTubeOption) {
 		super(el);
 		// 既にエレメント化されていた場合は何もしない
 		if (this._elementized) {

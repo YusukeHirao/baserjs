@@ -9,7 +9,7 @@ import FormElementOption from './IFormElementOption';
  * @since 0.0.1
  *
  */
-class FormElement extends BaserElement implements IFormElement {
+class FormElement<E extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLProgressElement> extends BaserElement<HTMLElement> implements IFormElement<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLProgressElement> {
 
 	/**
 	 * オプションのデフォルト値

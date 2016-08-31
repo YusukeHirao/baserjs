@@ -14,7 +14,7 @@ declare var $: {};
  * @since 0.0.6
  *
  */
-class GoogleMaps extends BaserElement {
+class GoogleMaps extends BaserElement<HTMLDivElement> {
 
 	/**
 	 *
@@ -51,15 +51,6 @@ class GoogleMaps extends BaserElement {
 	 *
 	 */
 	public static className: string = '-bc-map-element';
-
-	/**
-	 * 管理するマップ要素リスト
-	 *
-	 * @version 0.0.6
-	 * @since 0.0.6
-	 *
-	 */
-	public static maps: GoogleMaps[] = [];
 
 	/**
 	 * クラス名
@@ -189,7 +180,7 @@ class GoogleMaps extends BaserElement {
 	 * @param options マップオプション
 	 *
 	 */
-	constructor (el: HTMLElement, options?: GoogleMapsOption) {
+	constructor (el: HTMLDivElement, options?: GoogleMapsOption) {
 		super(el);
 
 		// 既にエレメント化されていた場合は何もしない
@@ -203,8 +194,6 @@ class GoogleMaps extends BaserElement {
 			this.mapOption = this.mergeOptions(GoogleMaps.defaultOptions, options);
 			this._init();
 
-			// TODO: 必要な処理か検討
-			GoogleMaps.maps.push(this);
 			this.data(GoogleMaps.className, this);
 		} else {
 			if ('console' in window) {

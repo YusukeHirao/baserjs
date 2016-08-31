@@ -1,7 +1,7 @@
 /**!
 * baserjs - v1.0.0-alpha
-* revision: 276bd399d3fdf51401174f77889bdf57f0d05ee6
-* update: 2016-08-30
+* revision: 025adcc2afd72af16c21aa30d6e1d73728912955
+* update: 2016-08-31
 * Author: baserCMS Users Community [https://github.com/baserproject/]
 * Github: https://github.com/baserproject/baserjs
 * License: Licensed under the MIT License
@@ -123,6 +123,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var String_1 = __webpack_require__(25);
 var EventDispatcher_1 = __webpack_require__(11);
+/**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+// declare var $: {};
 var HYPHEN = '-';
 var DOUBLE_HYPHEN = '--';
 var UNDERSCORE = '_';
@@ -146,13 +150,9 @@ var BaserElement = function (_EventDispatcher_1$de) {
     /**
      * コンストラクタ
      *
-     * use: jQuery
-     *
-     * TODO: クラス名のつき方の規則をきちんと決める
-     *
      * @version 1.0.0
      * @since 0.0.1
-     * @param $el 管理するDOM要素
+     * @param el 管理するDOM要素
      *
      */
     function BaserElement(el) {
@@ -255,7 +255,7 @@ var BaserElement = function (_EventDispatcher_1$de) {
                             break;
                         default:
                             {
-                                attrs[optName] = this.attr(optName);
+                                attrs[optName] = this.getAttr(optName);
                             }
                     }
                     dataAttrs[optName] = this.data(optName);
@@ -263,14 +263,45 @@ var BaserElement = function (_EventDispatcher_1$de) {
             }
             return $.extend({}, defaultOptions, options, dataAttrs, attrs);
         }
+        /**
+         * 属性の設定
+         *
+         * @version 1.0.0
+         * @since 1.0.0
+         * @param name 属性名
+         * @param value 値
+         *
+         */
+
     }, {
-        key: 'attr',
-        value: function attr(key, value) {
-            if (value === undefined) {
-                return $(this.el).attr(key);
+        key: 'setAttr',
+        value: function setAttr(name, value) {
+            var el = this.el;
+            if (name in el) {
+                try {
+                    el[name] = value;
+                } catch (error) {
+                    if ('console' in window) {
+                        console.warn(error);
+                    }
+                }
             } else {
-                $(this.el).attr(key, value);
+                el.setAttribute(name, '' + value);
             }
+        }
+        /**
+         * 属性値の取得
+         *
+         * @version 1.0.0
+         * @since 1.0.0
+         * @param name 属性名
+         *
+         */
+
+    }, {
+        key: 'getAttr',
+        value: function getAttr(name) {
+            return this.el.getAttribute(name);
         }
     }, {
         key: 'data',
@@ -282,6 +313,11 @@ var BaserElement = function (_EventDispatcher_1$de) {
             }
         }
         /**
+         * セレクタにマッチする先祖要素を取得する
+         *
+         * use jQuery
+         *
+         * @deprecated
          *
          */
 
@@ -309,6 +345,13 @@ var BaserElement = function (_EventDispatcher_1$de) {
             }
         }
         /**
+         * 要素をラップする
+         *
+         * getAttr/setAttr を利用する
+         *
+         * use jQuery
+         *
+         * @deprecated
          *
          */
 
@@ -366,7 +409,7 @@ var BaserElement = function (_EventDispatcher_1$de) {
 
     }, {
         key: '__elementize',
-        value: function __elementize(constructor /* Class */) {
+        value: function __elementize(constructor /* SubClass of BaserElement */) {
             var constructorList = void 0;
             if (elementizedMap.has(this.el)) {
                 constructorList = elementizedMap.get(this.el);
@@ -375,21 +418,20 @@ var BaserElement = function (_EventDispatcher_1$de) {
             }
             constructorList.add(constructor._name);
             elementizedMap.set(this.el, constructorList);
-            // console.log(constructor._name);
         }
     }, {
         key: 'el',
 
         /**
+         * HTML要素の実体
+         *
+         * @version 1.0.0
+         * @since 1.0.0
          *
          */
         set: function set(element) {
             elements.set(this, element);
-        }
-        /**
-         *
-         */
-        ,
+        },
         get: function get() {
             return elements.get(this);
         }
@@ -566,9 +608,7 @@ var BaserElement = function (_EventDispatcher_1$de) {
         /**
          * クラス名を付加する
          *
-         * use: jQuery
-         *
-         * @version 0.9.0
+         * @version 1.0.0
          * @since 0.1.0
          * @param elem 対象のDOM要素
          * @param blockName ブロック名
@@ -583,16 +623,13 @@ var BaserElement = function (_EventDispatcher_1$de) {
             var elementNames = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
             var modifierName = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
 
-            var $elem = $(elem);
             var className = BaserElement.createClassName(blockNames, elementNames, modifierName);
-            $elem.addClass(className);
+            elem.classList.add(className);
         }
         /**
          * クラス名を取り除く
          *
-         * use: jQuery
-         *
-         * @version 0.9.0
+         * @version 1.0.0
          * @since 0.1.0
          * @param elem 対象のDOM要素
          * @param blockName ブロック名
@@ -607,9 +644,8 @@ var BaserElement = function (_EventDispatcher_1$de) {
             var elementNames = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
             var modifierName = arguments.length <= 3 || arguments[3] === undefined ? '' : arguments[3];
 
-            var $elem = $(elem);
             var className = BaserElement.createClassName(blockNames, elementNames, modifierName);
-            $elem.removeClass(className);
+            elem.classList.remove(className);
         }
         /**
          * CSSプロパティをDOM要素から取り除く
@@ -629,6 +665,19 @@ var BaserElement = function (_EventDispatcher_1$de) {
                 style.removeProperty(propName);
             }
         }
+        /**
+         * CSSを付加する
+         *
+         * use jQuery
+         *
+         * @deprecated
+         * @version 1.0.0
+         * @since unknown
+         * @param elem 対象のDOM要素
+         * @param styles CSSマップ
+         *
+         */
+
     }, {
         key: 'css',
         value: function css(elem, styles) {
@@ -2815,9 +2864,9 @@ var Math_1 = __webpack_require__(60);
 var Browser_1 = __webpack_require__(4);
 var BaserElement_1 = __webpack_require__(3);
 /**
- * ラジオボタンとチェックボックスの抽象クラス
+ * 擬似背景のコンテナ
  *
- * @version 0.11.0
+ * @version 1.0.0
  * @since 0.11.0
  *
  */
@@ -3775,8 +3824,6 @@ var GoogleMaps = function (_BaserElement_1$defau) {
             _this.addClass(GoogleMaps.className);
             _this.mapOption = _this.mergeOptions(GoogleMaps.defaultOptions, options);
             _this._init();
-            // TODO: 必要な処理か検討
-            GoogleMaps.maps.push(_this);
             _this.data(GoogleMaps.className, _this);
         } else {
             if ('console' in window) {
@@ -3997,14 +4044,6 @@ GoogleMaps.defaultLng = 139.766084;
  *
  */
 GoogleMaps.className = '-bc-map-element';
-/**
- * 管理するマップ要素リスト
- *
- * @version 0.0.6
- * @since 0.0.6
- *
- */
-GoogleMaps.maps = [];
 /**
  * クラス名
  */
@@ -6532,25 +6571,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var BaserElement_1 = __webpack_require__(3);
 
 var BaserElementCollection = function () {
+    // public static each (elementList: HTMLCollection): BaserElementCollection {
+    // 	const baserElList: BaserElement[] = [];
+    // 	for (let i: number = 0, l: number = elementList.length; i < l; i++) {
+    // 		baserElList.push(new BaserElement(elementList[i] as HTMLElement));
+    // 	}
+    // 	return new BaserElementCollection(baserElList);
+    // }
     function BaserElementCollection(nodeList) {
         _classCallCheck(this, BaserElementCollection);
 
-        this.nodeList = nodeList;
+        this._nodeList = [];
+        for (var i = 0, l = nodeList.length; i < l; i++) {
+            var el = nodeList.item(i);
+            var baserEl = new BaserElement_1.default(el);
+            this._nodeList.push(baserEl);
+        }
     }
 
     _createClass(BaserElementCollection, [{
         key: Symbol.iterator,
         value: function value() {
-            return this.nodeList.values();
-        }
-    }], [{
-        key: "each",
-        value: function each(elementList) {
-            var baserElList = [];
-            for (var i = 0, l = elementList.length; i < l; i++) {
-                baserElList.push(new BaserElement_1.default(elementList[i]));
-            }
-            return new BaserElementCollection(baserElList);
+            return this._nodeList.values();
         }
     }]);
 

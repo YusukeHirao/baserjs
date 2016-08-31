@@ -1,25 +1,29 @@
 import BaserElement from '../BaserElement';
 
-class BaserElementCollection {
+class BaserElementCollection<E extends HTMLElement> {
 
-	public nodeList: BaserElement[];
+	private _nodeList: BaserElement<E>[] = [];
 
-	public static each (elementList: HTMLCollection): BaserElementCollection {
-		const baserElList: BaserElement[] = [];
-		for (let i: number = 0, l: number = elementList.length; i < l; i++) {
-			baserElList.push(new BaserElement(elementList[i] as HTMLElement));
+	// public static each (elementList: HTMLCollection): BaserElementCollection {
+	// 	const baserElList: BaserElement[] = [];
+	// 	for (let i: number = 0, l: number = elementList.length; i < l; i++) {
+	// 		baserElList.push(new BaserElement(elementList[i] as HTMLElement));
+	// 	}
+	// 	return new BaserElementCollection(baserElList);
+	// }
+
+	constructor (nodeList: NodeListOf<E>) {
+
+		for (let i: number = 0, l: number = nodeList.length; i < l; i++) {
+			const el: E = nodeList.item(i);
+			const baserEl: BaserElement<E> = new BaserElement<E>(el);
+			this._nodeList.push(baserEl);
 		}
-		return new BaserElementCollection(baserElList);
-	}
-
-	constructor (nodeList: BaserElement[]) {
-
-		this.nodeList = nodeList;
 
 	}
 
 	public [Symbol.iterator] () {
-		return this.nodeList.values();
+		return this._nodeList.values();
 	}
 
 }

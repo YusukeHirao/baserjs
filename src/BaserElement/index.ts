@@ -2,15 +2,20 @@ import UtilString from '../Util/String';
 import EventDispatcher from '../EventDispatcher';
 import IElement from './IElement';
 
+/**
+ * このモジュール（スコープ）ではjQueryを使用しない
+ */
+// declare var $: {};
+
 const HYPHEN: string = '-';
 const DOUBLE_HYPHEN: string = '--';
 const UNDERSCORE: string = '_';
 const DOUBLE_UNDERSCORE: string = '__';
 
-const elements: WeakMap<BaserElement, HTMLElement> = new WeakMap();
+const elements: WeakMap<BaserElement<HTMLElement>, HTMLElement> = new WeakMap();
 const elementizedMap: WeakMap<HTMLElement, Set<Symbol>> = new WeakMap();
 
-type Primitive = string | number | boolean;
+export type Primitive = string | number | boolean;
 
 export interface IBaserElementCreateElementOption {
 	tagName: string;
@@ -53,7 +58,7 @@ export type ClassNameSeparatorForBEM = 'HYPHEN' | 'DOUBLE_HYPHEN' | 'UNDERSCORE'
  * @since 0.0.1
  *
  */
-class BaserElement extends EventDispatcher implements IElement {
+class BaserElement<E extends HTMLElement> extends EventDispatcher implements IElement<E> {
 
 	/**
 	 * クラス名のデフォルトのプレフィックス
@@ -333,9 +338,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	/**
 	 * クラス名を付加する
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.1.0
 	 * @param elem 対象のDOM要素
 	 * @param blockName ブロック名
@@ -344,17 +347,14 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	public static addClass (elem: HTMLElement, blockNames: string, elementNames: string = '', modifierName: string = ''): void {
-		const $elem: JQuery = $(elem);
 		const className: string = BaserElement.createClassName(blockNames, elementNames, modifierName);
-		$elem.addClass(className);
+		elem.classList.add(className);
 	}
 
 	/**
 	 * クラス名を取り除く
 	 *
-	 * use: jQuery
-	 *
-	 * @version 0.9.0
+	 * @version 1.0.0
 	 * @since 0.1.0
 	 * @param elem 対象のDOM要素
 	 * @param blockName ブロック名
@@ -363,9 +363,8 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	public static removeClass (elem: HTMLElement, blockNames: string, elementNames: string = '', modifierName: string = ''): void {
-		const $elem: JQuery = $(elem);
 		const className: string = BaserElement.createClassName(blockNames, elementNames, modifierName);
-		$elem.removeClass(className);
+		elem.classList.remove(className);
 	}
 
 	/**
@@ -384,23 +383,31 @@ class BaserElement extends EventDispatcher implements IElement {
 		}
 	}
 
-	public static css (elem: HTMLElement, styles: any): void {
+	/**
+	 * CSSを付加する
+	 *
+	 * use jQuery
+	 *
+	 * @deprecated
+	 * @version 1.0.0
+	 * @since unknown
+	 * @param elem 対象のDOM要素
+	 * @param styles CSSマップ
+	 *
+	 */
+	public static css (elem: HTMLElement, styles: {}): void {
 		$(elem).css(styles);
 	}
 
 	/**
 	 * コンストラクタ
 	 *
-	 * use: jQuery
-	 *
-	 * TODO: クラス名のつき方の規則をきちんと決める
-	 *
 	 * @version 1.0.0
 	 * @since 0.0.1
-	 * @param $el 管理するDOM要素
+	 * @param el 管理するDOM要素
 	 *
 	 */
-	constructor (el: HTMLElement) {
+	constructor (el: E) {
 		super();
 		this.el = el;
 		// 既にbaserJSのエレメント化している場合
@@ -423,17 +430,17 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
+	 * HTML要素の実体
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
 	 *
 	 */
-	set el (element: HTMLElement) {
+	set el (element: E) {
 		elements.set(this, element);
 	}
-
-	/**
-	 *
-	 */
-	get el (): HTMLElement {
-		return elements.get(this)!;
+	get el (): E {
+		return elements.get(this)! as E;
 	}
 
 	/**
@@ -473,7 +480,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 *
 	 */
 	public mergeOptions (defaultOptions: any, options: any): any {
-		const attrs: { [option: string ]: Primitive } = {};
+		const attrs: { [option: string ]: Primitive | null } = {};
 		const dataAttrs: { [option: string ]: Primitive } = {};
 
 		for (const optName in defaultOptions) {
@@ -484,7 +491,7 @@ class BaserElement extends EventDispatcher implements IElement {
 					case 'class':
 					break;
 					default: {
-						attrs[optName] = this.attr(optName);
+						attrs[optName] = this.getAttr(optName);
 					}
 				}
 				dataAttrs[optName] = this.data(optName);
@@ -494,24 +501,51 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
-	 * 属性の取得と設定
+	 * 属性の設定
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 * @param name 属性名
+	 * @param value 値
+	 *
 	 */
-	public attr (key: string, value: any): void;
-	public attr (key: string): any;
-	public attr (key: string, value?: any): string | undefined {
-		if (value === undefined) {
-			return $(this.el).attr(key);
+	public setAttr (name: string, value: Primitive): void {
+		const el: E = this.el;
+		if (name in el) {
+			try {
+				el[name] = value;
+			} catch (error) {
+				if ('console' in window) {
+					console.warn(error);
+				}
+			}
 		} else {
-			$(this.el).attr(key, value);
+			el.setAttribute(name, `${value}`);
 		}
 	}
 
 	/**
+	 * 属性値の取得
+	 *
+	 * @version 1.0.0
+	 * @since 1.0.0
+	 * @param name 属性名
+	 *
+	 */
+	public getAttr (name: string): string | null {
+		return this.el.getAttribute(name);
+	}
+
+	/**
 	 * 要素にフラグを紐付ける
+	 *
+	 * use jQuery
+	 *
+	 * @deprecated
 	 */
 	public data (key: string, value: any): void;
 	public data (key: string): any;
-	public data (key: string, value?: any): Primitive | undefined {
+	public data (key: string, value?: any): any | void {
 		if (value === undefined) {
 			return $(this.el).data(key);
 		} else {
@@ -520,6 +554,11 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
+	 * セレクタにマッチする先祖要素を取得する
+	 *
+	 * use jQuery
+	 *
+	 * @deprecated
 	 *
 	 */
 	public closest (selector: string): HTMLElement {
@@ -527,7 +566,14 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
-	 * 要素にフラグを紐付ける
+	 * フォーム要素の値を取得する
+	 *
+	 * this.el.valueを利用する
+	 *
+	 * use jQuery
+	 *
+	 * @deprecated
+	 *
 	 */
 	public val (): string;
 	public val (value: string): void;
@@ -541,6 +587,13 @@ class BaserElement extends EventDispatcher implements IElement {
 
 	/**
 	 * 属性の取得と設定
+	 *
+	 * getAttr/setAttr を利用する
+	 *
+	 * use jQuery
+	 *
+	 * @deprecated
+	 *
 	 */
 	public prop (key: string, value: any): void;
 	public prop (key: string): any;
@@ -553,10 +606,17 @@ class BaserElement extends EventDispatcher implements IElement {
 	}
 
 	/**
+	 * 要素をラップする
+	 *
+	 * getAttr/setAttr を利用する
+	 *
+	 * use jQuery
+	 *
+	 * @deprecated
 	 *
 	 */
-	public wrap (wrapper: DocumentFragment) {
-		$(this.el).wrap(wrapper as HTMLElement);
+	public wrap (wrapper: HTMLDivElement | HTMLSpanElement) {
+		$(this.el).wrap(wrapper);
 	}
 
 	/**
@@ -599,7 +659,7 @@ class BaserElement extends EventDispatcher implements IElement {
 	 * @version 1.0.0
 	 * @since 1.0.0
 	 */
-	protected __elementize (constructor: any /* Class */): void {
+	protected __elementize (constructor: any /* SubClass of BaserElement */): void {
 		let constructorList: Set<Symbol>;
 		if (elementizedMap.has(this.el)) {
 			constructorList = elementizedMap.get(this.el)!;
@@ -608,8 +668,6 @@ class BaserElement extends EventDispatcher implements IElement {
 		}
 		constructorList.add(constructor._name as Symbol);
 		elementizedMap.set(this.el, constructorList);
-		// console.log(constructor._name);
-
 	}
 
 }
