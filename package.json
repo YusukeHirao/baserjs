@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/google.analytics": "^0.0.33",
     "@types/qs": "^6.2.31",
-    "@types/youtube": "^0.0.29",
+    "@types/youtube": "^0.0.30",
     "ava": "^0.19.1",
     "browser-env": "^2.0.31",
     "coffee-script": "^1.12.6",
@@ -38,7 +38,7 @@
     "moment": "^2.18.1",
     "nightmare": "^2.10.0",
     "run-sequence": "^1.2.2",
-    "tslint": "^5.4.2",
+    "tslint": "^5.4.3",
     "typescript": "^2.3.4",
     "typings": "^2.1.1",
     "webpack": "2.6.1",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "bezier-easing": "^2.0.3",
-    "intersection-observer": "^0.2.1",
+    "intersection-observer": "^0.3.0",
     "qs": "^6.4.0"
   }
 }
