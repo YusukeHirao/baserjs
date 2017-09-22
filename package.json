@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp",
     "dev": "gulp watch",
+    "docs": "typedoc --out docs/ src/",
     "test": "ava -v"
   },
   "repository": {
@@ -41,6 +42,7 @@
     "moment": "^2.18.1",
     "run-sequence": "^2.2.0",
     "tslint": "^5.7.0",
+    "typedoc": "^0.8.0",
     "typescript": "^2.5.2",
     "typings": "^2.1.1",
     "webpack": "3.6.0",

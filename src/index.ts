@@ -5,6 +5,7 @@ import _Scroll from './Classes/Scroll';
 import _Sequencer from './Classes/Sequencer';
 import _Slideshow from './Classes/Slideshow';
 import _YouTube from './Classes/YouTube';
+import __CoreNode from './nodes/CoreNode';
 
 export const CoreNode = _CoreNode;
 export const GoogleMaps = _GoogleMaps;
@@ -13,6 +14,8 @@ export const Scroll = _Scroll;
 export const Sequencer = _Sequencer;
 export const Slideshow = _Slideshow;
 export const YouTube = _YouTube;
+
+export const _ = __CoreNode;
 
 export function auto () {
 	return new Promise<void>((resolve) => {

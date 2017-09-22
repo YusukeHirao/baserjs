@@ -1,7 +1,7 @@
 /**!
 	* baserjs - v1.0.0-beta.0
-	* revision: 4afcefffbeab642077d078c21f65828220983541
-	* update: 2017-09-22
+	* revision: 4b5013b894c95256587476e6d20f0d64bf41052e
+	* update: 2017-09-23
 	* Author: baserCMS Users Community [https://github.com/baserproject/]
 	* Github: https://github.com/baserproject/baserjs
 	* License: Licensed under the MIT License
@@ -90,8 +90,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(12);
-var EventDispatcher_1 = __webpack_require__(1);
-var createUID_1 = __webpack_require__(2);
+var EventDispatcher_1 = __webpack_require__(2);
+var createUID_1 = __webpack_require__(1);
 var hyphenize_1 = __webpack_require__(15);
 var isDOMValue_1 = __webpack_require__(16);
 var isFalsy_1 = __webpack_require__(17);
@@ -104,8 +104,10 @@ var masterIntersection;
 /**
  * DOM要素の抽象クラス
  *
+ * @class CoreNode
  * @version 1.0.0
  * @since 0.0.1
+ * @template E 管理するDOM要素のインターフェイス
  *
  */
 var CoreNode = /** @class */ (function (_super) {
@@ -115,7 +117,8 @@ var CoreNode = /** @class */ (function (_super) {
      *
      * @version 1.0.0
      * @since 0.0.1
-     * @param el 管理するDOM要素
+     * @param {E} el 管理するDOM要素
+     * @template E 管理するDOM要素のインターフェイス
      *
      */
     function CoreNode(el, options) {
@@ -417,6 +420,32 @@ exports.default = CoreNode;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * ユニークIDを発行する
+ *
+ * @version 1.0.0
+ * @since 0.0.1
+ * @param prefix 接頭辞
+ * @return ユニークID
+ *
+ */
+function createUID(prefix) {
+    if (prefix === void 0) { prefix = 'uid-'; }
+    var random = Math.random() * 1e8;
+    var seed = new Date().valueOf();
+    var uniqueNumber = Math.abs(Math.floor(random + seed));
+    return "" + prefix + uniqueNumber.toString(24);
+}
+exports.default = createUID;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var DispatchEvent_1 = __webpack_require__(13);
 var EventHandler_1 = __webpack_require__(14);
 /**
@@ -550,32 +579,6 @@ var EventDispatcher = /** @class */ (function () {
     return EventDispatcher;
 }());
 exports.default = EventDispatcher;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * ユニークIDを発行する
- *
- * @version 1.0.0
- * @since 0.0.1
- * @param prefix 接頭辞
- * @return ユニークID
- *
- */
-function createUID(prefix) {
-    if (prefix === void 0) { prefix = 'uid-'; }
-    var random = Math.random() * 1e8;
-    var seed = new Date().valueOf();
-    var uniqueNumber = Math.abs(Math.floor(random + seed));
-    return "" + prefix + uniqueNumber.toString(24);
-}
-exports.default = createUID;
 
 
 /***/ }),
@@ -1620,6 +1623,7 @@ var Scroll_1 = __webpack_require__(23);
 var Sequencer_1 = __webpack_require__(7);
 var Slideshow_1 = __webpack_require__(26);
 var YouTube_1 = __webpack_require__(27);
+var CoreNode_2 = __webpack_require__(33);
 exports.CoreNode = CoreNode_1.default;
 exports.GoogleMaps = GoogleMaps_1.default;
 exports.Progressive = Progressive_1.default;
@@ -1627,6 +1631,7 @@ exports.Scroll = Scroll_1.default;
 exports.Sequencer = Sequencer_1.default;
 exports.Slideshow = Slideshow_1.default;
 exports.YouTube = YouTube_1.default;
+exports._ = CoreNode_2.default;
 function auto() {
     return new Promise(function (resolve) {
         if (document.readyState !== 'loading') {
@@ -2481,7 +2486,7 @@ exports.default = DispatchEvent;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var createUID_1 = __webpack_require__(2);
+var createUID_1 = __webpack_require__(1);
 /**
  * イベントハンドラのラッパークラス
  *
@@ -3488,7 +3493,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var BezierEasing = __webpack_require__(24);
-var EventDispatcher_1 = __webpack_require__(1);
+var EventDispatcher_1 = __webpack_require__(2);
 var Progressive_1 = __webpack_require__(6);
 var Timer_1 = __webpack_require__(4);
 var addEventListenerWithOptions_1 = __webpack_require__(25);
@@ -5016,6 +5021,493 @@ function scriptLoad(scriptFile) {
     });
 }
 exports.default = scriptLoad;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var createUID_1 = __webpack_require__(34);
+var EventDispatcher_1 = __webpack_require__(35);
+var elements = new WeakMap();
+var detachedChildren = new WeakMap();
+/**
+ * Abstract DOM Element Wrapper Class
+ *
+ * @class CoreNode
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var CoreNode = /** @class */ (function (_super) {
+    __extends(CoreNode, _super);
+    /**
+     * Abstract DOM Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function CoreNode(el) {
+        var _this = _super.call(this) || this;
+        if (!(el instanceof Element)) {
+            throw new TypeError("A argument is not Element.");
+        }
+        /**
+         * `this.el` is readonly
+         *
+         * Virtual `this.el = el`;
+         */
+        elements.set(_this, el);
+        // id属性の抽出 & 生成
+        if (el.id) {
+            _this._id = el.id;
+        }
+        else {
+            _this._id = createUID_1.default();
+            el.id = _this._id;
+        }
+        var mo = new MutationObserver(function (mutations, observer) { return _this._onMutateAttributes(mutations, observer); });
+        mo.observe(_this._el, { attributes: true });
+        return _this;
+    }
+    Object.defineProperty(CoreNode.prototype, "id", {
+        get: function () {
+            return this._id;
+        },
+        /**
+         * DOM ID attribute
+         *
+         * @api DOM access
+         * @version 1.0.0
+         * @since 1.0.0
+         */
+        set: function (id) {
+            if (this._id !== id) {
+                var isExist = !!document.getElementById(id);
+                if (isExist) {
+                    throw new Error("ID \"" + id + "\" was existing.");
+                }
+                this._id = id;
+                this._el.id = id;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * add class
+     *
+     * @api DOM access
+     * @version 1.0.0
+     * @since 1.0.0
+     *
+     */
+    CoreNode.prototype.addClass = function (classNames) {
+        (_a = this._el.classList).add.apply(_a, classNames);
+        return this;
+        var _a;
+    };
+    /**
+     * remove class
+     *
+     * @api DOM access
+     * @version 1.0.0
+     * @since 1.0.0
+     *
+     */
+    CoreNode.prototype.removeClass = function (classNames) {
+        (_a = this._el.classList).remove.apply(_a, classNames);
+        return this;
+        var _a;
+    };
+    /**
+     * is class contained?
+     *
+     * @api DOM access
+     * @version 1.0.0
+     * @since 1.0.0
+     *
+     */
+    CoreNode.prototype.hasClass = function (className) {
+        return this._el.classList.contains(className);
+    };
+    /**
+     * Set value to attribute
+     *
+     * @api DOM access
+     * @param attrName Attribute name
+     * @param value Attribute value
+     */
+    CoreNode.prototype.setAttr = function (attrName, value) {
+        this._el.setAttribute(attrName, value);
+    };
+    /**
+     * Get value from attribute
+     *
+     * @api DOM access
+     * @param attrName Attribute name
+     */
+    CoreNode.prototype.getAttr = function (attrName) {
+        return this._el.getAttribute(attrName);
+    };
+    /**
+     * Callback on mutated attributes
+     *
+     * @param mutations Mutated record list
+     * @param observer Mutation observer
+     */
+    CoreNode.prototype._onMutateAttributes = function (mutations, observer) {
+        if (mutations && mutations.length) {
+            for (var _i = 0, mutations_1 = mutations; _i < mutations_1.length; _i++) {
+                var mutation = mutations_1[_i];
+                if (mutation.type === 'attributes' && mutation.attributeName) {
+                    this.trigger(mutation.attributeName, [this._el.getAttribute(mutation.attributeName)]);
+                }
+            }
+        }
+    };
+    Object.defineProperty(CoreNode.prototype, "_el", {
+        /**
+         * Assigned DOM Element
+         *
+         * @readonly
+         */
+        get: function () {
+            return elements.get(this);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return CoreNode;
+}(EventDispatcher_1.default));
+exports.default = CoreNode;
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * ユニークIDを発行する
+ *
+ * @version 1.0.0
+ * @since 0.0.1
+ * @param prefix 接頭辞
+ * @return ユニークID
+ *
+ */
+function createUID(prefix) {
+    if (prefix === void 0) { prefix = 'uid-'; }
+    var random = Math.random() * 1e8;
+    var seed = new Date().valueOf();
+    var uniqueNumber = Math.abs(Math.floor(random + seed));
+    return "" + prefix + uniqueNumber.toString(24);
+}
+exports.default = createUID;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var DispatchEvent_1 = __webpack_require__(36);
+var EventHandler_1 = __webpack_require__(37);
+/**
+ * イベントを検知してハンドラを発火させることができるクラス
+ *
+ * @version 0.9.0
+ * @since 0.0.10
+ *
+ * ```
+ * let dispatcher = new EventDispatcher();
+ *
+ * dispatcher.on('event', (e) -> {
+ * 	// handler
+ * });
+ *
+ * dispatcher.trigger('event');
+ * ```
+ *
+ */
+var EventDispatcher = /** @class */ (function () {
+    /**
+     * コンストラクタ
+     *
+     * @version 0.0.10
+     * @since 0.0.10
+     *
+     */
+    function EventDispatcher() {
+        // void
+    }
+    /**
+     * イベントハンドラを登録する
+     *
+     * @version 0.9.0
+     * @since 0.0.10
+     * @param type イベントのタイプ（複数可）
+     * @param handler
+     * @return インスタンス自身
+     *
+     */
+    EventDispatcher.prototype.on = function (types, handler) {
+        var typeList = typeof types === 'string' ? types.split(/\s+/g) : types;
+        for (var _i = 0, typeList_1 = typeList; _i < typeList_1.length; _i++) {
+            var type = typeList_1[_i];
+            var eventHandler = new EventHandler_1.default(this, type, handler);
+            EventDispatcher.eventHandlers[eventHandler.id] = eventHandler;
+            if (!EventDispatcher.types[type]) {
+                EventDispatcher.types[type] = [];
+            }
+            EventDispatcher.types[type].push(eventHandler);
+        }
+        return this;
+    };
+    /**
+     * イベントハンドラを削除する
+     *
+     * @version 1.0.0
+     * @since 0.0.10
+     * @param type イベントのタイプ（複数可）
+     * @return インスタンス自身
+     *
+     */
+    EventDispatcher.prototype.off = function (types) {
+        var typeList = typeof types === 'string' ? types.split(/\s+/g) : types;
+        for (var _i = 0, typeList_2 = typeList; _i < typeList_2.length; _i++) {
+            var type = typeList_2[_i];
+            delete EventDispatcher.types[type];
+        }
+        return this;
+    };
+    /**
+     * イベントハンドラを発火させる
+     *
+     * @version 1.0.0
+     * @since 0.0.10
+     * @param type イベントのタイプ
+     * @param args イベントハンドラに渡す引数
+     * @param context イベントハンドラのコンテキスト
+     * @return インスタンス自身
+     *
+     */
+    EventDispatcher.prototype.trigger = function (type, args, context) {
+        if (args === void 0) { args = []; }
+        context = context || this;
+        var typeName;
+        var e;
+        if (typeof type === 'string') {
+            typeName = type;
+            e = new DispatchEvent_1.default(type);
+        }
+        else {
+            e = type;
+            typeName = e.type;
+        }
+        if (EventDispatcher.types[typeName]) {
+            // sliceをつかってオブジェクトのコピーを渡し参照を切る
+            var handlers = EventDispatcher.types[typeName].slice();
+            while (handlers.length) {
+                var eventHandler = handlers.shift();
+                if (eventHandler && eventHandler.context === this) {
+                    var isCancel = eventHandler.fire(context, e, args);
+                    if (isCancel) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                    }
+                    // イベントの伝達抑制状態であればループ抜けて以降の処理を行わない
+                    if (e.isImmediatePropagationStopped()) {
+                        break;
+                    }
+                }
+            }
+        }
+        return this;
+    };
+    /**
+     * イベント駆動できるクラス
+     *
+     * @version 0.7.0
+     * @since 0.7.0
+     *
+     */
+    EventDispatcher.eventHandlers = {}; // tslint:disable-line:no-any
+    /**
+     * イベント駆動できるクラス
+     *
+     * @version 0.7.0
+     * @since 0.7.0
+     *
+     */
+    EventDispatcher.types = {}; // tslint:disable-line:no-any
+    return EventDispatcher;
+}());
+exports.default = EventDispatcher;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * イベントオブジェクトのクラス
+ *
+ * @version 0.9.0
+ * @since 0.0.10
+ *
+ */
+var DispatchEvent = /** @class */ (function () {
+    /**
+     * コンストラクタ
+     *
+     * @version 0.3.0
+     * @since 0.0.10
+     *
+     */
+    function DispatchEvent(type) {
+        /**
+         * イベントの伝達が止められているかどうか
+         *
+         * @version 0.0.10
+         * @since 0.0.10
+         *
+         */
+        this._isImmediatePropagationStopped = false;
+        /**
+         * デフォルトのイベントの発火が止められているかどうか
+         *
+         * @version 0.9.0
+         * @since 0.9.0
+         *
+         */
+        this._isDefaultPrevented = false;
+        this.type = type;
+    }
+    /**
+     * イベントの伝達を止める
+     *
+     * @version 0.0.10
+     * @since 0.0.10
+     *
+     */
+    DispatchEvent.prototype.stopImmediatePropagation = function () {
+        this._isImmediatePropagationStopped = true;
+    };
+    /**
+     * イベントの伝達が止められているかどうか
+     *
+     * @version 0.0.10
+     * @since 0.0.10
+     * @return イベントの伝達が止められているかどうか
+     *
+     */
+    DispatchEvent.prototype.isImmediatePropagationStopped = function () {
+        return this._isImmediatePropagationStopped;
+    };
+    /**
+     * デフォルトのイベントの発火を止める
+     * ※EventDispatcher.triggerでの実装に依る
+     *
+     * @version 0.9.0
+     * @since 0.9.0
+     *
+     */
+    DispatchEvent.prototype.preventDefault = function () {
+        this._isDefaultPrevented = true;
+    };
+    /**
+     * デフォルトのイベントの発火が止められているかどうか
+     *
+     * @version 0.9.0
+     * @since 0.9.0
+     * @return デフォルトのイベントの発火が止められているかどうか
+     *
+     */
+    DispatchEvent.prototype.isDefaultPrevented = function () {
+        return this._isDefaultPrevented;
+    };
+    return DispatchEvent;
+}());
+exports.default = DispatchEvent;
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var createUID_1 = __webpack_require__(1);
+/**
+ * イベントハンドラのラッパークラス
+ *
+ * @version 0.9.0
+ * @since 0.0.10
+ *
+ */
+var EventHandler = /** @class */ (function () {
+    /**
+     * ハンドラ
+     *
+     * @version 1.0.0
+     * @since 0.0.10
+     * @param context 紐づくディスパッチャーオブジェクト
+     * @param type イベントのタイプ
+     * @param handler ハンドラ
+     */
+    function EventHandler(context, type, handler) {
+        this.context = context;
+        this.id = createUID_1.default();
+        this.type = type;
+        this._handler = handler;
+    }
+    /**
+     * ハンドラを実行する
+     *
+     * @version 1.0.0
+     * @since 0.0.10
+     * @param context 紐づくディスパッチャーオブジェクト
+     * @param type イベントのタイプ
+     * @param handler ハンドラ
+     * @return イベントの伝達を止めるかどうか
+     */
+    EventHandler.prototype.fire = function (context, e, args) {
+        var applyArgs = [];
+        applyArgs.push(e);
+        applyArgs = applyArgs.concat(args);
+        var handlerReturn = this._handler.apply(context, applyArgs);
+        return handlerReturn !== undefined && !handlerReturn;
+    };
+    return EventHandler;
+}());
+exports.default = EventHandler;
 
 
 /***/ })

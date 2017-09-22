@@ -8,11 +8,13 @@ export interface CoreNodeAttributes {
 /**
  * DOM要素の抽象クラス
  *
+ * @class CoreNode
  * @version 1.0.0
  * @since 0.0.1
+ * @template E 管理するDOM要素のインターフェイス
  *
  */
-export default class CoreNode<E extends Element = Element, C = {}> extends EventDispatcher {
+export default abstract class CoreNode<E extends Element = Element, C = {}> extends EventDispatcher {
     /**
      * 管理するDOM要素のid属性値
      *
@@ -50,7 +52,8 @@ export default class CoreNode<E extends Element = Element, C = {}> extends Event
      *
      * @version 1.0.0
      * @since 0.0.1
-     * @param el 管理するDOM要素
+     * @param {E} el 管理するDOM要素
+     * @template E 管理するDOM要素のインターフェイス
      *
      */
     constructor(el: E, options?: {
