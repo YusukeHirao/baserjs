@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 export interface ISlideshowConfig {
     /**
      * 遷移時間
@@ -17,7 +17,7 @@ export interface ISlideshowConfig {
      */
     autoPlay: boolean;
 }
-export default class Slideshow extends BaserElement<HTMLElement, ISlideshowConfig> {
+export default class Slideshow extends CoreNode<HTMLElement, ISlideshowConfig> {
     private _seq;
     x(i: number): void;
     readonly length: number;

@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 export interface ScrollSpyHandler {
     (y: number, viewportHeight: number): boolean;
 }
@@ -11,8 +11,8 @@ export interface ScrollSpyHandler {
  */
 export default class ScrollSpy<R> {
     static return<R>(returnValue: R): ScrollSpy<R>;
-    static by<E extends Element>(bEl: BaserElement<E>): Promise<undefined>;
+    static by<E extends Element>(bEl: CoreNode<E>): Promise<undefined>;
     private _returnValue;
     private constructor();
-    by<E extends Element>(bEl: BaserElement<E>): Promise<R>;
+    by<E extends Element>(bEl: CoreNode<E>): Promise<R>;
 }

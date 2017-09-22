@@ -1,11 +1,11 @@
-import _BaserElement from './Classes/BaserElement';
+import _CoreNode from './Classes/CoreNode';
 import _GoogleMaps from './Classes/GoogleMaps';
 import _Progressive from './Classes/Progressive';
 import _Scroll from './Classes/Scroll';
 import _Sequencer from './Classes/Sequencer';
 import _Slideshow from './Classes/Slideshow';
 import _YouTube from './Classes/YouTube';
-export declare const BaserElement: typeof _BaserElement;
+export declare const CoreNode: typeof _CoreNode;
 export declare const GoogleMaps: typeof _GoogleMaps;
 export declare const Progressive: typeof _Progressive;
 export declare const Scroll: typeof _Scroll;

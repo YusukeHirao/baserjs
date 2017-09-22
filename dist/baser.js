@@ -1,6 +1,6 @@
 /**!
 	* baserjs - v1.0.0-beta.0
-	* revision: fd7c186aa2b96ac5e8fb5357014e77185db2b358
+	* revision: 4afcefffbeab642077d078c21f65828220983541
 	* update: 2017-09-22
 	* Author: baserCMS Users Community [https://github.com/baserproject/]
 	* Github: https://github.com/baserproject/baserjs
@@ -108,8 +108,8 @@ var masterIntersection;
  * @since 0.0.1
  *
  */
-var BaserElement = /** @class */ (function (_super) {
-    __extends(BaserElement, _super);
+var CoreNode = /** @class */ (function (_super) {
+    __extends(CoreNode, _super);
     /**
      * コンストラクタ
      *
@@ -118,7 +118,7 @@ var BaserElement = /** @class */ (function (_super) {
      * @param el 管理するDOM要素
      *
      */
-    function BaserElement(el, options) {
+    function CoreNode(el, options) {
         if (options === void 0) { options = {}; }
         var _this = _super.call(this) || this;
         /**
@@ -154,7 +154,7 @@ var BaserElement = /** @class */ (function (_super) {
         }
         return _this;
     }
-    Object.defineProperty(BaserElement.prototype, "el", {
+    Object.defineProperty(CoreNode.prototype, "el", {
         /**
          * 管理するDOM要素
          *
@@ -173,7 +173,7 @@ var BaserElement = /** @class */ (function (_super) {
      * @since 0.1.0
      *
      */
-    BaserElement.prototype.addClass = function (className) {
+    CoreNode.prototype.addClass = function (className) {
         (_a = this.el.classList).add.apply(_a, className.split(/\s+/g));
         return this;
         var _a;
@@ -185,7 +185,7 @@ var BaserElement = /** @class */ (function (_super) {
      * @since 0.1.0
      *
      */
-    BaserElement.prototype.removeClass = function (className) {
+    CoreNode.prototype.removeClass = function (className) {
         (_a = this.el.classList).remove.apply(_a, className.split(/\s+/g));
         return this;
         var _a;
@@ -205,7 +205,7 @@ var BaserElement = /** @class */ (function (_super) {
      * @return 結果
      *
      */
-    BaserElement.prototype.getBoolAttr = function (attrName) {
+    CoreNode.prototype.getBoolAttr = function (attrName) {
         var value = this.pullProp(attrName);
         return value === '' || !isFalsy_1.default(value);
     };
@@ -223,8 +223,8 @@ var BaserElement = /** @class */ (function (_super) {
      *
      * data-*属性の場合次の2通りの取得方法があります。
      *
-     * 1. `baserElement.pullProp("data-foo-bar");`
-     * 2. `baserElement.pullProp("fooBar");`
+     * 1. `CoreNode.pullProp("data-foo-bar");`
+     * 2. `CoreNode.pullProp("fooBar");`
      *
      * オプションに渡されたオブジェクト内の値が、
      * ハッシュマップだった場合は`Object.assign`を利用して
@@ -235,7 +235,7 @@ var BaserElement = /** @class */ (function (_super) {
      *
      */
     // tslint:disable-next-line:no-any
-    BaserElement.prototype.pullProp = function (propName) {
+    CoreNode.prototype.pullProp = function (propName) {
         var options = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             options[_i - 1] = arguments[_i];
@@ -303,7 +303,7 @@ var BaserElement = /** @class */ (function (_super) {
      * @version 1.0.0
      * @since 1.0.0
      */
-    BaserElement.prototype.merge = function (defaultData, optionalData) {
+    CoreNode.prototype.merge = function (defaultData, optionalData) {
         var map = Object.assign({}, optionalData, defaultData);
         for (var key in map) {
             if (map.hasOwnProperty(key)) {
@@ -321,7 +321,7 @@ var BaserElement = /** @class */ (function (_super) {
      * @version 1.0.0
      * @since 1.0.0
      */
-    BaserElement.prototype.detachChildren = function () {
+    CoreNode.prototype.detachChildren = function () {
         var children = this.el.childNodes;
         var container = document.createDocumentFragment();
         detachedChildren.set(this, container);
@@ -331,7 +331,7 @@ var BaserElement = /** @class */ (function (_super) {
         }
         return this;
     };
-    BaserElement.prototype.detachedChildrenMap = function (each) {
+    CoreNode.prototype.detachedChildrenMap = function (each) {
         var map = [];
         for (var _i = 0, _a = Array.from(detachedChildren.get(this).children); _i < _a.length; _i++) {
             var el = _a[_i];
@@ -339,15 +339,15 @@ var BaserElement = /** @class */ (function (_super) {
         }
         return map;
     };
-    BaserElement.prototype.detachedChildrenEach = function (each) {
+    CoreNode.prototype.detachedChildrenEach = function (each) {
         this.detachedChildrenMap(each);
         return this;
     };
-    BaserElement.prototype.changeState = function (state) {
+    CoreNode.prototype.changeState = function (state) {
         this.el.setAttribute("data-" + this.stateKeyName + "-state", state);
         return this;
     };
-    BaserElement.prototype._create = function (defaults) {
+    CoreNode.prototype._create = function (defaults) {
         // tslint:disable-next-line:no-object-literal-type-assertion
         this._config = defaults ? this.merge(defaults, this._options) : {};
     };
@@ -357,7 +357,7 @@ var BaserElement = /** @class */ (function (_super) {
      * 引数に`false`を渡すことで監視を回避できる。
      * Promiseのthenメソッドに渡す前提のAPI。
      */
-    BaserElement.prototype.inViewportFirstTime = function (watch) {
+    CoreNode.prototype.inViewportFirstTime = function (watch) {
         var _this = this;
         if (watch === void 0) { watch = true; }
         return function (result) {
@@ -371,7 +371,7 @@ var BaserElement = /** @class */ (function (_super) {
             });
         };
     };
-    BaserElement.prototype.inViewport = function (isInViewport) {
+    CoreNode.prototype.inViewport = function (isInViewport) {
         if (this._isInViewport !== isInViewport) {
             this._isInViewport = isInViewport;
             this.el.setAttribute("data-" + this.stateKeyName + "-inview", "" + isInViewport);
@@ -383,7 +383,7 @@ var BaserElement = /** @class */ (function (_super) {
             }
         }
     };
-    BaserElement.prototype._onMount = function () {
+    CoreNode.prototype._onMount = function () {
         inViewportElementMap.set(this.el, this);
         inViewportChangeMethodMap.set(this, this.inViewport.bind(this));
         if ('IntersectionObserver' in window) {
@@ -405,9 +405,9 @@ var BaserElement = /** @class */ (function (_super) {
             masterIntersection.observe(this.el);
         }
     };
-    return BaserElement;
+    return CoreNode;
 }(EventDispatcher_1.default));
-exports.default = BaserElement;
+exports.default = CoreNode;
 
 
 /***/ }),
@@ -1613,14 +1613,14 @@ window.baser = baser;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaserElement_1 = __webpack_require__(0);
+var CoreNode_1 = __webpack_require__(0);
 var GoogleMaps_1 = __webpack_require__(18);
 var Progressive_1 = __webpack_require__(6);
 var Scroll_1 = __webpack_require__(23);
 var Sequencer_1 = __webpack_require__(7);
 var Slideshow_1 = __webpack_require__(26);
 var YouTube_1 = __webpack_require__(27);
-exports.BaserElement = BaserElement_1.default;
+exports.CoreNode = CoreNode_1.default;
 exports.GoogleMaps = GoogleMaps_1.default;
 exports.Progressive = Progressive_1.default;
 exports.Scroll = Scroll_1.default;
@@ -2659,7 +2659,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaserElement_1 = __webpack_require__(0);
+var CoreNode_1 = __webpack_require__(0);
 var Timer_1 = __webpack_require__(4);
 var linkTo_1 = __webpack_require__(22);
 /**
@@ -2847,7 +2847,7 @@ var GoogleMaps = /** @class */ (function (_super) {
         });
     };
     return GoogleMaps;
-}(BaserElement_1.default));
+}(CoreNode_1.default));
 exports.default = GoogleMaps;
 /**
  * 座標要素
@@ -2992,7 +2992,7 @@ var Pin = /** @class */ (function (_super) {
         };
     };
     return Pin;
-}(BaserElement_1.default));
+}(CoreNode_1.default));
 
 
 /***/ }),
@@ -3861,7 +3861,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaserElement_1 = __webpack_require__(0);
+var CoreNode_1 = __webpack_require__(0);
 var Sequencer_1 = __webpack_require__(7);
 var panelGroupDOMElements = new WeakMap();
 var Slideshow = /** @class */ (function (_super) {
@@ -3963,7 +3963,7 @@ var Slideshow = /** @class */ (function (_super) {
         }
     };
     return Slideshow;
-}(BaserElement_1.default));
+}(CoreNode_1.default));
 exports.default = Slideshow;
 function imageLoader(imgPath) {
     return new Promise(function (resolve) {
@@ -4091,7 +4091,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var qs = __webpack_require__(28);
-var BaserElement_1 = __webpack_require__(0);
+var CoreNode_1 = __webpack_require__(0);
 var arrayShuffle_1 = __webpack_require__(31);
 var scriptLoad_1 = __webpack_require__(32);
 var PLAYER_URL = 'https://www.youtube.com/embed/';
@@ -4193,14 +4193,14 @@ var YouTube = /** @class */ (function (_super) {
     // 	// 	baseClass: 'youtube-mute-ctrl',
     // 	// };
     // 	// const conf: YoutubeMuteControllerOptions = $.extend(defaults, options);
-    // 	// BaserElement.addClassTo($el, conf.baseClass);
+    // 	// CoreNode.addClassTo($el, conf.baseClass);
     // 	// const update: () => void = (): void => {
     // 	// 	if (this._isMuted) {
-    // 	// 		BaserElement.addClassTo($el, conf.baseClass, '', conf.mutedClass);
-    // 	// 		BaserElement.removeClassFrom($el, conf.baseClass, '', conf.unmutedClass);
+    // 	// 		CoreNode.addClassTo($el, conf.baseClass, '', conf.mutedClass);
+    // 	// 		CoreNode.removeClassFrom($el, conf.baseClass, '', conf.unmutedClass);
     // 	// 	} else {
-    // 	// 		BaserElement.addClassTo($el, conf.baseClass, '', conf.unmutedClass);
-    // 	// 		BaserElement.removeClassFrom($el, conf.baseClass, '', conf.mutedClass);
+    // 	// 		CoreNode.addClassTo($el, conf.baseClass, '', conf.unmutedClass);
+    // 	// 		CoreNode.removeClassFrom($el, conf.baseClass, '', conf.mutedClass);
     // 	// 	}
     // 	// };
     // 	// const bindCtrl: () => void = (): void => {
@@ -4353,7 +4353,7 @@ var YouTube = /** @class */ (function (_super) {
         iframe.style.display = 'block';
         iframe.style.width = '100%';
         iframe.style.height = '100%';
-        this._iframe = new BaserElement_1.default(iframe);
+        this._iframe = new CoreNode_1.default(iframe);
         this.detachChildren();
         this.el.appendChild(iframe);
     };
@@ -4494,7 +4494,7 @@ var YouTube = /** @class */ (function (_super) {
     };
     YouTube.STATE_KEY_NAME = 'youtube';
     return YouTube;
-}(BaserElement_1.default));
+}(CoreNode_1.default));
 exports.default = YouTube;
 
 

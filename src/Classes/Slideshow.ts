@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 import Sequencer from './Sequencer';
 
 const panelGroupDOMElements: WeakMap<Slideshow, HTMLElement> = new WeakMap();
@@ -27,7 +27,7 @@ export interface ISlideshowConfig {
 	autoPlay: boolean;
 }
 
-export default class Slideshow extends BaserElement<HTMLElement, ISlideshowConfig> {
+export default class Slideshow extends CoreNode<HTMLElement, ISlideshowConfig> {
 
 	private _seq: Sequencer<SlideshowPanel>;
 

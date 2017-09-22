@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 /**
  * マップ要素
  *
@@ -6,7 +6,7 @@ import BaserElement from './BaserElement';
  * @since 0.0.6
  *
  */
-export default class GoogleMaps extends BaserElement<HTMLDivElement, GoogleMapsConfig> {
+export default class GoogleMaps extends CoreNode<HTMLDivElement, GoogleMapsConfig> {
     /**
      * 住所文字列から座標を非同期で取得
      *

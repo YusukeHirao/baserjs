@@ -1,5 +1,5 @@
 /// <reference types="youtube" />
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 /**
  * YouTubeクラスのコンストラクタのオプション
  *
@@ -144,7 +144,7 @@ export interface YouTubeConfig {
  * @since 0.0.7
  *
  */
-export default class YouTube extends BaserElement<HTMLDivElement, YouTubeConfig> {
+export default class YouTube extends CoreNode<HTMLDivElement, YouTubeConfig> {
     static STATE_KEY_NAME: string;
     /**
      * YouTubeのサムネイル画像を取得する

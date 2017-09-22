@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 
 export interface ScrollSpyHandler {
 	(y: number, viewportHeight: number): boolean;
@@ -42,7 +42,7 @@ export default class ScrollSpy<R> {
 		return new ScrollSpy(returnValue);
 	}
 
-	public static by<E extends Element> (bEl: BaserElement<E>) {
+	public static by<E extends Element> (bEl: CoreNode<E>) {
 		return new ScrollSpy(undefined).by(bEl);
 	}
 
@@ -52,7 +52,7 @@ export default class ScrollSpy<R> {
 		this._returnValue = returnValue;
 	}
 
-	public by<E extends Element> (bEl: BaserElement<E>) {
+	public by<E extends Element> (bEl: CoreNode<E>) {
 		_define();
 		return new Promise<R>((resolve, reject) => {
 			if (observer) {

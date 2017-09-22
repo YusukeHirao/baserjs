@@ -294,15 +294,15 @@
 // 			for (let i: number = 0; i < columnSize; i++) {
 // 				const sizeByColumn: number = splited[i];
 // 				const $col: JQuery = $('<ul></ul>');
-// 				BaserElement.addClassTo($col, CLASS_NAME);
-// 				BaserElement.addClassTo($col, CLASS_NAME, '', CLASS_NAME_NTH + columnSize);
+// 				CoreNode.addClassTo($col, CLASS_NAME);
+// 				CoreNode.addClassTo($col, CLASS_NAME, '', CLASS_NAME_NTH + columnSize);
 // 				$col.appendTo($container);
 // 				for (let j: number = 0; j < sizeByColumn; j++) {
 // 					const $item: JQuery = $(itemArray.shift());
 // 					$item.appendTo($col);
 // 					$item.data(config.dataKey, i);
-// 					BaserElement.addClassTo($item, CLASS_NAME, CLASS_NAME_ITEM);
-// 					BaserElement.addClassTo($item, CLASS_NAME, CLASS_NAME_ITEM, CLASS_NAME_NTH + i);
+// 					CoreNode.addClassTo($item, CLASS_NAME, CLASS_NAME_ITEM);
+// 					CoreNode.addClassTo($item, CLASS_NAME, CLASS_NAME_ITEM, CLASS_NAME_NTH + i);
 // 				}
 // 			}
 

@@ -1,6 +1,6 @@
 import 'intersection-observer';
 import EventDispatcher from './EventDispatcher';
-export interface BaserElementAttributes {
+export interface CoreNodeAttributes {
     hidden: boolean;
     disabled: boolean;
     [attrName: string]: any;
@@ -12,7 +12,7 @@ export interface BaserElementAttributes {
  * @since 0.0.1
  *
  */
-export default class BaserElement<E extends Element = Element, C = {}> extends EventDispatcher {
+export default class CoreNode<E extends Element = Element, C = {}> extends EventDispatcher {
     /**
      * 管理するDOM要素のid属性値
      *
@@ -108,8 +108,8 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
      *
      * data-*属性の場合次の2通りの取得方法があります。
      *
-     * 1. `baserElement.pullProp("data-foo-bar");`
-     * 2. `baserElement.pullProp("fooBar");`
+     * 1. `CoreNode.pullProp("data-foo-bar");`
+     * 2. `CoreNode.pullProp("fooBar");`
      *
      * オプションに渡されたオブジェクト内の値が、
      * ハッシュマップだった場合は`Object.assign`を利用して
@@ -119,9 +119,9 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
      * @since 1.0.0
      *
      */
-    pullProp<P extends keyof BaserElementAttributes>(propName: P, ...options: {
+    pullProp<P extends keyof CoreNodeAttributes>(propName: P, ...options: {
         [x: string]: any;
-    }[]): BaserElementAttributes[P];
+    }[]): CoreNodeAttributes[P];
     /**
      * プロパティをマージしたデータを返す
      *
@@ -129,7 +129,7 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
      * @since 1.0.0
      */
     merge<T extends {
-        [P in keyof BaserElementAttributes]?: BaserElementAttributes[P];
+        [P in keyof CoreNodeAttributes]?: CoreNodeAttributes[P];
     }, U extends {
         [P in keyof T]?: T[P];
     }>(defaultData: T, optionalData: U): T & U;

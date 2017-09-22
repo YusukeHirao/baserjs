@@ -1,4 +1,4 @@
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 import Timer from './Timer';
 
 import linkTo from '../fn/linkTo';
@@ -10,7 +10,7 @@ import linkTo from '../fn/linkTo';
  * @since 0.0.6
  *
  */
-export default class GoogleMaps extends BaserElement<HTMLDivElement, GoogleMapsConfig> {
+export default class GoogleMaps extends CoreNode<HTMLDivElement, GoogleMapsConfig> {
 
 	/**
 	 * 住所文字列から座標を非同期で取得
@@ -170,7 +170,7 @@ export default class GoogleMaps extends BaserElement<HTMLDivElement, GoogleMapsC
  * @since 0.0.6
  *
  */
-class Pin extends BaserElement<HTMLElement> {
+class Pin extends CoreNode<HTMLElement> {
 
 	/**
 	 *
