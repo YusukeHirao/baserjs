@@ -7,6 +7,7 @@ const header = require('gulp-header');
 const moment = require('moment');
 const runSequence = require('run-sequence');
 const git = require('git-rev-sync');
+const del = require('del');
 const pkg = require('./package.json');
 
 const banner = `/**!
@@ -45,6 +46,8 @@ gulp.task('dev-ts', (cb) => runSequence('ts', 'pack', cb));
 
 gulp.task('watch', () => gulp.watch('src/**/*.ts', ['dev-ts']));
 
-gulp.task('build', (cb) => runSequence('ts', 'pack', cb));
+gulp.task('clean', (cb) => del(['lib/**/*'], cb));
+
+gulp.task('build', (cb) => runSequence('clean', 'ts', 'pack', cb));
 
 gulp.task('default', ['build']);

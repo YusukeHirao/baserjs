@@ -1,6 +1,6 @@
 /**!
 	* baserjs - v1.0.0-beta.0
-	* revision: c646360992c49edd4d3b181b5858cb7e2c4e683b
+	* revision: fd7c186aa2b96ac5e8fb5357014e77185db2b358
 	* update: 2017-09-22
 	* Author: baserCMS Users Community [https://github.com/baserproject/]
 	* Github: https://github.com/baserproject/baserjs
