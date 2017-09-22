@@ -13,7 +13,7 @@ export interface ISequencerEventObject<E> {
     state: ISequencerState;
 }
 export declare type ISequencerEventHandler<E> = (this: Sequencer<E>, target: ISequencerEventObject<E>) => void;
-export declare type ISequencerStopEventHandler<E> = (this: Sequencer<E>) => void;
+export declare type ISequencerStopEventHandler<E> = (this: Sequencer<E>, target: ISequencerEventObject<E>) => void;
 export declare type ISequencerEventPromisifyHandler<E> = (this: Sequencer<E>, target: ISequencerEventObject<E>) => IPromiseOrNull<E>;
 export default class Sequencer<E> {
     static delay<T = undefined>(delayTime: number, context?: T): Promise<T>;
@@ -34,6 +34,7 @@ export default class Sequencer<E> {
     private _onContinueHandler;
     private _onFinishHandler;
     private _onStoppedHandler;
+    private _innerStopResolver;
     /**
      * 要素ごとに何かしらの逐次処理を実行させるクラス
      *
@@ -49,6 +50,7 @@ export default class Sequencer<E> {
      * シーケンス処理をする対象の要素リスト
      */
     readonly elements: E[];
+    readonly length: number;
     /**
      * シーケンス処理を開始する
      *
@@ -58,7 +60,7 @@ export default class Sequencer<E> {
     /**
      *
      */
-    stop(): this;
+    stop(): Promise<ISequencerEventObject<E>>;
     /**
      * 処理をはじめに開始する要素番号を指定する
      *
@@ -72,6 +74,7 @@ export default class Sequencer<E> {
      * @param repeat 繰り返す
      */
     repeat(repeat: boolean): this;
+    skipTo(index: number): Promise<void>;
     /**
      * 開始前のイベント
      *

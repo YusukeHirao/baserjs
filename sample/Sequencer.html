@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>psyborg-sequencer</title>
+	<style>
+	div {
+		width: 100%;
+		height: 50px;
+		background: green;
+		transform-origin: left;
+	}
+	</style>
+</head>
+<body>
+	<div>A</div><button>skip</button>
+	<div>B</div><button>skip</button>
+	<div>C</div><button>skip</button>
+	<div>D</div><button>skip</button>
+	<div>E</div><button>skip</button>
+	<div>F</div><button>skip</button>
+	<script src="../dist/baser.js"></script>
+	<script>
+	// const A = new psyborg.Sequencer([1, 2, 3], (rate, index) => {
+	// 	return new Promise((f, r) => {
+	// 		console.log(`test A: ${index} -- ${rate}`);
+	// 		setTimeout(_ => f(rate + 0.01), 10);
+	// 	});
+	// });
+	// A.isRepeat = false;
+	// // A.start();
+	// console.log(A);
+
+	// const BTimestamp = Date.now();
+	// const BDuration = 600;
+	// const B = new psyborg.Sequencer([1, 2, 3], (rate, index) => {
+	// 	return new Promise((f, r) => {
+	// 		console.log(`test B: ${index} -- ${rate}`);
+	// 		requestAnimationFrame(_ => f((Date.now() - BTimestamp) / BDuration));
+	// 	});
+	// });
+	// // B.start();
+	// console.log(B);
+
+	// const C = new psyborg.Sequencer([1, 2, 3], (rate, index) => {
+	// 	return new Promise((f, r) => {
+	// 		console.log(`test C: ${index} -- ${rate}`);
+	// 		f(rate + 0.1);
+	// 	});
+	// });
+	// C.isRepeat = false;
+	// // C.start();
+	// console.log(C);
+
+	// var es = psyborg.BezierEasing(0, .93, .97, .42);
+	var a = new baser.Sequencer(
+		Array.from(document.querySelectorAll('div')),
+		1000,
+		function (v) {
+			v.list.forEach(function (node) {
+				node.style.transform = `scaleX(0)`;
+			});
+			// return psyborg.Sequencer.delay(4000);
+		}
+	)
+	.repeat(false)
+	.onBeforeStart(function (v) {
+		// return psyborg.Sequencer.delay(1000);
+	})
+	.onStart(function (v) {
+		// return psyborg.Sequencer.delay(1000);
+	})
+	.onProgress(function (v) {
+		// console.log(this, v);
+		// v.current.style.transform = `scaleX(${es(v.rate)})`;
+		v.current.style.transform = `scaleX(${v.rate})`;
+	})
+	// .onBeforeStepEnd(function (v) { console.log(v); })
+	// .onBeforeContinue(function (v) { console.log(this, v); })
+	.onContinue(function (v) {
+
+		// if (v.index === 2) this.stop();
+		// throw new Error('onContinue💀');
+	})
+	// .onFinish(function (v) { console.log(this, v); })
+	.onStopped(function (v) {
+		console.log(`stop 🎉`);
+		// this.start(); // つづきからになる
+	})
+	.start();
+
+	const btns = document.querySelectorAll('button');
+	btns.forEach((btn, i) => {
+		btn.addEventListener('click', () => {
+			// a.stop();
+			// a.setStartIndex(i);
+			a.skipTo(i);
+			a.start();
+		});
+	});
+	</script>
+</body>
+</html>
