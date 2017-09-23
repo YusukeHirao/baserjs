@@ -19,7 +19,7 @@ export interface ISequencerEventObject<E> {
 }
 
 export type ISequencerEventHandler<E> = (this: Sequencer<E>, target: ISequencerEventObject<E>) => void;
-export type ISequencerStopEventHandler<E> = (this: Sequencer<E>) => void;
+export type ISequencerStopEventHandler<E> = (this: Sequencer<E>, target: ISequencerEventObject<E>) => void;
 export type ISequencerEventPromisifyHandler<E> = (this: Sequencer<E>, target: ISequencerEventObject<E>) => IPromiseOrNull<E>;
 
 export default class Sequencer<E> {
@@ -69,6 +69,8 @@ export default class Sequencer<E> {
 	private _onFinishHandler: ISequencerEventHandler<E>;
 	private _onStoppedHandler: ISequencerStopEventHandler<E>;
 
+	private _innerStopResolver: (target: ISequencerEventObject<E>) => void;
+
 	/**
 	 * 要素ごとに何かしらの逐次処理を実行させるクラス
 	 *
@@ -92,6 +94,10 @@ export default class Sequencer<E> {
 		return targetElements.get(this)!;
 	}
 
+	public get length () {
+		return this.elements.length;
+	}
+
 	/**
 	 * シーケンス処理を開始する
 	 *
@@ -112,7 +118,9 @@ export default class Sequencer<E> {
 	 */
 	public stop () {
 		this._available = false;
-		return this;
+		return new Promise<ISequencerEventObject<E>>((resolve) => {
+			this._innerStopResolver = resolve;
+		});
 	}
 
 	/**
@@ -135,6 +143,13 @@ export default class Sequencer<E> {
 	public repeat (repeat: boolean) {
 		this.isRepeat = repeat;
 		return this;
+	}
+
+	public async skipTo (index: number) {
+		// TODO: validation
+		await this.stop();
+		this._currentStepIndex = index - 1;
+		this.start();
 	}
 
 	/**
@@ -223,7 +238,7 @@ export default class Sequencer<E> {
 	 * @param handler イベントハンドラ
 	 */
 	public onStopped (handler: ISequencerStopEventHandler<E>) {
-		this._onStoppedHandler = handler.bind(this);
+		this._onStoppedHandler = handler.bind(this, this._getEventObject());
 		return this;
 	}
 
@@ -233,7 +248,7 @@ export default class Sequencer<E> {
 		if (this._standBy) {
 			this._standBy = false;
 			this._available = true;
-			await this._seq();
+			this._seq();
 		}
 	}
 
@@ -252,7 +267,12 @@ export default class Sequencer<E> {
 			await this._stepEnd();
 		} catch (rejectReason) {
 			if (this._stopper === rejectReason) {
-				this._onStoppedHandler.call(this);
+				if (this._onStoppedHandler) {
+					this._onStoppedHandler.call(this);
+				}
+				if (this._innerStopResolver) {
+					this._innerStopResolver(this._getEventObject());
+				}
 				return;
 			} else {
 				throw rejectReason;
@@ -296,7 +316,9 @@ export default class Sequencer<E> {
 		if (this._progressRate >= 1) {
 			this._progressRate = 0;
 		}
+
 		while (await this._progress()); // tslint:disable-line:curly
+
 		if (!this._onBeforeStepEndHandler) {
 			return Promise.resolve();
 		}
@@ -371,4 +393,5 @@ export default class Sequencer<E> {
 	private _uncontinuable () {
 		return this.elements.length - 1 <= this._currentStepIndex && !this.isRepeat;
 	}
+
 }

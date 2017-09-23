@@ -1,6 +1,6 @@
 import * as  qs from 'qs';
 
-import BaserElement from './BaserElement';
+import CoreNode from './CoreNode';
 
 import arrayShuffle from '../fn/arrayShuffle';
 import scriptLoad from '../fn/scriptLoad';
@@ -388,7 +388,7 @@ interface IFramePlayerParameters {
  * @since 0.0.7
  *
  */
-export default class YouTube extends BaserElement<HTMLDivElement, YouTubeConfig> {
+export default class YouTube extends CoreNode<HTMLDivElement, YouTubeConfig> {
 
 	public static STATE_KEY_NAME = 'youtube';
 
@@ -473,7 +473,7 @@ export default class YouTube extends BaserElement<HTMLDivElement, YouTubeConfig>
 	/**
 	 *
 	 */
-	private _iframe: BaserElement<HTMLIFrameElement>;
+	private _iframe: CoreNode<HTMLIFrameElement>;
 
 	// /**
 	//  * 再設定する
@@ -533,14 +533,14 @@ export default class YouTube extends BaserElement<HTMLDivElement, YouTubeConfig>
 	// 	// 	baseClass: 'youtube-mute-ctrl',
 	// 	// };
 	// 	// const conf: YoutubeMuteControllerOptions = $.extend(defaults, options);
-	// 	// BaserElement.addClassTo($el, conf.baseClass);
+	// 	// CoreNode.addClassTo($el, conf.baseClass);
 	// 	// const update: () => void = (): void => {
 	// 	// 	if (this._isMuted) {
-	// 	// 		BaserElement.addClassTo($el, conf.baseClass, '', conf.mutedClass);
-	// 	// 		BaserElement.removeClassFrom($el, conf.baseClass, '', conf.unmutedClass);
+	// 	// 		CoreNode.addClassTo($el, conf.baseClass, '', conf.mutedClass);
+	// 	// 		CoreNode.removeClassFrom($el, conf.baseClass, '', conf.unmutedClass);
 	// 	// 	} else {
-	// 	// 		BaserElement.addClassTo($el, conf.baseClass, '', conf.unmutedClass);
-	// 	// 		BaserElement.removeClassFrom($el, conf.baseClass, '', conf.mutedClass);
+	// 	// 		CoreNode.addClassTo($el, conf.baseClass, '', conf.unmutedClass);
+	// 	// 		CoreNode.removeClassFrom($el, conf.baseClass, '', conf.mutedClass);
 	// 	// 	}
 	// 	// };
 	// 	// const bindCtrl: () => void = (): void => {
@@ -693,7 +693,7 @@ export default class YouTube extends BaserElement<HTMLDivElement, YouTubeConfig>
 		iframe.style.width = '100%';
 		iframe.style.height = '100%';
 
-		this._iframe = new BaserElement(iframe);
+		this._iframe = new CoreNode(iframe);
 		this.detachChildren();
 		this.el.appendChild(iframe);
 	}

@@ -1,9 +1,12 @@
 {
   "name": "baserjs",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.0",
   "description": "Client side JavaScript libraries for baserCMS",
   "main": "baser.js",
   "scripts": {
+    "build": "gulp",
+    "dev": "gulp watch",
+    "docs": "typedoc --out docs/ src/",
     "test": "ava -v"
   },
   "repository": {
@@ -25,28 +28,29 @@
   "website": "https://github.com/baserproject/",
   "license": "MIT",
   "devDependencies": {
-    "@types/google.analytics": "^0.0.33",
-    "@types/qs": "^6.2.31",
-    "@types/youtube": "^0.0.30",
-    "ava": "^0.19.1",
-    "browser-env": "^2.0.31",
-    "coffee-script": "^1.12.6",
+    "@types/google.analytics": "^0.0.35",
+    "@types/jquery": "^3.2.12",
+    "@types/qs": "^6.5.0",
+    "@types/youtube": "^0.0.31",
+    "ava": "^0.22.0",
+    "browser-env": "^3.2.0",
+    "del": "^3.0.0",
     "git-rev-sync": "^1.9.1",
     "gulp": "^3.9.1",
-    "gulp-header": "^1.8.8",
-    "gulp-typescript": "^3.1.7",
+    "gulp-header": "^1.8.9",
+    "gulp-typescript": "^3.2.2",
     "moment": "^2.18.1",
-    "nightmare": "^2.10.0",
-    "run-sequence": "^1.2.2",
-    "tslint": "^5.4.3",
-    "typescript": "^2.3.4",
+    "run-sequence": "^2.2.0",
+    "tslint": "^5.7.0",
+    "typedoc": "^0.8.0",
+    "typescript": "^2.5.2",
     "typings": "^2.1.1",
-    "webpack": "2.6.1",
-    "webpack-stream": "^3.2.0"
+    "webpack": "3.6.0",
+    "webpack-stream": "^4.0.0"
   },
   "dependencies": {
     "bezier-easing": "^2.0.3",
-    "intersection-observer": "^0.3.0",
-    "qs": "^6.4.0"
+    "intersection-observer": "^0.4.2",
+    "qs": "^6.5.1"
   }
 }

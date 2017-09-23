@@ -1,0 +1,17 @@
+import _CoreNode from './Classes/CoreNode';
+import _GoogleMaps from './Classes/GoogleMaps';
+import _Progressive from './Classes/Progressive';
+import _Scroll from './Classes/Scroll';
+import _Sequencer from './Classes/Sequencer';
+import _Slideshow from './Classes/Slideshow';
+import _YouTube from './Classes/YouTube';
+import __CoreNode from './nodes/CoreNode';
+export declare const CoreNode: typeof _CoreNode;
+export declare const GoogleMaps: typeof _GoogleMaps;
+export declare const Progressive: typeof _Progressive;
+export declare const Scroll: typeof _Scroll;
+export declare const Sequencer: typeof _Sequencer;
+export declare const Slideshow: typeof _Slideshow;
+export declare const YouTube: typeof _YouTube;
+export declare const _: typeof __CoreNode;
+export declare function auto(): Promise<void>;

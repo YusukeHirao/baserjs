@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>psyborg-sequencer</title>
+	<style>
+	.sample {
+		position: relative;
+		width: 900px;
+	}
+	.sample > div {
+		height: 0;
+		padding-top: 52%;
+		position: relative;
+	}
+	.sample > div > div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		transition: opacity 1200ms;
+		z-index: 0;
+		opacity: 0;
+	}
+	.sample > div > div > img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.sample > div > [data-slideshow-item-position="prev"] {
+	}
+	.sample > div > [data-slideshow-item-position="current"] {
+		z-index: 1;
+		opacity: 1;
+	}
+	.sample > div > [data-slideshow-item-position="next"] {
+		z-index: 2;
+		opacity: 0;
+		transition: none;
+	}
+	</style>
+</head>
+<body>
+	<div class="sample" data-width="300" data-height="200" data-auto-play data-repeat>
+		<div>
+			<div><img src="https://placekitten.com/g/800/600" alt="__ALT__"></div>
+			<div><img src="https://placekitten.com/g/820/600" alt="__ALT__"></div>
+			<div><img src="https://placekitten.com/g/840/600" alt="__ALT__"></div>
+			<div><img src="https://placekitten.com/g/860/600" alt="__ALT__"></div>
+			<div><img src="https://placekitten.com/g/880/600" alt="__ALT__"></div>
+			<div><img src="https://placekitten.com/g/900/600" alt="__ALT__"></div>
+		</div>
+	</div>
+	<div id="btn"></div>
+	<script src="../dist/baser.js"></script>
+	<script>
+	const s = new baser.Slideshow(document.querySelector('.sample'), {
+		wait: 3000,
+	});
+	const l = s.length;
+	const btns = document.createDocumentFragment();
+	for (let i = 0; i < l; i++) {
+		const btn = document.createElement('button');
+		btn.type = 'button';
+		btn.innerText = i;
+		btn.addEventListener('click', function (e) {
+			const i = +this.innerHTML;
+			console.log(`index: ${i}`);
+			s.x(i);
+		});
+		btns.appendChild(btn);
+	}
+	document.getElementById('btn').appendChild(btns);
+	</script>
+</body>
+</html>

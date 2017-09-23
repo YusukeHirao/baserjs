@@ -8,14 +8,14 @@ import isDOMValue from '../fn/isDOMValue';
 import isFalsy from '../fn/isFalsy';
 import parse from '../fn/parse';
 
-const elements: WeakMap<BaserElement, Element> = new WeakMap();
-const detachedChildren: WeakMap<BaserElement, DocumentFragment> = new WeakMap();
+const elements: WeakMap<CoreNode, Element> = new WeakMap();
+const detachedChildren: WeakMap<CoreNode, DocumentFragment> = new WeakMap();
 
-const inViewportElementMap: WeakMap<Element, BaserElement> = new WeakMap();
-const inViewportChangeMethodMap: WeakMap<BaserElement, (isInViewport: boolean) => void> = new WeakMap();
+const inViewportElementMap: WeakMap<Element, CoreNode> = new WeakMap();
+const inViewportChangeMethodMap: WeakMap<CoreNode, (isInViewport: boolean) => void> = new WeakMap();
 let masterIntersection: IntersectionObserver;
 
-export interface BaserElementAttributes {
+export interface CoreNodeAttributes {
 	hidden: boolean;
 	disabled: boolean;
 	// tslint:disable-next-line:no-any
@@ -25,11 +25,13 @@ export interface BaserElementAttributes {
 /**
  * DOM要素の抽象クラス
  *
+ * @class CoreNode
  * @version 1.0.0
  * @since 0.0.1
+ * @template E 管理するDOM要素のインターフェイス
  *
  */
-export default class BaserElement<E extends Element = Element, C = {}> extends EventDispatcher {
+export default abstract class CoreNode<E extends Element = Element, C = {}> extends EventDispatcher {
 
 	/**
 	 * 管理するDOM要素のid属性値
@@ -75,7 +77,8 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
 	 *
 	 * @version 1.0.0
 	 * @since 0.0.1
-	 * @param el 管理するDOM要素
+	 * @param {E} el 管理するDOM要素
+	 * @template E 管理するDOM要素のインターフェイス
 	 *
 	 */
 	constructor (el: E, options: {[P in keyof C]?: C[P]} = {}) {
@@ -176,8 +179,8 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
 	 *
 	 * data-*属性の場合次の2通りの取得方法があります。
 	 *
-	 * 1. `baserElement.pullProp("data-foo-bar");`
-	 * 2. `baserElement.pullProp("fooBar");`
+	 * 1. `CoreNode.pullProp("data-foo-bar");`
+	 * 2. `CoreNode.pullProp("fooBar");`
 	 *
 	 * オプションに渡されたオブジェクト内の値が、
 	 * ハッシュマップだった場合は`Object.assign`を利用して
@@ -188,7 +191,7 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
 	 *
 	 */
 	// tslint:disable-next-line:no-any
-	public pullProp<P extends keyof BaserElementAttributes> (propName: P, ...options: { [x: string]: any }[]): BaserElementAttributes[P] {
+	public pullProp<P extends keyof CoreNodeAttributes> (propName: P, ...options: { [x: string]: any }[]): CoreNodeAttributes[P] {
 		const el = this.el;
 
 		// 1. DOMインターフェイスの属性値
@@ -204,7 +207,7 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
 		// 2-C. HTMLのタグに記述された属性値（ハイフンケース）
 		const htmlAttrValHyphenized = el.getAttribute(hyphenize(propName));
 
-		let value: BaserElementAttributes[P];
+		let value: CoreNodeAttributes[P];
 
 		// 判定
 		if (htmlAttrVal !== null) {
@@ -251,7 +254,7 @@ export default class BaserElement<E extends Element = Element, C = {}> extends E
 	 * @version 1.0.0
 	 * @since 1.0.0
 	 */
-	public merge<T extends {[P in keyof BaserElementAttributes]?: BaserElementAttributes[P]}, U extends {[P in keyof T]?: T[P]}> (defaultData: T, optionalData: U): T & U {
+	public merge<T extends {[P in keyof CoreNodeAttributes]?: CoreNodeAttributes[P]}, U extends {[P in keyof T]?: T[P]}> (defaultData: T, optionalData: U): T & U {
 		const map = Object.assign({}, optionalData, defaultData);
 		for (const key in map) {
 			if (map.hasOwnProperty(key)) {
