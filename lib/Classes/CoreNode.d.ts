@@ -14,7 +14,7 @@ export interface CoreNodeAttributes {
  * @template E 管理するDOM要素のインターフェイス
  *
  */
-export default abstract class CoreNode<E extends Element = Element, C = {}> extends EventDispatcher {
+export default class CoreNode<E extends Element = Element, C = {}> extends EventDispatcher {
     /**
      * 管理するDOM要素のid属性値
      *

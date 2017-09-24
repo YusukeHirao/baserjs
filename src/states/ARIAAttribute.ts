@@ -2,7 +2,11 @@ import AccessibleElement from '../nodes/AccessibleElement';
 
 export interface ARIAAttributeTypes {
 	/**
-	 * Value representing either true or false, with a default "false" value.
+	 * "true/false"
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_true-false
+	 *
+	 * > Value representing either true or false, with a default "false" value.
 	 */
 	boolean: 'true' | 'false';
 
@@ -11,20 +15,28 @@ export interface ARIAAttributeTypes {
 	//  */
 	// tristate: 'true' | 'false' | 'mixed';
 
-	// /**
-	//  * Value representing true or false, with a default "undefined" value indicating the state or property is not relevant.
-	//  */
-	// OptionalBoolean: 'true' | 'false' | undefined;
+	/**
+	 * "true/false/undefined"
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_true-false-undefined
+	 *
+	 * > Value representing true or false, with a default "undefined" value indicating the state or property is not relevant.
+	 */
+	optionalBoolean: 'true' | 'false' | undefined;
 
 	// /**
 	//  * Reference to the ID of another element in the same document.
 	//  */
 	// IDReference: string;
 
-	// /**
-	//  * A list of one or more ID references. (space separator)
-	//  */
-	// IDReferenceList: string;
+	/**
+	 * "ID reference list"
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_idref_list
+	 *
+	 * > A list of one or more ID references. (space separator)
+	 */
+	idReferenceList: string;
 
 	// /**
 	//  * A numerical value without a fractional component.
@@ -36,46 +48,95 @@ export interface ARIAAttributeTypes {
 	//  */
 	// Number: number;
 
-	// /**
-	//  * Unconstrained value type.
-	//  */
-	// String: string;
+	/**
+	 * "string"
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_string
+	 *
+	 * > Unconstrained value type.
+	 */
+	string: string;
 
-	// /**
-	//  * One of a limited set of allowed values.
-	//  */
-	// Token: string;
+	/**
+	 * Token list for `aria-dropeffect`
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_token_list
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-dropeffect
+	 *
+	 * > |Value|Description
+	 * > |---|---
+	 * > |`copy`|A duplicate of the source object will be dropped into the target.
+	 * > |`move`|The source object will be removed from its current location and dropped into the target.
+	 * > |`link`|A reference or shortcut to the dragged object will be created in the target object.
+	 * > |`execute`|A function supported by the drop target is executed, using the drag source as an input.
+	 * > |`popup`|There is a popup menu or dialog that allows the user to choose one of the drag operations (copy, move, link, execute) and any other drag functionality, such as cancel.
+	 * > |`none` (default)|No operation can be performed; effectively cancels the drag operation if an attempt is made to drop on this object. Ignored if combined with any other token value. e.g. 'none copy' is equivalent to a 'copy' value.
+	 */
+	ariaDropeffectTokenList: string;
 
-	// /**
-	//  * A list of one or more tokens.
-	//  */
-	// TokenList: string;
+	/**
+	 * Token for `aria-invalid`
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_token
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-invalid
+	 *
+	 * > |Value|Description
+	 * > |---|---
+	 * > |`grammar`|A grammatical error was detected.
+	 * > |`false` (default)|There are no detected errors in the value.
+	 * > |`spelling`|A spelling error was detected.
+	 * > |`true`|The value entered by the user has failed validation.
+	 */
+	ariaInvalidToken: 'grammar' | 'false' | 'spelling' | 'true';
+
+	/**
+	 * Token for `aria-live`
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_token
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-live
+	 *
+	 * > |Value|Description
+	 * > |---|---
+	 * > |`off` (default)|Updates to the region will not be presented to the user unless the assistive technology is currently focused on that region.
+	 * > |`polite`|(Background change) Assistive technologies SHOULD announce updates at the next graceful opportunity, such as at the end of speaking the current sentence or when the user pauses typing.
+	 * > |`assertive`|This information has the highest priority and assistive technologies SHOULD notify the user immediately. Because an interruption may disorient users or cause them to not complete their current task, authors SHOULD NOT use the assertive value unless the interruption is imperative.
+	 */
+	ariaLiveToken: 'off' | 'polite' | 'assertive';
+
+	/**
+	 * Token for `aria-relevant`
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_token
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-relevant
+	 *
+	 * > |Value|Description
+	 * > |---|---
+	 * > |`additions`|Element nodes are added to the DOM within the live region.
+	 * > |`removals`|Text or element nodes within the live region are removed from the DOM.
+	 * > |`text`|Text is added to any DOM descendant nodes of the live region.
+	 * > |`all`|Equivalent to the combination of all values, "additions removals text".
+	 * > |`additions text` (default)|Equivalent to the combination of values, "additions text".
+	 */
+	ariaRelevantTokenList: string;
 }
 
 export interface ARIAAttributeRelation {
-	/**
-	 * `aria-atomic`
-	 *
-	 * Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. See related aria-relevant.
-	 *
-	 * Both accessibility APIs and the Document Object Model [DOM] provide events to allow the assistive technologies to determine changed areas of the document.
-	 *
-	 * When the content of a live region changes, user agents SHOULD examine the changed element and traverse the ancestors to find the first element with aria-atomic set, and apply the appropriate behavior for the cases below.
-	 *
-	 * 1. If none of the ancestors have explicitly set aria-atomic, the default is that aria-atomic is false, and assistive technologies will only present the changed node to the user.
-	 * 2. If aria-atomic is explicitly set to false, assistive technologies will stop searching up the ancestor chain and present only the changed node to the user.
-	 * 3. If aria-atomic is explicitly set to true, assistive technologies will present the entire contents of the element.
-	 *
-	 * When aria-atomic is true, assistive technologies MAY choose to combine several changes and present the entire changed region at once.
-	 */
 	'aria-atomic': 'boolean';
-
-	/**
-	 * Indicates whether an element, and its subtree, are currently being updated.
-	 *
-	 * The default is that aria-busy is false. If authors know that multiple parts of the same element need to be loaded or modified, they can set aria-busy to true when the first part is loaded, and then set aria-busy to false when the last part is loaded. When a widget is missing required owned elements due to script execution or loading, authors MUST mark a containing element with aria-busy equal to true. For example, until a page is fully initialized and complete, an author could mark the document element as busy. If there is an error updating the element, author MAY set the aria-invalid attribute to true.
-	 */
 	'aria-busy': 'boolean';
+	'aria-controls': 'idReferenceList';
+	'aria-describedby': 'idReferenceList';
+	'aria-disabled': 'boolean';
+	'aria-dropeffect': 'ariaDropeffectTokenList';
+	'aria-flowto': 'idReferenceList';
+	'aria-grabbed': 'optionalBoolean';
+	'aria-haspopup': 'boolean';
+	'aria-hidden': 'boolean';
+	'aria-invalid': 'ariaInvalidToken';
+	'aria-label': 'string';
+	'aria-labelledby': 'idReferenceList';
+	'aria-live': 'ariaLiveToken';
+	'aria-owns': 'idReferenceList';
+	'aria-relevant': 'ariaRelevantTokenList';
 }
 
 export type ARIAAttributeValue = {[P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]]};
@@ -85,11 +146,39 @@ export type ARIAAttributeValueOptimizer = {[A in keyof ARIAAttributeTypes]: (val
 const relation: ARIAAttributeRelation = {
 	'aria-atomic': 'boolean',
 	'aria-busy': 'boolean',
+	'aria-controls': 'idReferenceList',
+	'aria-describedby': 'idReferenceList',
+	'aria-disabled': 'boolean',
+	'aria-dropeffect': 'ariaDropeffectTokenList',
+	'aria-flowto': 'idReferenceList',
+	'aria-grabbed': 'optionalBoolean',
+	'aria-haspopup': 'boolean',
+	'aria-hidden': 'boolean',
+	'aria-invalid': 'ariaInvalidToken',
+	'aria-label': 'string',
+	'aria-labelledby': 'idReferenceList',
+	'aria-live': 'ariaLiveToken',
+	'aria-owns': 'idReferenceList',
+	'aria-relevant': 'ariaRelevantTokenList',
 };
 
 const defaultValues: ARIAAttributeValue = {
 	'aria-atomic': 'false',
 	'aria-busy': 'false',
+	'aria-controls': '',
+	'aria-describedby': '',
+	'aria-disabled': 'false',
+	'aria-dropeffect': 'none',
+	'aria-flowto': '',
+	'aria-grabbed': undefined,
+	'aria-haspopup': 'false',
+	'aria-hidden': 'false',
+	'aria-invalid': 'false',
+	'aria-label': '',
+	'aria-labelledby': '',
+	'aria-live': 'off',
+	'aria-owns': '',
+	'aria-relevant': 'additions text',
 };
 
 const optimizer: ARIAAttributeValueOptimizer = {
@@ -108,6 +197,51 @@ const optimizer: ARIAAttributeValueOptimizer = {
 	// 		}
 	// 	}
 	// },
+	optionalBoolean: (v) => {
+		if (v == null) {
+			return;
+		}
+		return optimizer.boolean(v);
+	},
+	idReferenceList: (v) => {
+		return `${v}`;
+	},
+	string: (v) => {
+		return `${v}`;
+	},
+	ariaDropeffectTokenList: (v) => {
+		const list = ['copy', 'move', 'link', 'execute', 'popup', 'none'];
+		const values = `${v}`.split(/\s+/).map(val => list.includes(val) ? val : '').filter(val => val);
+		return values.join(' ');
+	},
+	ariaInvalidToken: (v) => {
+		switch (v) {
+			case 'grammar':
+			case 'spelling':
+			case 'true': {
+				return v;
+			}
+			default: {
+				return 'false';
+			}
+		}
+	},
+	ariaLiveToken: (v) => {
+		switch (v) {
+			case 'polite':
+			case 'assertive': {
+				return v;
+			}
+			default: {
+				return 'off';
+			}
+		}
+	},
+	ariaRelevantTokenList: (v) => {
+		const list = ['additions', 'removals', 'text', 'all'];
+		const values = `${v}`.split(/\s+/).map(val => list.includes(val) ? val : '').filter(val => val);
+		return values.join(' ');
+	},
 };
 
 export default class ARIAAttribute<A extends keyof ARIAAttributeRelation> {
@@ -124,7 +258,7 @@ export default class ARIAAttribute<A extends keyof ARIAAttributeRelation> {
 		this._value = defaultValues[this._name];
 	}
 
-	public set (value: ARIAAttributeRelation[A]) {
+	public set (value: ARIAAttributeTypes[ARIAAttributeRelation[A]]) {
 		const a = optimizer[relation[this._name]](value);
 	}
 

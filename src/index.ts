@@ -1,21 +1,18 @@
-import _CoreNode from './Classes/CoreNode';
-import _GoogleMaps from './Classes/GoogleMaps';
-import _Progressive from './Classes/Progressive';
-import _Scroll from './Classes/Scroll';
-import _Sequencer from './Classes/Sequencer';
-import _Slideshow from './Classes/Slideshow';
-import _YouTube from './Classes/YouTube';
-import __CoreNode from './nodes/CoreNode';
+import _AccessibleElement from './nodes/AccessibleElement';
+import _ButtonElement from './nodes/ButtonElement';
+import _CommandElement from './nodes/CommandElement';
+import _CoreNode from './nodes/CoreNode';
+import _EventDispatcher from './nodes/EventDispatcher';
+import _InteractiveNode from './nodes/InteractiveNode';
+import _WidgetElement from './nodes/WidgetElement';
 
+export const AccessibleElement = _AccessibleElement;
+export const ButtonElement = _ButtonElement;
+export const CommandElement = _CommandElement;
 export const CoreNode = _CoreNode;
-export const GoogleMaps = _GoogleMaps;
-export const Progressive = _Progressive;
-export const Scroll = _Scroll;
-export const Sequencer = _Sequencer;
-export const Slideshow = _Slideshow;
-export const YouTube = _YouTube;
-
-export const _ = __CoreNode;
+export const EventDispatcher = _EventDispatcher;
+export const InteractiveNode = _InteractiveNode;
+export const WidgetElement = _WidgetElement;
 
 export function auto () {
 	return new Promise<void>((resolve) => {
@@ -32,13 +29,13 @@ export function auto () {
 }
 
 function _auto () {
-	const nodesGoogleMaps = document.querySelectorAll('[data-baser="google-maps"]');
-	for (const node of Array.from(nodesGoogleMaps)) {
-		const g = new GoogleMaps(node as HTMLDivElement);
-	}
+	// const nodesGoogleMaps = document.querySelectorAll('[data-baser="google-maps"]');
+	// for (const node of Array.from(nodesGoogleMaps)) {
+	// 	const g = new GoogleMaps(node as HTMLDivElement);
+	// }
 
-	const nodesYouTube = document.querySelectorAll('[data-baser="youtube"]');
-	for (const node of Array.from(nodesYouTube)) {
-		const g = new YouTube(node as HTMLDivElement);
-	}
+	// const nodesYouTube = document.querySelectorAll('[data-baser="youtube"]');
+	// for (const node of Array.from(nodesYouTube)) {
+	// 	const g = new YouTube(node as HTMLDivElement);
+	// }
 }
