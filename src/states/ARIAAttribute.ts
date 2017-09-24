@@ -10,10 +10,14 @@ export interface ARIAAttributeTypes {
 	 */
 	boolean: 'true' | 'false';
 
-	// /**
-	//  * Value representing true or false, with an intermediate "mixed" value. Default value is "false" unless otherwise specified.
-	//  */
-	// tristate: 'true' | 'false' | 'mixed';
+	/**
+	 * "tristate"
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_tristate
+	 *
+	 * Value representing true or false, with an intermediate "mixed" value. Default value is "false" unless otherwise specified.
+	 */
+	tristate: 'true' | 'false' | 'mixed' | undefined;
 
 	/**
 	 * "true/false/undefined"
@@ -137,6 +141,8 @@ export interface ARIAAttributeRelation {
 	'aria-live': 'ariaLiveToken';
 	'aria-owns': 'idReferenceList';
 	'aria-relevant': 'ariaRelevantTokenList';
+	'aria-pressed': 'tristate';
+	'aria-expanded': 'optionalBoolean';
 }
 
 export type ARIAAttributeValue = {[P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]]};
@@ -160,6 +166,8 @@ const relation: ARIAAttributeRelation = {
 	'aria-live': 'ariaLiveToken',
 	'aria-owns': 'idReferenceList',
 	'aria-relevant': 'ariaRelevantTokenList',
+	'aria-pressed': 'tristate',
+	'aria-expanded': 'optionalBoolean',
 };
 
 const defaultValues: ARIAAttributeValue = {
@@ -179,24 +187,26 @@ const defaultValues: ARIAAttributeValue = {
 	'aria-live': 'off',
 	'aria-owns': '',
 	'aria-relevant': 'additions text',
+	'aria-pressed': undefined,
+	'aria-expanded': undefined,
 };
 
 const optimizer: ARIAAttributeValueOptimizer = {
 	boolean: (v) => {
 		return v === 'true' ? v : 'false';
 	},
-	// tristate: (v) => {
-	// 	switch (v) {
-	// 		case 'true':
-	// 		case 'false':
-	// 		case 'mixin': {
-	// 			return v;
-	// 		}
-	// 		default: {
-	// 			return 'false';
-	// 		}
-	// 	}
-	// },
+	tristate: (v) => {
+		switch (v) {
+			case 'true':
+			case 'false':
+			case 'mixed': {
+				return v;
+			}
+			default: {
+				return 'false';
+			}
+		}
+	},
 	optionalBoolean: (v) => {
 		if (v == null) {
 			return;
