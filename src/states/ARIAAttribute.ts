@@ -143,6 +143,7 @@ export interface ARIAAttributeRelation {
 	'aria-relevant': 'ariaRelevantTokenList';
 	'aria-pressed': 'tristate';
 	'aria-expanded': 'optionalBoolean';
+	'aria-selected': 'optionalBoolean';
 }
 
 export type ARIAAttributeValue = {[P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]]};
@@ -168,6 +169,7 @@ const relation: ARIAAttributeRelation = {
 	'aria-relevant': 'ariaRelevantTokenList',
 	'aria-pressed': 'tristate',
 	'aria-expanded': 'optionalBoolean',
+	'aria-selected': 'optionalBoolean',
 };
 
 const defaultValues: ARIAAttributeValue = {
@@ -189,6 +191,7 @@ const defaultValues: ARIAAttributeValue = {
 	'aria-relevant': 'additions text',
 	'aria-pressed': undefined,
 	'aria-expanded': undefined,
+	'aria-selected': undefined,
 };
 
 const optimizer: ARIAAttributeValueOptimizer = {
