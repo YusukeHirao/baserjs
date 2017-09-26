@@ -1,7 +1,7 @@
 /**!
 	* baserjs - v1.0.0-beta.0
-	* revision: cbfd8c9043022b11e3586462d089935b55d041cf
-	* update: 2017-09-26
+	* revision: bdf6b1e36765d1213b94042b9326418ac5b0f505
+	* update: 2017-09-27
 	* Author: baserCMS Users Community [https://github.com/baserproject/]
 	* Github: https://github.com/baserproject/baserjs
 	* License: Licensed under the MIT License
@@ -69,7 +69,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -535,8 +535,23 @@ var InteractiveNode = /** @class */ (function (_super) {
      *
      */
     function InteractiveNode(el) {
-        return _super.call(this, el) || this;
+        var _this = _super.call(this, el) || this;
+        el.addEventListener('click', function (e) {
+            var t = _this.trigger('click', [e.currentTarget.id]);
+            if (t.isDefaultPrevented()) {
+                e.preventDefault();
+            }
+        }, false);
+        return _this;
     }
+    InteractiveNode.prototype.onClick = function (eventHandler, preventDefault) {
+        this.on('click', function (e, id) {
+            eventHandler(id);
+            if (preventDefault) {
+                e.preventDefault();
+            }
+        });
+    };
     return InteractiveNode;
 }(CoreNode_1.default));
 exports.default = InteractiveNode;
@@ -559,7 +574,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var createUID_1 = __webpack_require__(10);
+var createUID_1 = __webpack_require__(11);
 var EventDispatcher_1 = __webpack_require__(4);
 var elements = new WeakMap();
 var detachedChildren = new WeakMap();
@@ -744,8 +759,8 @@ exports.default = CoreNode;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var DispatchEvent_1 = __webpack_require__(11);
-var EventHandler_1 = __webpack_require__(12);
+var DispatchEvent_1 = __webpack_require__(12);
+var EventHandler_1 = __webpack_require__(13);
 /**
  * イベントを検知してハンドラを発火させることができるクラス
  *
@@ -822,7 +837,7 @@ var EventDispatcher = /** @class */ (function () {
      * @param type イベントのタイプ
      * @param args イベントハンドラに渡す引数
      * @param context イベントハンドラのコンテキスト
-     * @return インスタンス自身
+     * @return イベント
      *
      */
     EventDispatcher.prototype.trigger = function (type, args, context) {
@@ -856,7 +871,7 @@ var EventDispatcher = /** @class */ (function () {
                 }
             }
         }
-        return this;
+        return e;
     };
     /**
      * イベント駆動できるクラス
@@ -1023,9 +1038,44 @@ exports.default = StructureElement;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baser = __webpack_require__(9);
-window.baser = baser;
+var SectionElement_1 = __webpack_require__(24);
+/**
+ * Region Element Wrapper Class
+ *
+ * @class RegionElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var RegionElement = /** @class */ (function (_super) {
+    __extends(RegionElement, _super);
+    /**
+     * Region Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function RegionElement(el) {
+        return _super.call(this, el) || this;
+    }
+    return RegionElement;
+}(SectionElement_1.default));
+exports.default = RegionElement;
 
 
 /***/ }),
@@ -1035,13 +1085,24 @@ window.baser = baser;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var baser = __webpack_require__(10);
+window.baser = baser;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var AccessibleElement_1 = __webpack_require__(1);
-var ButtonElement_1 = __webpack_require__(14);
+var ButtonElement_1 = __webpack_require__(15);
 var CommandElement_1 = __webpack_require__(5);
 var CoreNode_1 = __webpack_require__(3);
 var EventDispatcher_1 = __webpack_require__(4);
 var InteractiveNode_1 = __webpack_require__(2);
-var TabsComponent_1 = __webpack_require__(15);
+var TabsComponent_1 = __webpack_require__(16);
 var WidgetElement_1 = __webpack_require__(6);
 exports.AccessibleElement = AccessibleElement_1.default;
 exports.ButtonElement = ButtonElement_1.default;
@@ -1078,7 +1139,7 @@ function _auto() {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1104,7 +1165,7 @@ exports.default = createUID;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1193,13 +1254,13 @@ exports.default = DispatchEvent;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var createUID_1 = __webpack_require__(13);
+var createUID_1 = __webpack_require__(14);
 /**
  * イベントハンドラのラッパークラス
  *
@@ -1246,7 +1307,7 @@ exports.default = EventHandler;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1272,7 +1333,7 @@ exports.default = createUID;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1344,7 +1405,7 @@ exports.default = ButtonElement;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1360,10 +1421,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var StructureError_1 = __webpack_require__(16);
-var Component_1 = __webpack_require__(17);
-var TabElement_1 = __webpack_require__(18);
-var TabListElement_1 = __webpack_require__(20);
+var StructureError_1 = __webpack_require__(17);
+var Component_1 = __webpack_require__(18);
+var TabElement_1 = __webpack_require__(19);
+var TabListElement_1 = __webpack_require__(21);
+var TabPanelElement_1 = __webpack_require__(25);
 /**
  * Tabs Component Class
  *
@@ -1387,18 +1449,22 @@ var TabsComponent = /** @class */ (function (_super) {
      */
     function TabsComponent(el, options) {
         if (options === void 0) { options = {}; }
-        var _this = _super.call(this, el) || this;
+        var _this = _super.call(this, el, options) || this;
         /**
          *
          */
         _this.defaultConfig = Object.freeze({
             autoId: true,
         });
-        _this._$tabs = new Set();
+        _this._tabRelations = new Map();
+        _this._tabs = {};
         _this._traversal();
         return _this;
     }
     TabsComponent.prototype._traversal = function () {
+        /**
+         * Tab list
+         */
         var tabList = this.find('[role="tablist"]');
         if (tabList.length > 1) {
             throw new StructureError_1.default("Two or more role \"tablist\" were found in the component.");
@@ -1406,17 +1472,60 @@ var TabsComponent = /** @class */ (function (_super) {
         else if (tabList.length < 1) {
             throw new StructureError_1.default("Role \"tablist\" is not found in the component.");
         }
-        this._$tabList = new TabListElement_1.default(tabList.item(0));
-        var tabs = this._$tabList.find('[role="tab"]');
+        this._tabList = new TabListElement_1.default(tabList.item(0));
+        /**
+         * Tabs
+         */
+        var tabs = this._tabList.find('[role="tab"]');
+        var $tabs = [];
+        var selectedTabs = [];
         if (tabs.length < 1) {
             throw new StructureError_1.default("Role \"tab\" is not found in the component.");
         }
-        for (var _i = 0, _a = Array.from(tabs); _i < _a.length; _i++) {
-            var tab = _a[_i];
-            var $tab = new TabElement_1.default(tab);
-            $tab.owns.set(this._$tabList.id);
-            this._$tabs.add($tab);
+        for (var i = 0, l = tabs.length; i < l; i++) {
+            var $tab = new TabElement_1.default(tabs[i]);
+            $tab.owns.set(this._tabList.id);
+            $tabs.push($tab);
+            this._tabs[$tab.id] = $tab;
+            // selected state
+            if ($tab.selected.get()) {
+                selectedTabs.push(i);
+            }
         }
+        // default selected index is 0
+        if (selectedTabs.length === 0) {
+            selectedTabs.push(0);
+        }
+        /**
+         * Tab panels
+         */
+        var panels = this.find('[role="tabpanel"]');
+        var _setTab = this._setTab.bind(this);
+        if (panels.length < 1) {
+            throw new StructureError_1.default("Role \"tabpanel\" is not found in the component.");
+        }
+        else if (panels.length !== $tabs.length) {
+            throw new StructureError_1.default("The number of role \"tab\" and role \"tabpanel\" must be the same.");
+        }
+        for (var i = 0, l = $tabs.length; i < l; i++) {
+            var $tab = $tabs[i];
+            var $panel = new TabPanelElement_1.default(panels[i]);
+            $tab.controls.set($panel.id);
+            $panel.owns.set($tab.id);
+            this._tabRelations.set($tab, $panel);
+            // selected and hidden
+            var selected = selectedTabs.includes(i);
+            $panel.hidden.set(!selected);
+            // event
+            $tab.onClick(_setTab, true);
+        }
+    };
+    TabsComponent.prototype._setTab = function (id) {
+        // all
+        this._tabRelations.forEach(function (panel, tab) {
+            tab.selected.set(tab.id === id);
+            panel.hidden.set(tab.id !== id);
+        });
     };
     return TabsComponent;
 }(Component_1.default));
@@ -1424,7 +1533,7 @@ exports.default = TabsComponent;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1459,7 +1568,7 @@ exports.default = StructureError;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1516,7 +1625,7 @@ exports.default = Component;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1533,7 +1642,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ARIAAttribute_1 = __webpack_require__(0);
-var SectionHeadElement_1 = __webpack_require__(19);
+var SectionHeadElement_1 = __webpack_require__(20);
 /**
  * Tab Element Wrapper Class
  *
@@ -1586,7 +1695,7 @@ exports.default = TabElements;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1646,7 +1755,7 @@ exports.default = SectionHeadElement;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1663,7 +1772,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ARIAAttribute_1 = __webpack_require__(0);
-var DirectoryElement_1 = __webpack_require__(21);
+var DirectoryElement_1 = __webpack_require__(22);
 /**
  * Tab List Element Wrapper Class
  *
@@ -1706,7 +1815,7 @@ exports.default = TabListElement;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1722,7 +1831,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ListElement_1 = __webpack_require__(22);
+var ListElement_1 = __webpack_require__(23);
 /**
  * Directory Element Wrapper Class
  *
@@ -1752,7 +1861,7 @@ exports.default = DirectoryElement;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1768,7 +1877,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var RegionElement_1 = __webpack_require__(23);
+var RegionElement_1 = __webpack_require__(8);
 /**
  * List Element Wrapper Class
  *
@@ -1795,52 +1904,6 @@ var ListElement = /** @class */ (function (_super) {
     return ListElement;
 }(RegionElement_1.default));
 exports.default = ListElement;
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var SectionElement_1 = __webpack_require__(24);
-/**
- * Region Element Wrapper Class
- *
- * @class RegionElement
- * @version 1.0.0
- * @since 1.0.0
- * @template E DOM Element Interface
- *
- */
-var RegionElement = /** @class */ (function (_super) {
-    __extends(RegionElement, _super);
-    /**
-     * Region Element Wrapper Class
-     *
-     * @version 1.0.0
-     * @since 1.0.0
-     * @param el Assigned DOM Element
-     * @template E DOM Element Interface
-     *
-     */
-    function RegionElement(el) {
-        return _super.call(this, el) || this;
-    }
-    return RegionElement;
-}(SectionElement_1.default));
-exports.default = RegionElement;
 
 
 /***/ }),
@@ -1901,6 +1964,52 @@ var SectionElement = /** @class */ (function (_super) {
     return SectionElement;
 }(StructureElement_1.default));
 exports.default = SectionElement;
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var RegionElement_1 = __webpack_require__(8);
+/**
+ * Tab Panel Element Wrapper Class
+ *
+ * @class TabPanelElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var TabPanelElement = /** @class */ (function (_super) {
+    __extends(TabPanelElement, _super);
+    /**
+     * Tab Panel Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function TabPanelElement(el) {
+        return _super.call(this, el) || this;
+    }
+    return TabPanelElement;
+}(RegionElement_1.default));
+exports.default = TabPanelElement;
 
 
 /***/ })

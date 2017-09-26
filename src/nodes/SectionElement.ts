@@ -1,7 +1,6 @@
 import ARIAAttribute from '../states/ARIAAttribute';
 import StructureElement from './StructureElement';
 
-
 /**
  * Abstract Section Element Wrapper Class
  *

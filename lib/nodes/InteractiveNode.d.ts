@@ -19,4 +19,5 @@ export default abstract class InteractiveNode<E extends Element = Element> exten
      *
      */
     constructor(el: E);
+    onClick(eventHandler: (id: string) => void, preventDefault: boolean): void;
 }

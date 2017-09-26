@@ -75,8 +75,8 @@ export default class EventDispatcher {
      * @param type イベントのタイプ
      * @param args イベントハンドラに渡す引数
      * @param context イベントハンドラのコンテキスト
-     * @return インスタンス自身
+     * @return イベント
      *
      */
-    trigger<T = {}>(type: string | DispatchEvent, args?: T[], context?: EventDispatcher): EventDispatcher;
+    trigger<T = {}>(type: string | DispatchEvent, args?: T[], context?: EventDispatcher): DispatchEvent;
 }

@@ -1,6 +1,4 @@
-import ARIAAttribute from '../states/ARIAAttribute';
 import RegionElement from './RegionElement';
-
 
 /**
  * List Element Wrapper Class
@@ -11,7 +9,7 @@ import RegionElement from './RegionElement';
  * @template E DOM Element Interface
  *
  */
-export default abstract class ListElement extends RegionElement {
+export default class ListElement extends RegionElement {
 	/**
 	 * List Element Wrapper Class
 	 *

@@ -23,5 +23,24 @@ export default abstract class InteractiveNode<E extends Element = Element> exten
 	 */
 	constructor (el: E) {
 		super(el);
+		el.addEventListener(
+			'click',
+			(e: MouseEvent) => {
+				const t = this.trigger<string>('click', [(e.currentTarget as Element).id]);
+				if (t.isDefaultPrevented()) {
+					e.preventDefault();
+				}
+			},
+			false,
+		);
+	}
+
+	public onClick (eventHandler: (id: string) => void, preventDefault: boolean) {
+		this.on('click', (e, id: string) => {
+			eventHandler(id);
+			if (preventDefault) {
+				e.preventDefault();
+			}
+		});
 	}
 }

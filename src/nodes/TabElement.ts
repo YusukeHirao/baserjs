@@ -1,7 +1,6 @@
 import ARIAAttribute from '../states/ARIAAttribute';
 import SectionHeadElement from './SectionHeadElement';
 
-
 /**
  * Tab Element Wrapper Class
  *

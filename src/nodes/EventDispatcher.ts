@@ -97,10 +97,10 @@ export default class EventDispatcher {
 	 * @param type イベントのタイプ
 	 * @param args イベントハンドラに渡す引数
 	 * @param context イベントハンドラのコンテキスト
-	 * @return インスタンス自身
+	 * @return イベント
 	 *
 	 */
-	public trigger<T = {}> (type: string | DispatchEvent, args: T[] = [], context?: EventDispatcher): EventDispatcher {
+	public trigger<T = {}> (type: string | DispatchEvent, args: T[] = [], context?: EventDispatcher): DispatchEvent {
 		context = context || this;
 		let typeName: string;
 		let e: DispatchEvent;
@@ -129,6 +129,6 @@ export default class EventDispatcher {
 				}
 			}
 		}
-		return this;
+		return e;
 	}
 }

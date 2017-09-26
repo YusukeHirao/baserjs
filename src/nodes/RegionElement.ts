@@ -1,6 +1,4 @@
-import ARIAAttribute from '../states/ARIAAttribute';
 import SectionElement from './SectionElement';
-
 
 /**
  * Region Element Wrapper Class

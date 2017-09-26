@@ -14,13 +14,14 @@ export declare type TabsComponentOptions = {
  * @template C Config
  *
  */
-export default abstract class TabsComponent extends Component<Element, TabsComponentConfig> {
+export default class TabsComponent extends Component<Element, TabsComponentConfig> {
     /**
      *
      */
     readonly defaultConfig: Readonly<TabsComponentConfig>;
-    private _$tabList;
-    private _$tabs;
+    private _tabList;
+    private _tabRelations;
+    private _tabs;
     /**
      * Tabs Component Class
      *
@@ -32,4 +33,5 @@ export default abstract class TabsComponent extends Component<Element, TabsCompo
      */
     constructor(el: Element, options?: TabsComponentOptions);
     private _traversal();
+    private _setTab(id);
 }

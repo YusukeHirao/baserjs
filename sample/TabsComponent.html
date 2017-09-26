@@ -3,18 +3,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Test - Form</title>
-	<script src="https://maps.google.com/maps/api/js"></script>
-	<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
-	<script src="../dist/baser.js"></script>
-	<script>
-	$(function() {
-		'use strict'
-
-		const tabs = document.getElementById('tabs');
-		const $tabs = new baser.TabsComponent(tabs);
-	});
-	</script>
 </head>
 <body>
 
@@ -24,7 +12,20 @@
 			<li><a href="#" role="tab">B</a></li>
 			<li><a href="#" role="tab">C</a></li>
 		</ul>
+		<div role="tabpanel">A Panel</div>
+		<div role="tabpanel">B Panel</div>
+		<div role="tabpanel">C Panel</div>
 	</div>
 
+	<script src="../dist/baser.js"></script>
+	<script>
+	(function() {
+		'use strict'
+
+		const tabs = document.getElementById('tabs');
+		const $tabs = new baser.TabsComponent(tabs);
+		console.log($tabs);
+	}());
+	</script>
 </body>
 </html>

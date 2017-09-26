@@ -1,17 +1,17 @@
-import ListElement from './ListElement';
+import RegionElement from './RegionElement';
 
 /**
- * Directory Element Wrapper Class
+ * Tab Panel Element Wrapper Class
  *
- * @class DirectoryElement
+ * @class TabPanelElement
  * @version 1.0.0
  * @since 1.0.0
  * @template E DOM Element Interface
  *
  */
-export default abstract class DirectoryElement extends ListElement {
+export default class TabPanelElement extends RegionElement {
 	/**
-	 * Directory Element Wrapper Class
+	 * Tab Panel Element Wrapper Class
 	 *
 	 * @version 1.0.0
 	 * @since 1.0.0
