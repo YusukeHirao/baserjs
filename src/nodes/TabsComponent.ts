@@ -45,7 +45,6 @@ export default abstract class TabsComponent extends Component<Element, TabsCompo
 	constructor (el: Element, options: TabsComponentOptions = {}) {
 		super(el);
 		this._traversal();
-		console.log(this);
 	}
 
 	private _traversal () {

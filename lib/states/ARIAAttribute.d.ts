@@ -7,7 +7,7 @@ export interface ARIAAttributeTypes {
      *
      * > Value representing either true or false, with a default "false" value.
      */
-    boolean: 'true' | 'false';
+    boolean: true | false;
     /**
      * "tristate"
      *
@@ -15,7 +15,7 @@ export interface ARIAAttributeTypes {
      *
      * Value representing true or false, with an intermediate "mixed" value. Default value is "false" unless otherwise specified.
      */
-    tristate: 'true' | 'false' | 'mixed' | undefined;
+    tristate: true | false | 'mixed' | undefined;
     /**
      * "true/false/undefined"
      *
@@ -23,7 +23,7 @@ export interface ARIAAttributeTypes {
      *
      * > Value representing true or false, with a default "undefined" value indicating the state or property is not relevant.
      */
-    optionalBoolean: 'true' | 'false' | undefined;
+    optionalBoolean: true | false | undefined;
     /**
      * "ID reference"
      *
@@ -39,7 +39,7 @@ export interface ARIAAttributeTypes {
      *
      * > A list of one or more ID references. (space separator)
      */
-    idReferenceList: string;
+    idReferenceList: string[];
     /**
      * "string"
      *
@@ -63,7 +63,7 @@ export interface ARIAAttributeTypes {
      * > |`popup`|There is a popup menu or dialog that allows the user to choose one of the drag operations (copy, move, link, execute) and any other drag functionality, such as cancel.
      * > |`none` (default)|No operation can be performed; effectively cancels the drag operation if an attempt is made to drop on this object. Ignored if combined with any other token value. e.g. 'none copy' is equivalent to a 'copy' value.
      */
-    ariaDropeffectTokenList: string;
+    ariaDropeffectTokenList: Set<'copy' | 'move' | 'link' | 'execute' | 'popup' | 'none'>;
     /**
      * Token for `aria-invalid`
      *
@@ -77,7 +77,7 @@ export interface ARIAAttributeTypes {
      * > |`spelling`|A spelling error was detected.
      * > |`true`|The value entered by the user has failed validation.
      */
-    ariaInvalidToken: 'grammar' | 'false' | 'spelling' | 'true';
+    ariaInvalidToken: 'grammar' | false | 'spelling' | true;
     /**
      * Token for `aria-live`
      *
@@ -105,7 +105,7 @@ export interface ARIAAttributeTypes {
      * > |`all`|Equivalent to the combination of all values, "additions removals text".
      * > |`additions text` (default)|Equivalent to the combination of values, "additions text".
      */
-    ariaRelevantTokenList: string;
+    ariaRelevantTokenList: Set<'additions' | 'removals' | 'text' | 'all'>;
 }
 export interface ARIAAttributeRelation {
     'aria-atomic': 'boolean';
@@ -129,18 +129,22 @@ export interface ARIAAttributeRelation {
     'aria-selected': 'optionalBoolean';
     'aria-activedescendant': 'idReference';
 }
+export declare type Primitive = string | number | boolean;
+export declare type NullablePrimitive = Primitive | undefined | null;
+export declare type ExpectableType = NullablePrimitive | NullablePrimitive[];
 export declare type ARIAAttributeValue = {
     [P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]];
 };
 export declare type ARIAAttributeValueOptimizer = {
-    [A in keyof ARIAAttributeTypes]: (value: string | number | undefined) => ARIAAttributeTypes[A];
+    [A in keyof ARIAAttributeTypes]: (value: ExpectableType | ARIAAttributeTypes[A]) => ARIAAttributeTypes[A];
 };
 export default class ARIAAttribute<A extends keyof ARIAAttributeRelation> {
     private _owner;
     private _name;
     private _value;
     constructor(owner: AccessibleElement, attrName: A);
-    set(value: ARIAAttributeTypes[ARIAAttributeRelation[A]]): void;
+    set(value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]): void;
     get(): ARIAAttributeTypes[ARIAAttributeRelation[A]];
-    private _getValueFromDOMElement();
+    optimize(value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]): any;
+    toString(): string;
 }

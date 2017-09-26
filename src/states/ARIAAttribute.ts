@@ -8,7 +8,7 @@ export interface ARIAAttributeTypes {
 	 *
 	 * > Value representing either true or false, with a default "false" value.
 	 */
-	boolean: 'true' | 'false';
+	boolean: true | false;
 
 	/**
 	 * "tristate"
@@ -17,7 +17,7 @@ export interface ARIAAttributeTypes {
 	 *
 	 * Value representing true or false, with an intermediate "mixed" value. Default value is "false" unless otherwise specified.
 	 */
-	tristate: 'true' | 'false' | 'mixed' | undefined;
+	tristate: true | false | 'mixed' | undefined;
 
 	/**
 	 * "true/false/undefined"
@@ -26,7 +26,7 @@ export interface ARIAAttributeTypes {
 	 *
 	 * > Value representing true or false, with a default "undefined" value indicating the state or property is not relevant.
 	 */
-	optionalBoolean: 'true' | 'false' | undefined;
+	optionalBoolean: true | false | undefined;
 
 	/**
 	 * "ID reference"
@@ -44,7 +44,7 @@ export interface ARIAAttributeTypes {
 	 *
 	 * > A list of one or more ID references. (space separator)
 	 */
-	idReferenceList: string;
+	idReferenceList: string[];
 
 	// /**
 	//  * A numerical value without a fractional component.
@@ -80,7 +80,7 @@ export interface ARIAAttributeTypes {
 	 * > |`popup`|There is a popup menu or dialog that allows the user to choose one of the drag operations (copy, move, link, execute) and any other drag functionality, such as cancel.
 	 * > |`none` (default)|No operation can be performed; effectively cancels the drag operation if an attempt is made to drop on this object. Ignored if combined with any other token value. e.g. 'none copy' is equivalent to a 'copy' value.
 	 */
-	ariaDropeffectTokenList: string;
+	ariaDropeffectTokenList: Set<'copy' | 'move' | 'link' | 'execute' | 'popup' | 'none'>;
 
 	/**
 	 * Token for `aria-invalid`
@@ -95,7 +95,7 @@ export interface ARIAAttributeTypes {
 	 * > |`spelling`|A spelling error was detected.
 	 * > |`true`|The value entered by the user has failed validation.
 	 */
-	ariaInvalidToken: 'grammar' | 'false' | 'spelling' | 'true';
+	ariaInvalidToken: 'grammar' | false | 'spelling' | true;
 
 	/**
 	 * Token for `aria-live`
@@ -125,7 +125,7 @@ export interface ARIAAttributeTypes {
 	 * > |`all`|Equivalent to the combination of all values, "additions removals text".
 	 * > |`additions text` (default)|Equivalent to the combination of values, "additions text".
 	 */
-	ariaRelevantTokenList: string;
+	ariaRelevantTokenList: Set<'additions' | 'removals' | 'text' | 'all'>;
 }
 
 export interface ARIAAttributeRelation {
@@ -151,9 +151,15 @@ export interface ARIAAttributeRelation {
 	'aria-activedescendant': 'idReference';
 }
 
+export type Primitive = string | number | boolean;
+
+export type NullablePrimitive = Primitive | undefined | null;
+
+export type ExpectableType = NullablePrimitive | NullablePrimitive[];
+
 export type ARIAAttributeValue = {[P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]]};
 
-export type ARIAAttributeValueOptimizer = {[A in keyof ARIAAttributeTypes]: (value: string | number | undefined) => ARIAAttributeTypes[A]};
+export type ARIAAttributeValueOptimizer = {[A in keyof ARIAAttributeTypes]: (value: ExpectableType | ARIAAttributeTypes[A]) => ARIAAttributeTypes[A]};
 
 const relation: ARIAAttributeRelation = {
 	'aria-atomic': 'boolean',
@@ -179,22 +185,22 @@ const relation: ARIAAttributeRelation = {
 };
 
 const defaultValues: ARIAAttributeValue = {
-	'aria-atomic': 'false',
-	'aria-busy': 'false',
-	'aria-controls': '',
-	'aria-describedby': '',
-	'aria-disabled': 'false',
-	'aria-dropeffect': 'none',
-	'aria-flowto': '',
+	'aria-atomic': false,
+	'aria-busy': false,
+	'aria-controls': [],
+	'aria-describedby': [],
+	'aria-disabled': false,
+	'aria-dropeffect': new Set(['none']) as ARIAAttributeTypes['ariaDropeffectTokenList'],
+	'aria-flowto': [],
 	'aria-grabbed': undefined,
-	'aria-haspopup': 'false',
-	'aria-hidden': 'false',
-	'aria-invalid': 'false',
+	'aria-haspopup': false,
+	'aria-hidden': false,
+	'aria-invalid': false,
 	'aria-label': '',
-	'aria-labelledby': '',
+	'aria-labelledby': [],
 	'aria-live': 'off',
-	'aria-owns': '',
-	'aria-relevant': 'additions text',
+	'aria-owns': [],
+	'aria-relevant': new Set(['additions', 'text']) as ARIAAttributeTypes['ariaRelevantTokenList'],
 	'aria-pressed': undefined,
 	'aria-expanded': undefined,
 	'aria-selected': undefined,
@@ -203,19 +209,13 @@ const defaultValues: ARIAAttributeValue = {
 
 const optimizer: ARIAAttributeValueOptimizer = {
 	boolean: (v) => {
-		return v === 'true' ? v : 'false';
+		return v === 'true' ? true : v === 'false' ? false : !!v;
 	},
 	tristate: (v) => {
-		switch (v) {
-			case 'true':
-			case 'false':
-			case 'mixed': {
-				return v;
-			}
-			default: {
-				return 'false';
-			}
+		if (v === 'mixed') {
+			return v;
 		}
+		return optimizer.boolean(v);
 	},
 	optionalBoolean: (v) => {
 		if (v == null) {
@@ -224,46 +224,50 @@ const optimizer: ARIAAttributeValueOptimizer = {
 		return optimizer.boolean(v);
 	},
 	idReference: (v) => {
-		return `${v}`;
+		return optimizer.string(v);
 	},
 	idReferenceList: (v) => {
-		return `${v}`;
+		if (Array.isArray(v)) {
+			return (v as NullablePrimitive[]).map(i => optimizer.idReference(i));
+		}
+		return optimizer.idReference(v).split(/\s+/g).map(i => optimizer.idReference(i));
 	},
 	string: (v) => {
-		return `${v}`;
+		return `${v}`.trim();
 	},
 	ariaDropeffectTokenList: (v) => {
+		if (v instanceof Set) {
+			v = [...Array.from(v)];
+		}
+		const a: NullablePrimitive[] = Array.isArray(v) ? v :  `${v}`.split(/\s+/g);
 		const list = ['copy', 'move', 'link', 'execute', 'popup', 'none'];
-		const values = `${v}`.split(/\s+/).map(val => list.includes(val) ? val : '').filter(val => val);
-		return values.join(' ');
+		const values = a.map(val => list.includes(`${val}`) ? `${val}` : '').filter(val => val);
+		return new Set(values) as ARIAAttributeTypes['ariaDropeffectTokenList'];
 	},
 	ariaInvalidToken: (v) => {
 		switch (v) {
 			case 'grammar':
 			case 'spelling':
-			case 'true': {
 				return v;
-			}
-			default: {
-				return 'false';
-			}
 		}
+		return !!v;
 	},
 	ariaLiveToken: (v) => {
 		switch (v) {
 			case 'polite':
-			case 'assertive': {
+			case 'assertive':
 				return v;
-			}
-			default: {
-				return 'off';
-			}
 		}
+		return 'off';
 	},
 	ariaRelevantTokenList: (v) => {
+		if (v instanceof Set) {
+			v = [...Array.from(v)];
+		}
+		const a: NullablePrimitive[] = Array.isArray(v) ? v :  `${v}`.split(/\s+/g);
 		const list = ['additions', 'removals', 'text', 'all'];
-		const values = `${v}`.split(/\s+/).map(val => list.includes(val) ? val : '').filter(val => val);
-		return values.join(' ');
+		const values = a.map(val => list.includes(`${val}`) ? `${val}` : '').filter(val => val);
+		return new Set(values) as ARIAAttributeTypes['ariaRelevantTokenList'];
 	},
 };
 
@@ -278,18 +282,38 @@ export default class ARIAAttribute<A extends keyof ARIAAttributeRelation> {
 	constructor (owner: AccessibleElement, attrName: A) {
 		this._owner = owner;
 		this._name = attrName;
-		this._value = defaultValues[this._name];
+		this.set(this._owner.getAttr(this._name) || defaultValues[this._name]);
 	}
 
-	public set (value: ARIAAttributeTypes[ARIAAttributeRelation[A]]) {
-		const a = optimizer[relation[this._name]](value);
+	public set (value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]) {
+		this._value = this.optimize(value);
+		const attrValue = this.toString();
+		if (attrValue === '') {
+			this._owner.removeAttr(this._name);
+		} else {
+			this._owner.setAttr(this._name, attrValue);
+		}
 	}
 
 	public get () {
 		return this._value;
 	}
 
-	private _getValueFromDOMElement () {
-		const raw = this._owner.getAttr(this._name);
+	public optimize (value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]) {
+		return optimizer[relation[this._name]](value);
+	}
+
+	public toString () {
+		let v = this._value;
+		if (v instanceof Set) {
+			v = [...Array.from(v)];
+		}
+		if (Array.isArray(v)) {
+			return v.join(' ');
+		}
+		if (v == null) {
+			return '';
+		}
+		return `${v}`;
 	}
 }

@@ -141,6 +141,16 @@ export default abstract class CoreNode<E extends Element = Element> extends Even
 	}
 
 	/**
+	 * Remove attribute
+	 *
+	 * @api DOM access
+	 * @param attrName Attribute name
+	 */
+	public removeAttr (attrName: string) {
+		return this._el.removeAttribute(attrName);
+	}
+
+	/**
 	 * Get Descendant elemtns
 	 *
 	 * @api DOM access
