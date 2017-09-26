@@ -1,13 +1,9 @@
 baserJS
 ===
 
-[![Build Status](https://travis-ci.org/baserproject/baserjs.svg?branch=rc)](https://travis-ci.org/baserproject/baserjs)
+[![Build Status](https://travis-ci.org/yusukehirao/baserjs.svg?branch=rc)](https://travis-ci.org/yusukehirao/baserjs)
 
 コーポレートサイトにちょうどいいJavaScriptライブラリ
-
-<!--- [Web Site](https://baserproject.github.io/baserjs)
-- [API Document](http://baserproject.github.io/baserjs/docs/)
-- [Reference](http://qiita.com/search?q=baserjs)-->
 
 ## Develop `v1.0.0` in progress
 
