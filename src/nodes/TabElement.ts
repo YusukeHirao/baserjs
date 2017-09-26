@@ -3,7 +3,15 @@ import SectionHeadElement from './SectionHeadElement';
 
 
 /**
- * Abstract Tab Element Wrapper Class
+ * Tab Element Wrapper Class
+ *
+ * `<element role="tab" />`
+ *
+ * @see https://www.w3.org/TR/wai-aria/roles#tab
+ *
+ * > A grouping label providing a mechanism for selecting the tab content that is to be rendered to the user.
+ * >
+ * > If a tabpanel or item in a tabpanel has focus, the associated tab is the currently active tab in the tablist, as defined in Managing Focus. tablist elements, which contain a set of associated tab elements, are typically placed near a series of tabpanel elements, usually preceding it. See the WAI-ARIA Authoring Practices Guide [ARIA-PRACTICES] for details on implementing a tab set design pattern.
  *
  * @class TabElements
  * @version 1.0.0
@@ -28,7 +36,7 @@ export default class TabElements<E extends Element = Element> extends SectionHea
 	public readonly selected = new ARIAAttribute(this, 'aria-selected');
 
 	/**
-	 * Abstract Tab Element Wrapper Class
+	 * Tab Element Wrapper Class
 	 *
 	 * @version 1.0.0
 	 * @since 1.0.0

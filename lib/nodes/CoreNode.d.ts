@@ -78,6 +78,13 @@ export default abstract class CoreNode<E extends Element = Element> extends Even
      */
     getAttr(attrName: string): string | null;
     /**
+     * Get Descendant elemtns
+     *
+     * @api DOM access
+     * @param selector match selector
+     */
+    find(selector: string): NodeListOf<Element>;
+    /**
      * Callback on mutated attributes
      *
      * @param mutations Mutated record list

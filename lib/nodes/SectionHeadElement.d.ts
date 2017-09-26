@@ -1,27 +1,15 @@
 import ARIAAttribute from '../states/ARIAAttribute';
-import CommandElement from './CommandElement';
+import StructureElement from './StructureElement';
 /**
- * Button Element Wrapper Class
+ * Abstract Section Head Element Wrapper Class
  *
- * @class ButtonElement
+ * @class SectionHeadElement
  * @version 1.0.0
  * @since 1.0.0
  * @template E DOM Element Interface
  *
  */
-export default class ButtonElement<E extends Element = Element> extends CommandElement<E> {
-    /**
-     * `aria-pressed`
-     *
-     * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-pressed
-     *
-     * > Indicates the current "pressed" state of toggle buttons. See related aria-checked and aria-selected.
-     * >
-     * > Toggle buttons require a full press-and-release cycle to change their value. Activating it once changes the value to true, and activating it another time changes the value back to false. A value of mixed means that the values of more than one item controlled by the button do not all share the same value. Examples of mixed-state buttons are described in WAI-ARIA Authoring Practices [ARIA-PRACTICES]. If the attribute is not present, the button is not a toggle button.
-     * >
-     * > The aria-pressed attribute is similar but not identical to the aria-checked attribute. Operating systems support pressed on buttons and checked on checkboxes.
-     */
-    readonly pressed: ARIAAttribute<"aria-pressed">;
+export default abstract class SectionHeadElement<E extends Element = Element> extends StructureElement<E> {
     /**
      * `aria-expanded`
      *
@@ -35,7 +23,7 @@ export default class ButtonElement<E extends Element = Element> extends CommandE
      */
     readonly expanded: ARIAAttribute<"aria-expanded">;
     /**
-     * Button Element Wrapper Class
+     * Abstract Section Head Element Wrapper Class
      *
      * @version 1.0.0
      * @since 1.0.0

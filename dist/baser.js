@@ -1,7 +1,7 @@
 /**!
 	* baserjs - v1.0.0-beta.0
-	* revision: e97895e219965efcf92211d2cb8b335e98e4b41c
-	* update: 2017-09-24
+	* revision: 6b818d09e23a483fbb3bcb532f5f74e7e833e25a
+	* update: 2017-09-26
 	* Author: baserCMS Users Community [https://github.com/baserproject/]
 	* Github: https://github.com/baserproject/baserjs
 	* License: Licensed under the MIT License
@@ -69,11 +69,147 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var relation = {
+    'aria-atomic': 'boolean',
+    'aria-busy': 'boolean',
+    'aria-controls': 'idReferenceList',
+    'aria-describedby': 'idReferenceList',
+    'aria-disabled': 'boolean',
+    'aria-dropeffect': 'ariaDropeffectTokenList',
+    'aria-flowto': 'idReferenceList',
+    'aria-grabbed': 'optionalBoolean',
+    'aria-haspopup': 'boolean',
+    'aria-hidden': 'boolean',
+    'aria-invalid': 'ariaInvalidToken',
+    'aria-label': 'string',
+    'aria-labelledby': 'idReferenceList',
+    'aria-live': 'ariaLiveToken',
+    'aria-owns': 'idReferenceList',
+    'aria-relevant': 'ariaRelevantTokenList',
+    'aria-pressed': 'tristate',
+    'aria-expanded': 'optionalBoolean',
+    'aria-selected': 'optionalBoolean',
+    'aria-activedescendant': 'idReference',
+};
+var defaultValues = {
+    'aria-atomic': 'false',
+    'aria-busy': 'false',
+    'aria-controls': '',
+    'aria-describedby': '',
+    'aria-disabled': 'false',
+    'aria-dropeffect': 'none',
+    'aria-flowto': '',
+    'aria-grabbed': undefined,
+    'aria-haspopup': 'false',
+    'aria-hidden': 'false',
+    'aria-invalid': 'false',
+    'aria-label': '',
+    'aria-labelledby': '',
+    'aria-live': 'off',
+    'aria-owns': '',
+    'aria-relevant': 'additions text',
+    'aria-pressed': undefined,
+    'aria-expanded': undefined,
+    'aria-selected': undefined,
+    'aria-activedescendant': '',
+};
+var optimizer = {
+    boolean: function (v) {
+        return v === 'true' ? v : 'false';
+    },
+    tristate: function (v) {
+        switch (v) {
+            case 'true':
+            case 'false':
+            case 'mixed': {
+                return v;
+            }
+            default: {
+                return 'false';
+            }
+        }
+    },
+    optionalBoolean: function (v) {
+        if (v == null) {
+            return;
+        }
+        return optimizer.boolean(v);
+    },
+    idReference: function (v) {
+        return "" + v;
+    },
+    idReferenceList: function (v) {
+        return "" + v;
+    },
+    string: function (v) {
+        return "" + v;
+    },
+    ariaDropeffectTokenList: function (v) {
+        var list = ['copy', 'move', 'link', 'execute', 'popup', 'none'];
+        var values = ("" + v).split(/\s+/).map(function (val) { return list.includes(val) ? val : ''; }).filter(function (val) { return val; });
+        return values.join(' ');
+    },
+    ariaInvalidToken: function (v) {
+        switch (v) {
+            case 'grammar':
+            case 'spelling':
+            case 'true': {
+                return v;
+            }
+            default: {
+                return 'false';
+            }
+        }
+    },
+    ariaLiveToken: function (v) {
+        switch (v) {
+            case 'polite':
+            case 'assertive': {
+                return v;
+            }
+            default: {
+                return 'off';
+            }
+        }
+    },
+    ariaRelevantTokenList: function (v) {
+        var list = ['additions', 'removals', 'text', 'all'];
+        var values = ("" + v).split(/\s+/).map(function (val) { return list.includes(val) ? val : ''; }).filter(function (val) { return val; });
+        return values.join(' ');
+    },
+};
+var ARIAAttribute = /** @class */ (function () {
+    function ARIAAttribute(owner, attrName) {
+        this._owner = owner;
+        this._name = attrName;
+        this._value = defaultValues[this._name];
+    }
+    ARIAAttribute.prototype.set = function (value) {
+        var a = optimizer[relation[this._name]](value);
+    };
+    ARIAAttribute.prototype.get = function () {
+        return this._value;
+    };
+    ARIAAttribute.prototype._getValueFromDOMElement = function () {
+        var raw = this._owner.getAttr(this._name);
+    };
+    return ARIAAttribute;
+}());
+exports.default = ARIAAttribute;
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89,8 +225,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ARIAAttribute_1 = __webpack_require__(8);
-var InteractiveNode_1 = __webpack_require__(1);
+var ARIAAttribute_1 = __webpack_require__(0);
+var InteractiveNode_1 = __webpack_require__(2);
 /**
  * Abstract Accessible Element Wrapper Class
  *
@@ -342,7 +478,7 @@ exports.default = AccessibleElement;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -359,7 +495,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var CoreNode_1 = __webpack_require__(2);
+var CoreNode_1 = __webpack_require__(3);
 /**
  * Abstract Interactive Element Wrapper Class
  *
@@ -389,7 +525,7 @@ exports.default = InteractiveNode;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -405,8 +541,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var createUID_1 = __webpack_require__(9);
-var EventDispatcher_1 = __webpack_require__(3);
+var createUID_1 = __webpack_require__(10);
+var EventDispatcher_1 = __webpack_require__(4);
 var elements = new WeakMap();
 var detachedChildren = new WeakMap();
 /**
@@ -533,6 +669,15 @@ var CoreNode = /** @class */ (function (_super) {
         return this._el.getAttribute(attrName);
     };
     /**
+     * Get Descendant elemtns
+     *
+     * @api DOM access
+     * @param selector match selector
+     */
+    CoreNode.prototype.find = function (selector) {
+        return this._el.querySelectorAll(selector);
+    };
+    /**
      * Callback on mutated attributes
      *
      * @param mutations Mutated record list
@@ -566,14 +711,14 @@ exports.default = CoreNode;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var DispatchEvent_1 = __webpack_require__(10);
-var EventHandler_1 = __webpack_require__(11);
+var DispatchEvent_1 = __webpack_require__(11);
+var EventHandler_1 = __webpack_require__(12);
 /**
  * イベントを検知してハンドラを発火させることができるクラス
  *
@@ -708,7 +853,7 @@ exports.default = EventDispatcher;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -724,7 +869,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var WidgetElement_1 = __webpack_require__(5);
+var WidgetElement_1 = __webpack_require__(6);
 /**
  * Abstract Command Element Wrapper Class
  *
@@ -754,7 +899,7 @@ exports.default = CommandElement;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -770,7 +915,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var AccessibleElement_1 = __webpack_require__(0);
+var AccessibleElement_1 = __webpack_require__(1);
 /**
  * Abstract Widget Element Wrapper Class
  *
@@ -800,30 +945,77 @@ exports.default = WidgetElement;
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var baser = __webpack_require__(7);
-window.baser = baser;
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var AccessibleElement_1 = __webpack_require__(0);
-var ButtonElement_1 = __webpack_require__(13);
-var CommandElement_1 = __webpack_require__(4);
-var CoreNode_1 = __webpack_require__(2);
-var EventDispatcher_1 = __webpack_require__(3);
-var InteractiveNode_1 = __webpack_require__(1);
-var WidgetElement_1 = __webpack_require__(5);
+var AccessibleElement_1 = __webpack_require__(1);
+/**
+ * Abstract Structure Element Wrapper Class
+ *
+ * @class StructureElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var StructureElement = /** @class */ (function (_super) {
+    __extends(StructureElement, _super);
+    /**
+     * Abstract Structure Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function StructureElement(el) {
+        return _super.call(this, el) || this;
+    }
+    return StructureElement;
+}(AccessibleElement_1.default));
+exports.default = StructureElement;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var baser = __webpack_require__(9);
+window.baser = baser;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AccessibleElement_1 = __webpack_require__(1);
+var ButtonElement_1 = __webpack_require__(14);
+var CommandElement_1 = __webpack_require__(5);
+var CoreNode_1 = __webpack_require__(3);
+var EventDispatcher_1 = __webpack_require__(4);
+var InteractiveNode_1 = __webpack_require__(2);
+var TabsComponent_1 = __webpack_require__(15);
+var WidgetElement_1 = __webpack_require__(6);
 exports.AccessibleElement = AccessibleElement_1.default;
 exports.ButtonElement = ButtonElement_1.default;
 exports.CommandElement = CommandElement_1.default;
@@ -831,6 +1023,7 @@ exports.CoreNode = CoreNode_1.default;
 exports.EventDispatcher = EventDispatcher_1.default;
 exports.InteractiveNode = InteractiveNode_1.default;
 exports.WidgetElement = WidgetElement_1.default;
+exports.TabsComponent = TabsComponent_1.default;
 function auto() {
     return new Promise(function (resolve) {
         if (document.readyState !== 'loading') {
@@ -858,132 +1051,7 @@ function _auto() {
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var relation = {
-    'aria-atomic': 'boolean',
-    'aria-busy': 'boolean',
-    'aria-controls': 'idReferenceList',
-    'aria-describedby': 'idReferenceList',
-    'aria-disabled': 'boolean',
-    'aria-dropeffect': 'ariaDropeffectTokenList',
-    'aria-flowto': 'idReferenceList',
-    'aria-grabbed': 'optionalBoolean',
-    'aria-haspopup': 'boolean',
-    'aria-hidden': 'boolean',
-    'aria-invalid': 'ariaInvalidToken',
-    'aria-label': 'string',
-    'aria-labelledby': 'idReferenceList',
-    'aria-live': 'ariaLiveToken',
-    'aria-owns': 'idReferenceList',
-    'aria-relevant': 'ariaRelevantTokenList',
-};
-var defaultValues = {
-    'aria-atomic': 'false',
-    'aria-busy': 'false',
-    'aria-controls': '',
-    'aria-describedby': '',
-    'aria-disabled': 'false',
-    'aria-dropeffect': 'none',
-    'aria-flowto': '',
-    'aria-grabbed': undefined,
-    'aria-haspopup': 'false',
-    'aria-hidden': 'false',
-    'aria-invalid': 'false',
-    'aria-label': '',
-    'aria-labelledby': '',
-    'aria-live': 'off',
-    'aria-owns': '',
-    'aria-relevant': 'additions text',
-};
-var optimizer = {
-    boolean: function (v) {
-        return v === 'true' ? v : 'false';
-    },
-    // tristate: (v) => {
-    // 	switch (v) {
-    // 		case 'true':
-    // 		case 'false':
-    // 		case 'mixin': {
-    // 			return v;
-    // 		}
-    // 		default: {
-    // 			return 'false';
-    // 		}
-    // 	}
-    // },
-    optionalBoolean: function (v) {
-        if (v == null) {
-            return;
-        }
-        return optimizer.boolean(v);
-    },
-    idReferenceList: function (v) {
-        return "" + v;
-    },
-    string: function (v) {
-        return "" + v;
-    },
-    ariaDropeffectTokenList: function (v) {
-        var list = ['copy', 'move', 'link', 'execute', 'popup', 'none'];
-        var values = ("" + v).split(/\s+/).map(function (val) { return list.includes(val) ? val : ''; }).filter(function (val) { return val; });
-        return values.join(' ');
-    },
-    ariaInvalidToken: function (v) {
-        switch (v) {
-            case 'grammar':
-            case 'spelling':
-            case 'true': {
-                return v;
-            }
-            default: {
-                return 'false';
-            }
-        }
-    },
-    ariaLiveToken: function (v) {
-        switch (v) {
-            case 'polite':
-            case 'assertive': {
-                return v;
-            }
-            default: {
-                return 'off';
-            }
-        }
-    },
-    ariaRelevantTokenList: function (v) {
-        var list = ['additions', 'removals', 'text', 'all'];
-        var values = ("" + v).split(/\s+/).map(function (val) { return list.includes(val) ? val : ''; }).filter(function (val) { return val; });
-        return values.join(' ');
-    },
-};
-var ARIAAttribute = /** @class */ (function () {
-    function ARIAAttribute(owner, attrName) {
-        this._owner = owner;
-        this._name = attrName;
-        this._value = defaultValues[this._name];
-    }
-    ARIAAttribute.prototype.set = function (value) {
-        var a = optimizer[relation[this._name]](value);
-    };
-    ARIAAttribute.prototype.get = function () {
-        return this._value;
-    };
-    ARIAAttribute.prototype._getValueFromDOMElement = function () {
-        var raw = this._owner.getAttr(this._name);
-    };
-    return ARIAAttribute;
-}());
-exports.default = ARIAAttribute;
-
-
-/***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1009,7 +1077,7 @@ exports.default = createUID;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1098,13 +1166,13 @@ exports.default = DispatchEvent;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var createUID_1 = __webpack_require__(12);
+var createUID_1 = __webpack_require__(13);
 /**
  * イベントハンドラのラッパークラス
  *
@@ -1151,7 +1219,7 @@ exports.default = EventHandler;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1177,7 +1245,7 @@ exports.default = createUID;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1193,7 +1261,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var CommandElement_1 = __webpack_require__(4);
+var ARIAAttribute_1 = __webpack_require__(0);
+var CommandElement_1 = __webpack_require__(5);
 /**
  * Button Element Wrapper Class
  *
@@ -1215,11 +1284,597 @@ var ButtonElement = /** @class */ (function (_super) {
      *
      */
     function ButtonElement(el) {
-        return _super.call(this, el) || this;
+        var _this = _super.call(this, el) || this;
+        /**
+         * `aria-pressed`
+         *
+         * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-pressed
+         *
+         * > Indicates the current "pressed" state of toggle buttons. See related aria-checked and aria-selected.
+         * >
+         * > Toggle buttons require a full press-and-release cycle to change their value. Activating it once changes the value to true, and activating it another time changes the value back to false. A value of mixed means that the values of more than one item controlled by the button do not all share the same value. Examples of mixed-state buttons are described in WAI-ARIA Authoring Practices [ARIA-PRACTICES]. If the attribute is not present, the button is not a toggle button.
+         * >
+         * > The aria-pressed attribute is similar but not identical to the aria-checked attribute. Operating systems support pressed on buttons and checked on checkboxes.
+         */
+        _this.pressed = new ARIAAttribute_1.default(_this, 'aria-pressed');
+        /**
+         * `aria-expanded`
+         *
+         * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-expanded
+         *
+         * > Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
+         * >
+         * > For example, this indicates whether a portion of a tree is expanded or collapsed. In other instances, this may be applied to page sections to mark expandable and collapsible regions that are flexible for managing content density. Simplifying the user interface by collapsing sections may improve usability for all, including those with cognitive or developmental disabilities.
+         * >
+         * > If the element with the aria-expanded attribute controls the expansion of another grouping container that is not 'owned by' the element, the author SHOULD reference the container by using the aria-controls attribute.
+         */
+        _this.expanded = new ARIAAttribute_1.default(_this, 'aria-expanded');
+        return _this;
     }
     return ButtonElement;
 }(CommandElement_1.default));
 exports.default = ButtonElement;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var StructureError_1 = __webpack_require__(16);
+var Component_1 = __webpack_require__(17);
+var TabElement_1 = __webpack_require__(18);
+var TabListElement_1 = __webpack_require__(20);
+/**
+ * Tabs Component Class
+ *
+ * @class Component
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ * @template C Config
+ *
+ */
+var TabsComponent = /** @class */ (function (_super) {
+    __extends(TabsComponent, _super);
+    /**
+     * Tabs Component Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function TabsComponent(el, options) {
+        if (options === void 0) { options = {}; }
+        var _this = _super.call(this, el) || this;
+        /**
+         *
+         */
+        _this.defaultConfig = Object.freeze({
+            autoId: true,
+        });
+        _this._$tabs = new Set();
+        _this._traversal();
+        console.log(_this);
+        return _this;
+    }
+    TabsComponent.prototype._traversal = function () {
+        var tabList = this.find('[role="tablist"]');
+        if (tabList.length > 1) {
+            throw new StructureError_1.default("Two or more role \"tablist\" were found in the component.");
+        }
+        else if (tabList.length < 1) {
+            throw new StructureError_1.default("Role \"tablist\" is not found in the component.");
+        }
+        this._$tabList = new TabListElement_1.default(tabList.item(0));
+        var tabs = this._$tabList.find('[role="tab"]');
+        if (tabs.length < 1) {
+            throw new StructureError_1.default("Role \"tab\" is not found in the component.");
+        }
+        for (var _i = 0, _a = Array.from(tabs); _i < _a.length; _i++) {
+            var tab = _a[_i];
+            var $tab = new TabElement_1.default(tab);
+            $tab.owns.set(this._$tabList.id);
+            this._$tabs.add($tab);
+        }
+    };
+    return TabsComponent;
+}(Component_1.default));
+exports.default = TabsComponent;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var StructureError = /** @class */ (function (_super) {
+    __extends(StructureError, _super);
+    function StructureError(message) {
+        var _this = _super.call(this, message) || this;
+        _this.name = _this.constructor.name;
+        if (typeof Error.captureStackTrace === 'function') {
+            Error.captureStackTrace(_this, _this.constructor);
+        }
+        else {
+            _this.stack = (new Error(message)).stack;
+        }
+        return _this;
+    }
+    return StructureError;
+}(Error));
+exports.default = StructureError;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var InteractiveNode_1 = __webpack_require__(2);
+/**
+ * Abstract Interactive Element Structure Class
+ *
+ * @class Component
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ * @template C Config
+ *
+ */
+var Component = /** @class */ (function (_super) {
+    __extends(Component, _super);
+    /**
+     * Abstract Interactive Element Structure Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function Component(el, options) {
+        if (options === void 0) { options = {}; }
+        var _this = _super.call(this, el) || this;
+        /**
+         *
+         */
+        _this.defaultConfig = Object.freeze({
+            autoId: true,
+        });
+        var config = Object.assign({}, _this.defaultConfig, options);
+        _this._config = Object.freeze(config);
+        return _this;
+    }
+    return Component;
+}(InteractiveNode_1.default));
+exports.default = Component;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ARIAAttribute_1 = __webpack_require__(0);
+var SectionHeadElement_1 = __webpack_require__(19);
+/**
+ * Tab Element Wrapper Class
+ *
+ * `<element role="tab" />`
+ *
+ * @see https://www.w3.org/TR/wai-aria/roles#tab
+ *
+ * > A grouping label providing a mechanism for selecting the tab content that is to be rendered to the user.
+ * >
+ * > If a tabpanel or item in a tabpanel has focus, the associated tab is the currently active tab in the tablist, as defined in Managing Focus. tablist elements, which contain a set of associated tab elements, are typically placed near a series of tabpanel elements, usually preceding it. See the WAI-ARIA Authoring Practices Guide [ARIA-PRACTICES] for details on implementing a tab set design pattern.
+ *
+ * @class TabElements
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var TabElements = /** @class */ (function (_super) {
+    __extends(TabElements, _super);
+    /**
+     * Tab Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function TabElements(el) {
+        var _this = _super.call(this, el) || this;
+        /**
+         * `aria-selected`
+         *
+         * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-selected
+         *
+         * > Indicates the current "selected" state of various widgets. See related aria-checked and aria-pressed.
+         * >
+         * > This attribute is used with single-selection and multiple-selection widgets:
+         * > 1. Single-selection containers where the currently focused item is not selected. The selection normally follows the focus, and is managed by the user agent.
+         * > 2. Multiple-selection containers. Authors SHOULD ensure that any selectable descendant of a container in which the aria-multiselectable attribute is true specifies a value of either true or false for the aria-selected attribute.
+         * >
+         * > Any explicit assignment of aria-selected takes precedence over the implicit selection based on focus. If no DOM element in the widget is explicitly marked as selected, assistive technologies MAY convey implicit selection which follows the keyboard focus of the managed focus widget. If any DOM element in the widget is explicitly marked as selected, the user agent MUST NOT convey implicit selection for the widget.
+         */
+        _this.selected = new ARIAAttribute_1.default(_this, 'aria-selected');
+        return _this;
+    }
+    return TabElements;
+}(SectionHeadElement_1.default));
+exports.default = TabElements;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ARIAAttribute_1 = __webpack_require__(0);
+var StructureElement_1 = __webpack_require__(7);
+/**
+ * Abstract Section Head Element Wrapper Class
+ *
+ * @class SectionHeadElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var SectionHeadElement = /** @class */ (function (_super) {
+    __extends(SectionHeadElement, _super);
+    /**
+     * Abstract Section Head Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function SectionHeadElement(el) {
+        var _this = _super.call(this, el) || this;
+        /**
+         * `aria-expanded`
+         *
+         * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-expanded
+         *
+         * > Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
+         * >
+         * > For example, this indicates whether a portion of a tree is expanded or collapsed. In other instances, this may be applied to page sections to mark expandable and collapsible regions that are flexible for managing content density. Simplifying the user interface by collapsing sections may improve usability for all, including those with cognitive or developmental disabilities.
+         * >
+         * > If the element with the aria-expanded attribute controls the expansion of another grouping container that is not 'owned by' the element, the author SHOULD reference the container by using the aria-controls attribute.
+         */
+        _this.expanded = new ARIAAttribute_1.default(_this, 'aria-expanded');
+        return _this;
+    }
+    return SectionHeadElement;
+}(StructureElement_1.default));
+exports.default = SectionHeadElement;
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ARIAAttribute_1 = __webpack_require__(0);
+var DirectoryElement_1 = __webpack_require__(21);
+/**
+ * Tab List Element Wrapper Class
+ *
+ * @class TabListElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var TabListElement = /** @class */ (function (_super) {
+    __extends(TabListElement, _super);
+    /**
+     * Tab List Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function TabListElement(el) {
+        var _this = _super.call(this, el) || this;
+        /**
+         * `aria-activedescendant`
+         *
+         * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-activedescendant
+         *
+         * > Identifies the currently active descendant of a composite widget.
+         * >
+         * > This is used when a composite widget is responsible for managing its current active child to reduce the overhead of having all children be focusable. Examples include: multi-level lists, trees, and grids. In some implementations the user agent may use aria-activedescendant to tell assistive technologies that the active descendant has focus. Authors MAY use the aria-activedescendant attribute on the focused descendant of a composite widget; for example, on a textbox descendant of a combo box.
+         * >
+         * > Authors SHOULD ensure that the element targeted by the aria-activedescendant attribute is either a descendant of the container in the DOM, or is a logical descendant as indicated by the aria-owns attribute. The user agent is not expected to validate that the active descendant is a descendant of the container. Authors SHOULD ensure that the currently active descendant is visible and in view (or scrolls into view) when focused.
+         */
+        _this.activeDescendant = new ARIAAttribute_1.default(_this, 'aria-activedescendant');
+        return _this;
+    }
+    return TabListElement;
+}(DirectoryElement_1.default));
+exports.default = TabListElement;
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ListElement_1 = __webpack_require__(22);
+/**
+ * Directory Element Wrapper Class
+ *
+ * @class DirectoryElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var DirectoryElement = /** @class */ (function (_super) {
+    __extends(DirectoryElement, _super);
+    /**
+     * Directory Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function DirectoryElement(el) {
+        return _super.call(this, el) || this;
+    }
+    return DirectoryElement;
+}(ListElement_1.default));
+exports.default = DirectoryElement;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var RegionElement_1 = __webpack_require__(23);
+/**
+ * List Element Wrapper Class
+ *
+ * @class ListElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var ListElement = /** @class */ (function (_super) {
+    __extends(ListElement, _super);
+    /**
+     * List Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function ListElement(el) {
+        return _super.call(this, el) || this;
+    }
+    return ListElement;
+}(RegionElement_1.default));
+exports.default = ListElement;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var SectionElement_1 = __webpack_require__(24);
+/**
+ * Region Element Wrapper Class
+ *
+ * @class RegionElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var RegionElement = /** @class */ (function (_super) {
+    __extends(RegionElement, _super);
+    /**
+     * Region Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function RegionElement(el) {
+        return _super.call(this, el) || this;
+    }
+    return RegionElement;
+}(SectionElement_1.default));
+exports.default = RegionElement;
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ARIAAttribute_1 = __webpack_require__(0);
+var StructureElement_1 = __webpack_require__(7);
+/**
+ * Abstract Section Element Wrapper Class
+ *
+ * @class SectionElement
+ * @version 1.0.0
+ * @since 1.0.0
+ * @template E DOM Element Interface
+ *
+ */
+var SectionElement = /** @class */ (function (_super) {
+    __extends(SectionElement, _super);
+    /**
+     * Abstract Section Element Wrapper Class
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     * @param el Assigned DOM Element
+     * @template E DOM Element Interface
+     *
+     */
+    function SectionElement(el) {
+        var _this = _super.call(this, el) || this;
+        /**
+         * `aria-expanded`
+         *
+         * @see https://www.w3.org/TR/wai-aria/states_and_properties#aria-expanded
+         *
+         * > Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
+         * >
+         * > For example, this indicates whether a portion of a tree is expanded or collapsed. In other instances, this may be applied to page sections to mark expandable and collapsible regions that are flexible for managing content density. Simplifying the user interface by collapsing sections may improve usability for all, including those with cognitive or developmental disabilities.
+         * >
+         * > If the element with the aria-expanded attribute controls the expansion of another grouping container that is not 'owned by' the element, the author SHOULD reference the container by using the aria-controls attribute.
+         */
+        _this.expanded = new ARIAAttribute_1.default(_this, 'aria-expanded');
+        return _this;
+    }
+    return SectionElement;
+}(StructureElement_1.default));
+exports.default = SectionElement;
 
 
 /***/ })

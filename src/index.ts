@@ -4,6 +4,7 @@ import _CommandElement from './nodes/CommandElement';
 import _CoreNode from './nodes/CoreNode';
 import _EventDispatcher from './nodes/EventDispatcher';
 import _InteractiveNode from './nodes/InteractiveNode';
+import _TabsComponent from './nodes/TabsComponent';
 import _WidgetElement from './nodes/WidgetElement';
 
 export const AccessibleElement = _AccessibleElement;
@@ -13,6 +14,7 @@ export const CoreNode = _CoreNode;
 export const EventDispatcher = _EventDispatcher;
 export const InteractiveNode = _InteractiveNode;
 export const WidgetElement = _WidgetElement;
+export const TabsComponent = _TabsComponent;
 
 export function auto () {
 	return new Promise<void>((resolve) => {

@@ -9,6 +9,14 @@ export interface ARIAAttributeTypes {
      */
     boolean: 'true' | 'false';
     /**
+     * "tristate"
+     *
+     * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_tristate
+     *
+     * Value representing true or false, with an intermediate "mixed" value. Default value is "false" unless otherwise specified.
+     */
+    tristate: 'true' | 'false' | 'mixed' | undefined;
+    /**
      * "true/false/undefined"
      *
      * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_true-false-undefined
@@ -16,6 +24,14 @@ export interface ARIAAttributeTypes {
      * > Value representing true or false, with a default "undefined" value indicating the state or property is not relevant.
      */
     optionalBoolean: 'true' | 'false' | undefined;
+    /**
+     * "ID reference"
+     *
+     * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_idref
+     *
+     * Reference to the ID of another element in the same document.
+     */
+    idReference: string;
     /**
      * "ID reference list"
      *
@@ -108,6 +124,10 @@ export interface ARIAAttributeRelation {
     'aria-live': 'ariaLiveToken';
     'aria-owns': 'idReferenceList';
     'aria-relevant': 'ariaRelevantTokenList';
+    'aria-pressed': 'tristate';
+    'aria-expanded': 'optionalBoolean';
+    'aria-selected': 'optionalBoolean';
+    'aria-activedescendant': 'idReference';
 }
 export declare type ARIAAttributeValue = {
     [P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]];

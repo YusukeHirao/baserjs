@@ -141,6 +141,16 @@ export default abstract class CoreNode<E extends Element = Element> extends Even
 	}
 
 	/**
+	 * Get Descendant elemtns
+	 *
+	 * @api DOM access
+	 * @param selector match selector
+	 */
+	public find (selector: string) {
+		return this._el.querySelectorAll(selector);
+	}
+
+	/**
 	 * Callback on mutated attributes
 	 *
 	 * @param mutations Mutated record list

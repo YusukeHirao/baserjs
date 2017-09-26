@@ -28,10 +28,14 @@ export interface ARIAAttributeTypes {
 	 */
 	optionalBoolean: 'true' | 'false' | undefined;
 
-	// /**
-	//  * Reference to the ID of another element in the same document.
-	//  */
-	// IDReference: string;
+	/**
+	 * "ID reference"
+	 *
+	 * @see https://www.w3.org/TR/wai-aria/states_and_properties#valuetype_idref
+	 *
+	 * Reference to the ID of another element in the same document.
+	 */
+	idReference: string;
 
 	/**
 	 * "ID reference list"
@@ -144,6 +148,7 @@ export interface ARIAAttributeRelation {
 	'aria-pressed': 'tristate';
 	'aria-expanded': 'optionalBoolean';
 	'aria-selected': 'optionalBoolean';
+	'aria-activedescendant': 'idReference';
 }
 
 export type ARIAAttributeValue = {[P in keyof ARIAAttributeRelation]: ARIAAttributeTypes[ARIAAttributeRelation[P]]};
@@ -170,6 +175,7 @@ const relation: ARIAAttributeRelation = {
 	'aria-pressed': 'tristate',
 	'aria-expanded': 'optionalBoolean',
 	'aria-selected': 'optionalBoolean',
+	'aria-activedescendant': 'idReference',
 };
 
 const defaultValues: ARIAAttributeValue = {
@@ -192,6 +198,7 @@ const defaultValues: ARIAAttributeValue = {
 	'aria-pressed': undefined,
 	'aria-expanded': undefined,
 	'aria-selected': undefined,
+	'aria-activedescendant': '',
 };
 
 const optimizer: ARIAAttributeValueOptimizer = {
@@ -215,6 +222,9 @@ const optimizer: ARIAAttributeValueOptimizer = {
 			return;
 		}
 		return optimizer.boolean(v);
+	},
+	idReference: (v) => {
+		return `${v}`;
 	},
 	idReferenceList: (v) => {
 		return `${v}`;
