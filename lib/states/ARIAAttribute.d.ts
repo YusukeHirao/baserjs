@@ -145,6 +145,6 @@ export default class ARIAAttribute<A extends keyof ARIAAttributeRelation> {
     constructor(owner: AccessibleElement, attrName: A);
     set(value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]): void;
     get(): ARIAAttributeTypes[ARIAAttributeRelation[A]];
-    optimize(value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]): any;
+    optimize(value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]): ARIAAttributeTypes[ARIAAttributeRelation[A]];
     toString(): string;
 }

@@ -299,7 +299,7 @@ export default class ARIAAttribute<A extends keyof ARIAAttributeRelation> {
 		return this._value;
 	}
 
-	public optimize (value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]) {
+	public optimize (value: ExpectableType | ARIAAttributeTypes[ARIAAttributeRelation[A]]): ARIAAttributeTypes[ARIAAttributeRelation[A]] {
 		return optimizer[relation[this._name]](value);
 	}
 
